@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "486827917386",
+    "project_id": "waptrend-94f0f",
+    "storage_bucket": "waptrend-94f0f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486827917386:android:d3b3f72d3c293cec7526b3",
+        "android_client_info": {
+          "package_name": "com.waptrend.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmes6XOLIgDO7N5xDVa2R5jNKduCQV39U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
