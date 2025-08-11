@@ -1109,9 +1109,15 @@ class AgoraLiveController extends GetxController {
   }
 
   getLiveViewers(VoidCallback callback) {
+    final liveId = live.value?.id;
+    if (liveId == null) {
+      print('Live ID is null, cannot fetch viewers $live');
+      callback();
+      return;
+    }
     liveViewers.clear();
     LiveStreamingApi.getLiveViewers(
-        liveId: live.value!.id,
+        liveId: liveId,
         resultCallback: (result, metaData) {
           liveViewers.addAll(result);
           liveViewers.unique((e) => e.id);
@@ -1142,7 +1148,6 @@ class AgoraLiveController extends GetxController {
         resultCallback: (result, metaData) {
           moderatorUsers.addAll(result);
           moderatorUsers.unique((e) => e.id);
-
           moderatorsDataWrapper.processCompletedWithData(metaData);
           callback();
         });

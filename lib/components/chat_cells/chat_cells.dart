@@ -47,18 +47,32 @@ class ChatMessageTile extends StatelessWidget {
               // message.isMineMessage ? const Spacer() : Container(),
               Expanded(
                 child: Container(
-                  color: message.messageContentType == MessageContentType.gif ||
-                          message.messageContentType ==
-                              MessageContentType.sticker ||
-                          message.messageContentType ==
-                              MessageContentType.textReplyOnStory ||
-                          message.messageContentType ==
-                              MessageContentType.reactedOnStory ||
-                          message.messageContentType == MessageContentType.story
-                      ? Colors.transparent
-                      : message.isMineMessage
-                          ? AppColorConstants.themeColor.withValues(alpha: 0.5)
-                          : AppColorConstants.cardColor,
+                  decoration: BoxDecoration(
+                    color:
+                        message.messageContentType == MessageContentType.gif ||
+                                message.messageContentType ==
+                                    MessageContentType.sticker ||
+                                message.messageContentType ==
+                                    MessageContentType.textReplyOnStory ||
+                                message.messageContentType ==
+                                    MessageContentType.reactedOnStory ||
+                                message.messageContentType ==
+                                    MessageContentType.story
+                            ? Colors.transparent
+                            : message.isMineMessage
+                                ? AppColorConstants.themeColor
+                                    .withValues(alpha: 0.3)
+                                : AppColorConstants.cardColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft:
+                            Radius.circular(message.isMineMessage ? 20 : 0),
+                        bottomLeft:
+                            Radius.circular(message.isMineMessage ? 20 : 20),
+                        bottomRight:
+                            Radius.circular(message.isMineMessage ? 20 : 20),
+                        topRight:
+                            Radius.circular(message.isMineMessage ? 0 : 20)),
+                  ),
                   child: Column(
                     crossAxisAlignment: message.isMineMessage
                         ? CrossAxisAlignment.end
@@ -95,7 +109,7 @@ class ChatMessageTile extends StatelessWidget {
                       MessageDeliveryStatusView(message: message),
                     ],
                   ).p8,
-                ).round(10).setPadding(
+                ).setPadding(
                     left: message.isMineMessage ? 50 : 0,
                     right: message.isMineMessage ? 0 : 50),
               ),

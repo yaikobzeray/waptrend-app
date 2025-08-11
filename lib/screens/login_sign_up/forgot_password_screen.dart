@@ -17,57 +17,53 @@ class ForgotPasswordState extends State<ForgotPasswordScreen> {
     return AppScaffold(
         backgroundColor: AppColorConstants.backgroundColor,
         body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: Get.height * 0.1,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: AppThemeBackButton(),
-              ),
-              SizedBox(
-                height: Get.height * 0.05,
-              ),
-              Heading3Text(forgotPwdString.tr, weight: TextWeight.bold).rp(100),
-              SizedBox(
-                height: Get.height * 0.01,
-              ),
-              BodyMediumText(
-                helpToGetAccountString.tr,
-                color: AppColorConstants.subHeadingTextColor,
-              ).setPadding(top: 10, bottom: 40),
-              AppTextField(
-                controller: email,
-                hintText: enterEmailString.tr,
-                icon: ThemeIcon.email,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: BodySmallText(
-                  loginAnotherAccountString.tr,
-                  weight: TextWeight.bold,
-                  textAlign: TextAlign.start,
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: Get.height * 0.1,
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: AppThemeBackButton(),
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                Heading3Text(forgotPwdString.tr, weight: TextWeight.bold),
+                BodyMediumText(
+                  helpToGetAccountString.tr,
                   color: AppColorConstants.subHeadingTextColor,
-                ).ripple(() {
-                  Get.back();
-                }),
-              ),
-              const Spacer(),
-              addSubmitBtn(),
-              const SizedBox(
-                height: 55,
-              )
-            ],
-          ).hp(DesignConstants.horizontalPadding),
-        ));
+                ).setPadding(top: 10, bottom: 20),
+                AppTextField(
+                  controller: email,
+                  hintText: enterEmailString.tr,
+                  // icon: ThemeIcon.email,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: BodySmallText(
+                    loginAnotherAccountString.tr,
+                    weight: TextWeight.bold,
+                    textAlign: TextAlign.start,
+                    color: AppColorConstants.themeColor,
+                  ).ripple(() {
+                    Get.back();
+                  }),
+                ),
+                // const Spacer(),
+                addSubmitBtn(),
+                const SizedBox(
+                  height: 55,
+                )
+              ],
+            ).hp(20)));
   }
 
   addSubmitBtn() {

@@ -32,30 +32,27 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-        backgroundColor: AppColorConstants.backgroundColor,
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 50,
+      backgroundColor: AppColorConstants.backgroundColor,
+      body: Column(
+        children: [
+          // App Bar
+          Container(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 10,
+              bottom: 10,
+              left: DesignConstants.horizontalPadding,
+              right: DesignConstants.horizontalPadding,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row(
               children: [
                 ThemeIconWidget(
                   ThemeIcon.backArrow,
                   color: AppColorConstants.iconColor,
                   size: 20,
-                ).p8.ripple(() {
+                ).ripple(() {
                   Get.back();
                 }),
-                Obx(() => _chatDetailController.chatRoom.value == null
-                    ? Container()
-                    : Heading5Text(
-                        _chatDetailController.chatRoom.value!.isGroupChat
-                            ? _chatDetailController.chatRoom.value!.name!
-                            : _chatDetailController
-                                .chatRoom.value!.opponent!.userDetail.userName,
-                        weight: TextWeight.medium)),
+                const Spacer(),
                 Obx(() => _chatDetailController.chatRoom.value?.amIGroupAdmin ==
                             true &&
                         _chatDetailController.chatRoom.value?.isGroupChat ==
@@ -72,353 +69,368 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
                               room: widget.chatRoom, callback: () {});
                         });
                       })
-                    : const SizedBox(
-                        width: 20,
-                      )),
+                    : const SizedBox(width: 20)),
               ],
-            ).hp(DesignConstants.horizontalPadding),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(
-                    left: 0, top: 0, right: 0, bottom: 80),
-                children: [
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  widget.chatRoom.isGroupChat ? groupInfo() : opponentInfo(),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  widget.chatRoom.isGroupChat
-                      ? Container()
-                      : Column(
-                          children: [
-                            callWidgets(),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                          ],
-                        ),
-                  Obx(() =>
-                      (_chatDetailController.chatRoom.value?.description ?? '')
-                              .isEmpty
-                          ? Container()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                descriptionWidget(),
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                              ],
-                            )),
-                  commonOptionsWidget(),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Obx(() => _chatDetailController.chatRoom.value?.isGroupChat ==
-                              true &&
-                          _chatDetailController.chatRoom.value?.amIGroupAdmin ==
-                              true
-                      ? Column(children: [
-                          groupSettingWidget(),
-                          const SizedBox(
-                            height: 50,
-                          )
-                        ])
-                      : Container()),
-                  widget.chatRoom.isGroupChat
-                      ? Column(
-                          children: [
-                            participantsWidget(),
-                            const SizedBox(
-                              height: 50,
-                            )
-                          ],
-                        )
-                      : Container(),
-                  if (_chatDetailController.messages.isNotEmpty)
-                    Column(
-                      children: [
-                        extraOptionsWidget(),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                      ],
-                    ),
-                  widget.chatRoom.isGroupChat
-                      ? Column(children: [
-                          exitAndDeleteGroup(),
-                          const SizedBox(
-                            height: 50,
-                          )
-                        ])
-                      : Container(),
+            ),
+          ),
+
+          // Content
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 20),
+              children: [
+                const SizedBox(height: 20),
+                widget.chatRoom.isGroupChat ? groupInfo() : opponentInfo(),
+                const SizedBox(height: 30),
+                if (!widget.chatRoom.isGroupChat) ...[
+                  callWidgets(),
+                  const SizedBox(height: 30),
                 ],
-              ),
-            )
-          ],
-        ));
+                Obx(() =>
+                    (_chatDetailController.chatRoom.value?.description ?? '')
+                            .isNotEmpty
+                        ? Column(
+                            children: [
+                              descriptionWidget(),
+                              const SizedBox(height: 30),
+                            ],
+                          )
+                        : Container()),
+                commonOptionsWidget(),
+                const SizedBox(height: 30),
+                Obx(() => _chatDetailController.chatRoom.value?.isGroupChat ==
+                            true &&
+                        _chatDetailController.chatRoom.value?.amIGroupAdmin ==
+                            true
+                    ? Column(
+                        children: [
+                          groupSettingWidget(),
+                          const SizedBox(height: 30),
+                        ],
+                      )
+                    : Container()),
+                if (widget.chatRoom.isGroupChat) ...[
+                  participantsWidget(),
+                  const SizedBox(height: 30),
+                ],
+                if (_chatDetailController.messages.isNotEmpty) ...[
+                  extraOptionsWidget(),
+                  const SizedBox(height: 30),
+                ],
+                if (widget.chatRoom.isGroupChat) ...[
+                  exitAndDeleteGroup(),
+                  const SizedBox(height: 20),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget descriptionWidget() {
     return Container(
-      color: AppColorConstants.cardColor,
       width: double.infinity,
-      child: Heading6Text(_chatDetailController.chatRoom.value!.description!,
-              weight: TextWeight.regular)
-          .p16,
-    )
-        .round(10)
-        .backgroundCard(shadowOpacity: 0.1)
-        .hp(DesignConstants.horizontalPadding);
+      padding: const EdgeInsets.all(16),
+      margin:
+          EdgeInsets.symmetric(horizontal: DesignConstants.horizontalPadding),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Text(
+        _chatDetailController.chatRoom.value!.description!,
+        style: TextStyle(
+          fontSize: 14,
+          color: AppColorConstants.mainTextColor,
+        ),
+      ),
+    );
   }
 
   Widget groupSettingWidget() {
-    return Column(
-      children: [
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    color: AppColorConstants.themeColor,
-                    child: ThemeIconWidget(
-                      ThemeIcon.setting,
-                      color: Colors.white,
-                    ).p4,
-                  ).round(5),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  BodyLargeText(groupSettingsString.tr,
-                      weight: TextWeight.regular),
-                ],
-              ),
-              ThemeIconWidget(
-                ThemeIcon.nextArrow,
-                color: AppColorConstants.iconColor,
-                size: 15,
-              )
-            ],
-          ).hP8,
-        ).ripple(() {
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: DesignConstants.horizontalPadding),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: AppColorConstants.themeColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            Icons.settings,
+            color: AppColorConstants.themeColor,
+            size: 20,
+          ),
+        ),
+        title: Text(
+          groupSettingsString.tr,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right,
+          color: AppColorConstants.iconColor,
+        ),
+        onTap: () {
           Get.to(() => const GroupSettings());
-        }),
-      ],
-    )
-        .round(10)
-        .backgroundCard(shadowOpacity: 0.1)
-        .hp(DesignConstants.horizontalPadding);
+        },
+      ),
+    );
   }
 
   Widget commonOptionsWidget() {
-    return Column(
-      children: [
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    color: AppColorConstants.themeColor,
-                    child: ThemeIconWidget(
-                      ThemeIcon.gallery,
-                      color: Colors.white,
-                    ).p4,
-                  ).round(5),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  BodyLargeText(mediaString.tr, weight: TextWeight.regular),
-                ],
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: DesignConstants.horizontalPadding),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColorConstants.themeColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
               ),
-              ThemeIconWidget(
-                ThemeIcon.nextArrow,
-                color: AppColorConstants.iconColor,
-                size: 15,
-              )
-            ],
-          ).hP8,
-        ).ripple(() {
-          Get.to(() => ChatMediaList(
-                chatRoom: widget.chatRoom,
-              ));
-        }),
-        divider(),
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    color: AppColorConstants.themeColor,
-                    child: ThemeIconWidget(
-                      ThemeIcon.wallpaper,
-                      color: Colors.white,
-                    ).p4,
-                  ).round(5),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  BodyLargeText(wallpaperString.tr, weight: TextWeight.regular),
-                ],
+              child: Icon(
+                Icons.photo_library,
+                color: AppColorConstants.themeColor,
+                size: 20,
               ),
-              ThemeIconWidget(
-                ThemeIcon.nextArrow,
-                color: AppColorConstants.iconColor,
-                size: 15,
-              )
-            ],
-          ).hP8,
-        ).ripple(() {
-          Get.to(() => WallpaperForChatBackground(
-                roomId: widget.chatRoom.id,
-              ));
-        }),
-        divider(),
-        _chatRoomDetailController.starredMessages.isNotEmpty &&
-                _settingsController.setting.value!.enableStarMessage
-            ? Obx(() => Container(
-                  height: 50,
-                  color: AppColorConstants.cardColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+            ),
+            title: Text(
+              mediaString.tr,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColorConstants.mainTextColor,
+              ),
+            ),
+            trailing: Icon(
+              Icons.chevron_right,
+              color: AppColorConstants.iconColor,
+            ),
+            onTap: () {
+              Get.to(() => ChatMediaList(chatRoom: widget.chatRoom));
+            },
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          ListTile(
+            leading: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColorConstants.themeColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.wallpaper,
+                color: AppColorConstants.themeColor,
+                size: 20,
+              ),
+            ),
+            title: Text(
+              wallpaperString.tr,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColorConstants.mainTextColor,
+              ),
+            ),
+            trailing: Icon(
+              Icons.chevron_right,
+              color: AppColorConstants.iconColor,
+            ),
+            onTap: () {
+              Get.to(
+                  () => WallpaperForChatBackground(roomId: widget.chatRoom.id));
+            },
+          ),
+          if (_chatRoomDetailController.starredMessages.isNotEmpty &&
+              _settingsController.setting.value!.enableStarMessage)
+            Obx(() => Column(
+                  children: [
+                    const Divider(height: 1, indent: 16, endIndent: 16),
+                    ListTile(
+                      leading: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppColorConstants.themeColor.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.star,
+                          color: AppColorConstants.themeColor,
+                          size: 20,
+                        ),
+                      ),
+                      title: Text(
+                        starredMessagesString.tr,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            color: AppColorConstants.themeColor,
-                            child: ThemeIconWidget(
-                              ThemeIcon.filledStar,
-                              color: Colors.white,
-                            ).p4,
-                          ).round(5),
-                          const SizedBox(
-                            width: 10,
+                          Text(
+                            '(${_chatRoomDetailController.starredMessages.length})',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColorConstants.cardColor,
+                            ),
                           ),
-                          Heading6Text(starredMessagesString.tr,
-                              weight: TextWeight.regular),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.chevron_right,
+                            color: AppColorConstants.iconColor,
+                          ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          BodyLargeText(
-                              '(${_chatRoomDetailController.starredMessages.length})',
-                              weight: TextWeight.medium),
-                          ThemeIconWidget(
-                            ThemeIcon.nextArrow,
-                            color: AppColorConstants.iconColor,
-                            size: 15,
-                          )
-                        ],
-                      )
-                    ],
-                  ).hP8,
-                ).ripple(() {
-                  Get.to(() => StarredMessages(
-                        chatRoom: widget.chatRoom,
-                      ));
-                }))
-            : Container(),
-      ],
-    )
-        .round(10)
-        .backgroundCard(shadowOpacity: 0.1)
-        .hp(DesignConstants.horizontalPadding);
+                      onTap: () {
+                        Get.to(
+                            () => StarredMessages(chatRoom: widget.chatRoom));
+                      },
+                    ),
+                  ],
+                )),
+        ],
+      ),
+    );
   }
 
   Widget extraOptionsWidget() {
-    return Column(
-      children: [
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Heading6Text(exportChatString.tr, weight: TextWeight.regular)
-            ],
-          ).hP8,
-        ).ripple(() {
-          exportChatActionPopup();
-        }),
-        divider(),
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: BodyLargeText(deleteChatString.tr,
-                    weight: TextWeight.medium, color: AppColorConstants.red)
-                .hP8,
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: DesignConstants.horizontalPadding),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ).ripple(() {
-          _chatRoomDetailController.deleteRoomChat(widget.chatRoom);
-          _chatDetailController.deleteChat(widget.chatRoom.id);
-          AppUtil.showToast(message: chatDeletedString.tr, isSuccess: true);
-        })
-      ],
-    )
-        .round(10)
-        .backgroundCard(shadowOpacity: 0.1)
-        .hp(DesignConstants.horizontalPadding);
+        ],
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
+              exportChatString.tr,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColorConstants.mainTextColor,
+              ),
+            ),
+            onTap: exportChatActionPopup,
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          ListTile(
+            title: Text(
+              deleteChatString.tr,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColorConstants.red,
+              ),
+            ),
+            onTap: () {
+              _chatRoomDetailController.deleteRoomChat(widget.chatRoom);
+              _chatDetailController.deleteChat(widget.chatRoom.id);
+              AppUtil.showToast(message: chatDeletedString.tr, isSuccess: true);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Widget exitAndDeleteGroup() {
-    return Column(
-      children: [
-        divider(),
-        Container(
-          height: 50,
-          color: AppColorConstants.cardColor,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: BodyLargeText(
-                    widget.chatRoom.amIMember
-                        ? leaveGroupString.tr
-                        : deleteGroupString.tr,
-                    weight: TextWeight.medium,
-                    color: AppColorConstants.red)
-                .hP8,
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: DesignConstants.horizontalPadding),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ).ripple(() {
+        ],
+      ),
+      child: ListTile(
+        title: Text(
+          widget.chatRoom.amIMember
+              ? leaveGroupString.tr
+              : deleteGroupString.tr,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: AppColorConstants.red,
+          ),
+        ),
+        onTap: () {
           if (widget.chatRoom.amIMember) {
             AppUtil.showNewConfirmationAlert(
-                title: leaveGroupString.tr,
-                subTitle: leaveGroupConfirmationString.tr,
-                okHandler: () {
-                  _chatRoomDetailController.leaveGroup(widget.chatRoom);
-                },
-                cancelHandler: () {});
+              title: leaveGroupString.tr,
+              subTitle: leaveGroupConfirmationString.tr,
+              okHandler: () {
+                _chatRoomDetailController.leaveGroup(widget.chatRoom);
+              },
+              cancelHandler: () {},
+            );
           } else {
-            // print('test 2');
-            //
-            // AppUtil.showConfirmationAlert(
-            //     title: deleteGroup,
-            //     subTitle: deleteGroupConfirmation,
-            //     cxt: context,
-            //     okHandler: () {
             _chatRoomDetailController.deleteGroup(widget.chatRoom);
-            // });
           }
           Get.back();
-        }),
-      ],
-    )
-        .round(10)
-        .backgroundCard(shadowOpacity: 0.1)
-        .hp(DesignConstants.horizontalPadding);
+        },
+      ),
+    );
   }
 
   Widget callWidgets() {
@@ -426,47 +438,48 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (_settingsController.setting.value!.enableAudioCalling)
-          Container(
-            child: Column(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.mobile,
-                  size: 20,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                BodyMediumText(audioString.tr, weight: TextWeight.medium),
-              ],
-            ).setPadding(
-                left: DesignConstants.horizontalPadding,
-                right: DesignConstants.horizontalPadding,
-                top: 8,
-                bottom: 8),
-          ).round(10).backgroundCard(shadowOpacity: 0.1).ripple(() {
-            audioCall();
-          }).rp(20),
+          ElevatedButton.icon(
+            icon: Icon(
+              Icons.call,
+              size: 20,
+              color: Colors.white,
+            ),
+            label: Text(
+              audioString.tr,
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColorConstants.themeColor,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: audioCall,
+          ),
+        if (_settingsController.setting.value!.enableAudioCalling &&
+            _settingsController.setting.value!.enableVideoCalling)
+          const SizedBox(width: 20),
         if (_settingsController.setting.value!.enableVideoCalling)
-          Container(
-            child: Column(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.videoCamera,
-                  size: 20,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                BodyMediumText(videoString.tr, weight: TextWeight.medium),
-              ],
-            ).setPadding(
-                left: DesignConstants.horizontalPadding,
-                right: DesignConstants.horizontalPadding,
-                top: 8,
-                bottom: 8),
-          ).round(10).backgroundCard(shadowOpacity: 0.1).ripple(() {
-            videoCall();
-          }),
+          ElevatedButton.icon(
+            icon: Icon(
+              Icons.videocam,
+              size: 20,
+              color: Colors.white,
+            ),
+            label: Text(
+              videoString.tr,
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColorConstants.themeColor,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: videoCall,
+          ),
       ],
     );
   }
@@ -476,16 +489,48 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
         ? Container()
         : Column(
             children: [
-              AvatarView(
-                url: _chatDetailController.chatRoom.value!.image,
-                size: 100,
-                name: _chatDetailController.chatRoom.value!.name!,
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColorConstants.themeColor.withOpacity(0.3),
+                    width: 2,
+                  ),
+                ),
+                child: ClipOval(
+                  child:
+                      _chatDetailController.chatRoom.value!.image?.isNotEmpty ==
+                              true
+                          ? CachedNetworkImage(
+                              imageUrl:
+                                  _chatDetailController.chatRoom.value!.image!,
+                              fit: BoxFit.cover,
+                            )
+                          : Center(
+                              child: Text(
+                                _chatDetailController.chatRoom.value!.name!
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColorConstants.themeColor,
+                                ),
+                              ),
+                            ),
+                ),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 16),
+              Text(
+                _chatDetailController.chatRoom.value!.name!,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColorConstants.mainTextColor,
+                ),
               ),
-              Heading6Text(_chatDetailController.chatRoom.value!.name!,
-                  weight: TextWeight.bold)
             ],
           ));
   }
@@ -495,50 +540,96 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
         ? Container()
         : Column(
             children: [
-              UserAvatarView(
-                user: _chatDetailController.chatRoom.value!.opponent!.userDetail,
-                size: 100,
-                onTapHandler: () {
-                  //open live
-                },
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColorConstants.themeColor.withOpacity(0.3),
+                    width: 2,
+                  ),
+                ),
+                child: ClipOval(
+                  child: _chatDetailController.chatRoom.value!.opponent!
+                              .userDetail.picture?.isNotEmpty ==
+                          true
+                      ? CachedNetworkImage(
+                          imageUrl: _chatDetailController
+                              .chatRoom.value!.opponent!.userDetail.picture!,
+                          fit: BoxFit.cover,
+                        )
+                      : Center(
+                          child: Text(
+                            _chatDetailController
+                                .chatRoom.value!.opponent!.userDetail.userName
+                                .substring(0, 1)
+                                .toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: AppColorConstants.themeColor,
+                            ),
+                          ),
+                        ),
+                ),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 16),
+              Text(
+                _chatDetailController
+                    .chatRoom.value!.opponent!.userDetail.userName,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColorConstants.mainTextColor,
+                ),
               ),
-              Heading6Text(
-                  _chatDetailController
-                      .chatRoom.value!.opponent!.userDetail.userName,
-                  weight: TextWeight.bold)
             ],
           ));
   }
 
   void exportChatActionPopup() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) => Wrap(
-              children: [
-                ListTile(
-                    title: Center(
-                        child: BodyLargeText(exportChatWithMediaString.tr)),
-                    onTap: () async {
-                      Get.back();
-                      exportChatWithMedia();
-                    }),
-                divider(),
-                ListTile(
-                    title: Center(
-                        child: BodyLargeText(exportChatWithoutMediaString.tr)),
-                    onTap: () async {
-                      Get.back();
-                      exportChatWithoutMedia();
-                    }),
-                divider(),
-                ListTile(
-                    title: Center(child: BodyLargeText(cancelString.tr)),
-                    onTap: () => Get.back()),
-              ],
-            ));
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (
+        context,
+      ) =>
+          SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.photo_library,
+                  color: AppColorConstants.themeColor),
+              title: Text(exportChatWithMediaString.tr),
+              onTap: () async {
+                Get.back();
+                exportChatWithMedia();
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading:
+                  Icon(Icons.text_snippet, color: AppColorConstants.themeColor),
+              title: Text(exportChatWithoutMediaString.tr),
+              onTap: () async {
+                Get.back();
+                exportChatWithoutMedia();
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: Icon(Icons.close, color: AppColorConstants.red),
+              title: Text(cancelString.tr),
+              onTap: () => Get.back(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget participantsWidget() {
@@ -547,123 +638,159 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Heading5Text(
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: DesignConstants.horizontalPadding),
+                child: Text(
                   '${_chatDetailController.chatRoom.value!.roomMembers.length} ${participantsString.tr}',
-                  weight: TextWeight.bold),
-              const SizedBox(
-                height: 20,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColorConstants.mainTextColor,
+                  ),
+                ),
               ),
+              const SizedBox(height: 16),
               Container(
-                height:
-                    (_chatDetailController.chatRoom.value!.roomMembers.length +
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                margin: EdgeInsets.symmetric(
+                    horizontal: DesignConstants.horizontalPadding),
+                decoration: BoxDecoration(
+                  color: AppColorConstants.cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount:
+                      _chatDetailController.chatRoom.value!.roomMembers.length +
+                          (_chatDetailController.chatRoom.value!.amIGroupAdmin
+                              ? 1
+                              : 0),
+                  itemBuilder: (ctx, index) {
+                    if (index == 0 &&
+                        _chatDetailController.chatRoom.value!.amIGroupAdmin) {
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color:
+                                AppColorConstants.themeColor.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: AppColorConstants.themeColor,
+                          ),
+                        ),
+                        title: Text(
+                          addParticipantsString.tr,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: AppColorConstants.mainTextColor,
+                          ),
+                        ),
+                        onTap: () {
+                          showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) => FractionallySizedBox(
+                              heightFactor: 0.9,
+                              child: SelectUserForGroupChat(
+                                group: _chatDetailController.chatRoom.value!,
+                                invitedUserCallback: () {
+                                  _chatDetailController
+                                      .getUpdatedChatRoomDetail(
+                                          room: widget.chatRoom,
+                                          callback: () {});
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    ChatRoomMember member = _chatDetailController
+                            .chatRoom.value!.roomMembers[
+                        index -
                             (_chatDetailController.chatRoom.value!.amIGroupAdmin
                                 ? 1
-                                : 0)) *
-                        60,
-                color: AppColorConstants.cardColor,
-                child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    itemCount: _chatDetailController
-                            .chatRoom.value!.roomMembers.length +
-                        (_chatDetailController.chatRoom.value!.amIGroupAdmin
-                            ? 1
-                            : 0),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (ctx, index) {
-                      if (index == 0 &&
-                          _chatDetailController.chatRoom.value!.amIGroupAdmin) {
-                        return Row(
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              color: AppColorConstants.themeColor.lighten(),
-                              child: ThemeIconWidget(
-                                ThemeIcon.plus,
-                                size: 25,
-                              ),
-                            ).circular,
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            Heading6Text(addParticipantsString.tr,
-                                weight: TextWeight.medium)
-                          ],
-                        ).hP8.ripple(() {
-                          showModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => FractionallySizedBox(
-                                  heightFactor: 0.9,
-                                  child: SelectUserForGroupChat(
-                                    group:
-                                        _chatDetailController.chatRoom.value!,
-                                    invitedUserCallback: () {
-                                      _chatDetailController
-                                          .getUpdatedChatRoomDetail(
-                                              room: widget.chatRoom,
-                                              callback: () {});
-                                    },
-                                  )));
-                        });
-                      }
-                      ChatRoomMember member =
-                          _chatDetailController.chatRoom.value!.roomMembers[
-                              index -
-                                  (_chatDetailController
-                                          .chatRoom.value!.amIGroupAdmin
-                                      ? 1
-                                      : 0)];
-                      return Row(
+                                : 0)];
+                    return ListTile(
+                      leading: UserAvatarView(
+                        user: member.userDetail,
+                        size: 40,
+                      ),
+                      title: Row(
                         children: [
-                          UserAvatarView(
-                            user: member.userDetail,
-                            size: 40,
+                          Text(
+                            member.userDetail.isMe
+                                ? youString.tr
+                                : member.userDetail.userName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: AppColorConstants.mainTextColor,
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  BodyLargeText(
-                                      member.userDetail.isMe
-                                          ? youString.tr
-                                          : member.userDetail.userName,
-                                      weight: TextWeight.regular),
-                                  if (member.userDetail.isVerified)
-                                    verifiedUserTag()
-                                ],
-                              ).bP4,
-                              member.userDetail.country != null
-                                  ? BodyLargeText(
-                                      '${member.userDetail.city!}, ${member.userDetail.country!}',
-                                    )
-                                  : Container()
-                            ],
-                          ).hP8,
-
-                          const Spacer(),
-                          member.isAdmin == 1
-                              ? BodySmallText(
-                                  adminString.tr,
-                                  weight: TextWeight.bold,
-                                ).bP4
-                              : Container()
-                          // const Spacer(),
+                          if (member.userDetail.isVerified)
+                            Icon(
+                              Icons.verified,
+                              color: AppColorConstants.themeColor,
+                              size: 16,
+                            ),
                         ],
-                      ).hP8.ripple(() {
+                      ),
+                      subtitle: member.userDetail.country != null
+                          ? Text(
+                              '${member.userDetail.city ?? ''}, ${member.userDetail.country ?? ''}'
+                                  .replaceAll(RegExp(r'^,\s*|\s*,\s*$'), ''),
+                              style: TextStyle(
+                                color: AppColorConstants.cardColor,
+                              ),
+                            )
+                          : null,
+                      trailing: member.isAdmin == 1
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColorConstants.themeColor
+                                    .withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                adminString.tr,
+                                style: TextStyle(
+                                  color: AppColorConstants.themeColor,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            )
+                          : null,
+                      onTap: () {
                         if (!member.userDetail.isMe) {
                           openActionOptionsForParticipant(member);
                         }
-                      });
-                    },
-                    separatorBuilder: (ctx, index) {
-                      return divider().vp(10);
-                    }).vP8,
-              ).round(10).backgroundCard(shadowOpacity: 0.1),
+                      },
+                    );
+                  },
+                  separatorBuilder: (ctx, index) {
+                    return const Divider(height: 1, indent: 16, endIndent: 16);
+                  },
+                ),
+              ),
             ],
-          ).hp(DesignConstants.horizontalPadding));
+          ));
   }
 
   void openActionOptionsForParticipant(ChatRoomMember member) {
@@ -671,34 +798,29 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
       id: '1',
       title: userDetailString.tr,
       subTitle: userDetailString.tr,
-      // isSelected: selectedItem?.id == '1',
     );
 
     GenericItem makeAdmin = GenericItem(
       id: '2',
       title: makeAdminString.tr,
       subTitle: makeAdminString.tr,
-      // isSelected: selectedItem?.id == '1',
     );
 
     GenericItem removeAdmin = GenericItem(
       id: '3',
       title: removeAdminString.tr,
       subTitle: removeAdminString.tr,
-      // isSelected: selectedItem?.id == '1',
     );
 
     GenericItem removeFromGroup = GenericItem(
       id: '4',
       title: removeFromGroupString.tr,
       subTitle: removeFromGroupString.tr,
-      // isSelected: selectedItem?.id == '1',
     );
     GenericItem cancel = GenericItem(
       id: '5',
       title: cancelString.tr,
       subTitle: cancelString.tr,
-      // isSelected: selectedItem?.id == '1',
     );
     List<GenericItem> items = [];
     items.add(userDetail);
@@ -713,28 +835,29 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
     items.add(cancel);
 
     showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (context) => ActionSheet1(
-              items: items,
-              itemCallBack: (item) {
-                if (item.id == '1') {
-                  Get.to(() => OtherUserProfile(
-                        userId: member.userDetail.id,
-                        user: member.userDetail,
-                      ));
-                } else if (item.id == '2') {
-                  _chatRoomDetailController.makeUserAsAdmin(
-                      member.userDetail, widget.chatRoom);
-                } else if (item.id == '3') {
-                  _chatRoomDetailController.removeUserAsAdmin(
-                      member.userDetail, widget.chatRoom);
-                } else if (item.id == '4') {
-                  _chatRoomDetailController.removeUserFormGroup(
-                      user: member.userDetail, chatRoom: widget.chatRoom);
-                }
-              },
-            ));
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ActionSheet1(
+        items: items,
+        itemCallBack: (item) {
+          if (item.id == '1') {
+            Get.to(() => OtherUserProfile(
+                  userId: member.userDetail.id,
+                  user: member.userDetail,
+                ));
+          } else if (item.id == '2') {
+            _chatRoomDetailController.makeUserAsAdmin(
+                member.userDetail, widget.chatRoom);
+          } else if (item.id == '3') {
+            _chatRoomDetailController.removeUserAsAdmin(
+                member.userDetail, widget.chatRoom);
+          } else if (item.id == '4') {
+            _chatRoomDetailController.removeUserFormGroup(
+                user: member.userDetail, chatRoom: widget.chatRoom);
+          }
+        },
+      ),
+    );
   }
 
   void exportChatWithMedia() {
@@ -745,11 +868,6 @@ class _ChatRoomDetailState extends State<ChatRoomDetail> {
   void exportChatWithoutMedia() {
     _chatRoomDetailController.exportChat(
         roomId: widget.chatRoom.id, includeMedia: false);
-  }
-
-  leaveChat() {
-    _chatRoomDetailController.leaveGroup(widget.chatRoom);
-    Get.back();
   }
 
   void videoCall() {

@@ -6,6 +6,7 @@ class AppTextField extends StatelessWidget {
   final String? hintText;
   final ThemeIcon? icon;
   final String? label;
+  final bool? filled;
   final int? maxLines;
   final int? maxLength;
 
@@ -21,12 +22,14 @@ class AppTextField extends StatelessWidget {
       this.onChanged,
       this.icon,
       this.maxLength,
+      this.filled = false,
       this.focusStatusChangeHandler});
 
   @override
   Widget build(BuildContext context) {
     return InputField(
-        // contentPadding: EdgeInsets.symmetric(vertical: 10),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+        filled: filled,
         controller: controller,
         hintText: hintText,
         icon: icon,
@@ -34,7 +37,8 @@ class AppTextField extends StatelessWidget {
         maxLines: maxLines,
         onChanged: onChanged,
         maxLength: maxLength,
-        backgroundColor: AppColorConstants.cardColor.darken(0.02),
+        // borderColor: AppColorConstants.borderColor,
+        // backgroundColor: AppColorConstants.cardColor.darken(0.02),
         cornerRadius: 10,
         iconColor: AppColorConstants.iconColor,
         focusStatusChangeHandler: focusStatusChangeHandler);
@@ -59,10 +63,11 @@ class AppPasswordTextField extends StatelessWidget {
     return PasswordField(
       controller: controller,
       hintText: hintText,
-      icon: icon,
-      backgroundColor: AppColorConstants.cardColor.darken(0.02),
+      // icon: icon,
+      borderColor: AppColorConstants.themeColor,
+      // backgroundColor: AppColorConstants.cardColor.darken(0.02),
       cornerRadius: 10,
-      iconColor: AppColorConstants.iconColor,
+      // iconColor: AppColorConstants.iconColor,
       onChanged: onChanged,
     );
   }

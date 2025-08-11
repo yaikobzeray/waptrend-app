@@ -1430,33 +1430,26 @@ class _CountryPickerState extends State<CountryPicker> {
               itemBuilder: (context, index) {
                 final country = countriesToShow[index];
                 return SizedBox(
-                  height: 50,
                   child: Row(
+                    spacing: 10,
                     children: [
                       Text(country.flag,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColorConstants.mainTextColor,
                               fontSize: 24)),
-                      const SizedBox(
-                        width: 20,
-                      ),
                       SizedBox(
                         width: 80,
-                        child: Text(country.dialCode,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColorConstants.mainTextColor,
-                                fontSize: 18)),
+                        child: BodyMediumText(
+                          textAlign: TextAlign.center,
+                          country.dialCode,
+                        ),
                       ),
-                      const SizedBox(
-                        width: 20,
+                      Expanded(
+                        child: BodyMediumText(
+                          country.name,
+                        ),
                       ),
-                      Text(country.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColorConstants.mainTextColor,
-                              fontSize: 18)),
                     ],
                   ),
                 ).ripple(() {
@@ -1465,7 +1458,7 @@ class _CountryPickerState extends State<CountryPicker> {
                 });
               },
               separatorBuilder: (ctx, index) {
-                return divider(height: 0.2).vP16;
+                return divider(height: 0.2).vP8;
               },
             ),
           ),
@@ -1474,4 +1467,3 @@ class _CountryPickerState extends State<CountryPicker> {
     );
   }
 }
-

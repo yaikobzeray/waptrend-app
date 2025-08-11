@@ -24,7 +24,7 @@ class LoginController extends GetxController {
 
   RxString passwordStrengthText = ''.obs;
   RxDouble passwordStrength = 0.toDouble().obs;
-  RxString phoneCountryCode = '1'.obs;
+  RxString phoneCountryCode = '+1'.obs;
 
   int pinLength = 6;
   RxBool hasError = false.obs;
@@ -286,8 +286,7 @@ class LoginController extends GetxController {
     required String countryCode,
     required String phone,
   }) {
-    if (_settingsController.setting.value!.smsGateway ==
-        SMSGateway.firebase) {
+    if (_settingsController.setting.value!.smsGateway == SMSGateway.firebase) {
       AuthApi.verifyPhoneLoginOTPViaFirebase(
           countryCode: countryCode,
           phone: phone,
@@ -324,8 +323,7 @@ class LoginController extends GetxController {
 
   void forgotPassword({required String email}) {
     if (FormValidator().isTextEmpty(email)) {
-      AppUtil.showToast(
-          message: pleaseEnterEmailString.tr, isSuccess: false);
+      AppUtil.showToast(message: pleaseEnterEmailString.tr, isSuccess: false);
     } else if (FormValidator().isNotValidEmail(email)) {
       AppUtil.showToast(
           message: pleaseEnterValidEmailString.tr, isSuccess: false);

@@ -43,9 +43,9 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
         },
         child: Stack(
           children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const SizedBox(
-                height: 120,
+            Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              SizedBox(
+                height: Get.height * 0.1,
               ),
               // Center(
               //     child: Image.asset(
@@ -54,22 +54,37 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
               //   height: 25,
               // )),
 
-              Heading2Text(
+              Heading3Text(
                 resetPwdString.tr,
                 weight: TextWeight.bold,
-                color: AppColorConstants.themeColor,
+                color: AppColorConstants.mainTextColor,
                 textAlign: TextAlign.start,
               ),
               const SizedBox(
-                height: 40,
+                height: 20,
               ),
-              addTextField(newPassword, newPasswordString.tr),
-              addTextField(confirmPassword, confirmPasswordString.tr).tP25,
-              const Spacer(),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                BodyMediumText(
+                  newPasswordString.tr,
+                  weight: TextWeight.semiBold,
+                ),
+                addTextField(newPassword, newPasswordString.tr),
+              ]),
+              SizedBox(
+                height: Get.height * 0.02,
+              ),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                BodyMediumText(
+                  confirmPasswordString.tr,
+                  weight: TextWeight.semiBold,
+                ),
+                addTextField(confirmPassword, confirmPasswordString.tr)
+              ]),
+              // const Spacer(),
+              SizedBox(
+                height: Get.height * 0.1,
+              ),
               addSubmitBtn(),
-              const SizedBox(
-                height: 55,
-              )
             ]).setPadding(left: 25, right: 25),
             GetBuilder<LoginController>(
                 init: controller,
@@ -98,14 +113,10 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
       child: PasswordField(
         onChanged: (value) {},
         controller: controller,
-        showRevealPasswordIcon: true,
+        // showRevealPasswordIcon: true,
         hintText: hint,
       ),
-    ).vP8.borderWithRadius(
-          value: 1,
-          radius: 5,
-          color: AppColorConstants.dividerColor,
-        );
+    );
   }
 
   addSubmitBtn() {

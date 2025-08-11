@@ -63,14 +63,19 @@ class AppThemeButton extends StatelessWidget {
     this.leading,
     this.trailing,
     this.backgroundColor,
-  }) ;
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: width,
       height: height ?? 45,
-      color: backgroundColor ?? AppColorConstants.themeColor.darken(),
+      // color: backgroundColor ?? AppColorConstants.themeColor.darken(),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+        AppColorConstants.themeColor,
+        AppColorConstants.themeColor.darken()
+      ])),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -109,8 +114,7 @@ class AppThemeBorderButton extends StatelessWidget {
       this.cornerRadius,
       this.borderColor,
       this.backgroundColor,
-      this.textStyle})
-      ;
+      this.textStyle});
 
   @override
   Widget build(BuildContext context) {

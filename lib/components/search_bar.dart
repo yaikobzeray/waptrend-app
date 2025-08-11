@@ -28,7 +28,7 @@ class SFSearchBar extends StatefulWidget {
     this.textStyle,
     this.shadowOpacity,
     this.hintText,
-  }) ;
+  });
 
   @override
   State<SFSearchBar> createState() => _SFSearchBarState();
@@ -96,7 +96,6 @@ class _SFSearchBarState extends State<SFSearchBar> {
                   })
                 : Container(),
             Expanded(
-
               child: TextField(
                   autocorrect: false,
                   controller: controller,
@@ -139,8 +138,6 @@ class _SFSearchBarState extends State<SFSearchBar> {
         shadowOpacity: shadowOpacity);
   }
 }
-
-
 
 class WKSearchBarType4 extends StatefulWidget {
   final ValueChanged<String>? onSearchChanged;
@@ -214,20 +211,20 @@ class _WKSearchBarType4State extends State<WKSearchBarType4> {
       padding: widget.padding,
       height: widget.height,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? AppColorConstants.cardColor,
+        // color: widget.backgroundColor ?? AppColorConstants.cardColor,
         borderRadius: BorderRadius.circular(widget.cornerRadius ?? 0),
         border: Border.all(
           color: widget.borderColor ?? AppColorConstants.themeColor,
           width: widget.borderWidth!,
         ),
-        boxShadow: [
-          if (widget.shadowOpacity != null && widget.shadowOpacity! > 0)
-            BoxShadow(
-              color: Colors.black.withValues(alpha: widget.shadowOpacity!),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-        ],
+        // boxShadow: [
+        //   if (widget.shadowOpacity != null && widget.shadowOpacity! > 0)
+        //     BoxShadow(
+        //       color: Colors.black.withValues(alpha: widget.shadowOpacity!),
+        //       blurRadius: 2,
+        //       offset: const Offset(0, 2),
+        //     ),
+        // ],
       ),
       child: Center(
         child: Row(
@@ -245,8 +242,8 @@ class _WKSearchBarType4State extends State<WKSearchBarType4> {
               ),
             if (widget.showSearchIcon == true)
               Padding(
-                  padding: widget.iconPadding ??
-                      const EdgeInsets.only(left: 16),
+                  padding:
+                      widget.iconPadding ?? const EdgeInsets.only(left: 16),
                   child: ThemeIconWidget(
                     ThemeIcon.search,
                     color: widget.iconColor,
@@ -277,15 +274,14 @@ class _WKSearchBarType4State extends State<WKSearchBarType4> {
                 },
                 style: widget.textStyle ??
                     TextStyle(
-                        fontSize: 16,
-                        color: AppColorConstants.mainTextColor),
-                cursorColor: widget.textStyle?.color ??
-                    AppColorConstants.themeColor,
+                        fontSize: 16, color: AppColorConstants.mainTextColor),
+                cursorColor:
+                    widget.textStyle?.color ?? AppColorConstants.themeColor,
                 decoration: InputDecoration(
+                  filled: false,
                   hintStyle: widget.textStyle ??
                       TextStyle(
-                          fontSize: 16,
-                          color: AppColorConstants.mainTextColor),
+                          fontSize: 16, color: AppColorConstants.mainTextColor),
                   hintText: widget.hintText ?? searchString.tr,
                   border: InputBorder.none,
                 ),

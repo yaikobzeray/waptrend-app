@@ -14,10 +14,10 @@ class AppConfigConstants {
 
   static String appTagline = 'Share your day activity with friends';
   static const googleMapApiKey = 'your_key';
-  static const restApiBaseUrl = 'https://sayhi.codepearl.in/api/web/v1/';
+  static const restApiBaseUrl = 'https://back.waptrend.com/api/web/v1/';
 
   // Socket api url
-  static const socketApiBaseUrl = "https://sayhi.codepearl.in/:4000/";
+  static const socketApiBaseUrl = "https://back.waptrend.com:4000";
 
   // Chat encryption key -- DO NOT CHANGE THIS
   static const encryptionKey = 'bbC2H19lkVbQDfakxcrtNMQdd0FloLyw';

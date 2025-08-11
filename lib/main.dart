@@ -26,6 +26,7 @@ import 'package:foap/screens/login_sign_up/ask_to_follow.dart';
 import 'package:foap/screens/popups/ask_location_permission.dart';
 import 'package:foap/screens/settings_menu/help_support_contorller.dart';
 import 'package:giphy_get/l10n.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'components/smart_text_field.dart';
 import 'controllers/notification/notifications_controller.dart';
 import 'controllers/clubs/clubs_controller.dart';
@@ -89,9 +90,9 @@ late List<CameraDescription> cameras;
 bool isLaunchedFromCallNotification = false;
 bool isAnyPageInStack = false;
 bool isPermissionsAsked = false;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Permission.camera.request();
   cameras = await availableCameras();
   HttpOverrides.global = MyHttpOverrides();
 
@@ -99,8 +100,7 @@ Future<void> main() async {
     name: AppConfigConstants.appName,
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(
-      _firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   DeviceInfoManager.collectDeviceInfo();
 
@@ -261,8 +261,7 @@ class _SocialifiedAppState extends State<SocialifiedApp> {
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(
-    RemoteMessage message) async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp(

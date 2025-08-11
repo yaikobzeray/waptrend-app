@@ -9,13 +9,12 @@ class VerifyOTPForPhoneLogin extends StatefulWidget {
 
   const VerifyOTPForPhoneLogin(
       {super.key,
-        required this.token,
-        required this.countryCode,
-        required this.phone});
+      required this.token,
+      required this.countryCode,
+      required this.phone});
 
   @override
-  VerifyOTPForPhoneLoginState createState() =>
-      VerifyOTPForPhoneLoginState();
+  VerifyOTPForPhoneLoginState createState() => VerifyOTPForPhoneLoginState();
 }
 
 class VerifyOTPForPhoneLoginState extends State<VerifyOTPForPhoneLogin> {
@@ -30,53 +29,54 @@ class VerifyOTPForPhoneLoginState extends State<VerifyOTPForPhoneLogin> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 55,
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Heading4Text(
-                otpVerificationString.tr,
-                weight: TextWeight.bold,
-                color: AppColorConstants.themeColor,
-                textAlign: TextAlign.start,
-              ),
-              BodyLargeText(
-                pleaseEnterOneTimePasswordPhoneNumberChangeString.tr,
-                textAlign: TextAlign.center,
-              ).setPadding(top: 43, bottom: 35),
-              SizedBox(
-                height: 100,
-                child: OTPFieldView(
-                  length: loginController.pinLength,
-                  defaultPinTheme: PinTheme(
-                      height: 50,
-                      width: 50,
-                      textStyle: TextStyle(
-                          fontSize: FontSizes.h4,
-                          fontWeight: TextWeight.medium)),
-                  onSubmitted: (String pin) {
-                    filledOTP = pin;
-                    loginController.otpCompleted();
-                  },
-                  onChanged: (String pin) {
-                    loginController.otpTextFilled(pin);
-                  },
-                ),
-              ),
-              Obx(() => Row(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          SizedBox(
+            height: Get.height * 0.15,
+          ),
+          Heading4Text(
+            otpVerificationString.tr,
+            weight: TextWeight.bold,
+            color: AppColorConstants.mainTextColor,
+            textAlign: TextAlign.start,
+          ),
+          BodyMediumText(
+            pleaseEnterOneTimePasswordPhoneNumberChangeString.tr,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 100,
+            child: OTPFieldView(
+              length: loginController.pinLength,
+              defaultPinTheme: PinTheme(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColorConstants.themeColor,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 50,
+                  width: 45,
+                  textStyle: TextStyle(
+                      fontSize: FontSizes.h4, fontWeight: TextWeight.medium)),
+              onSubmitted: (String pin) {
+                filledOTP = pin;
+                loginController.otpCompleted();
+              },
+              onChanged: (String pin) {
+                loginController.otpTextFilled(pin);
+              },
+            ),
+          ),
+          Obx(() => Row(
                 children: [
-                  BodyLargeText(
+                  BodySmallText(
                     didntReceivedCodeString.tr,
                   ),
                   const SizedBox(
                     width: 5,
                   ),
-                  BodyLargeText(
+                  BodySmallText(
                     resendOTPString.tr,
                     weight: TextWeight.bold,
                     color: loginController.canResendOTP.value == false
@@ -89,35 +89,33 @@ class VerifyOTPForPhoneLoginState extends State<VerifyOTPForPhoneLogin> {
                   }),
                   loginController.canResendOTP.value == false
                       ? TweenAnimationBuilder<Duration>(
-                      duration: const Duration(minutes: 2),
-                      tween: Tween(
-                          begin: const Duration(minutes: 2),
-                          end: Duration.zero),
-                      onEnd: () {
-                        loginController.canResendOTP.value = true;
-                        setState(() {});
-                      },
-                      builder: (BuildContext context,
-                          Duration value, Widget? child) {
-                        final minutes = value.inMinutes;
-                        final seconds = value.inSeconds % 60;
-                        return BodyLargeText(
-                            ' ($minutes:$seconds)',
-                            textAlign: TextAlign.center,
-                            color: AppColorConstants.themeColor);
-                      })
+                          duration: const Duration(minutes: 2),
+                          tween: Tween(
+                              begin: const Duration(minutes: 2),
+                              end: Duration.zero),
+                          onEnd: () {
+                            loginController.canResendOTP.value = true;
+                            setState(() {});
+                          },
+                          builder: (BuildContext context, Duration value,
+                              Widget? child) {
+                            final minutes = value.inMinutes;
+                            final seconds = value.inSeconds % 60;
+                            return BodyLargeText(' ($minutes:$seconds)',
+                                textAlign: TextAlign.center,
+                                color: AppColorConstants.themeColor);
+                          })
                       : Container()
                 ],
-              )).setPadding(top: 20, bottom: 25),
-              const Spacer(),
-              Obx(() => loginController.otpFilled.value == true
-                  ? addSubmitBtn()
-                  : Container()),
-              const SizedBox(
-                height: 55,
-              )
-            ]),
-      ).setPadding(left: 25, right: 25),
+              )),
+          SizedBox(
+            height: Get.height * 0.1,
+          ),
+          Obx(() => loginController.otpFilled.value == true
+              ? addSubmitBtn()
+              : Container()),
+        ]),
+      ).setPadding(left: 20, right: 20),
     );
   }
 

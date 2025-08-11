@@ -40,38 +40,55 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(
               height: Get.height * 0.1,
             ),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: AppThemeBackButton(),
+            // const Align(
+            //   alignment: Alignment.centerLeft,
+            //   child: AppThemeBackButton(),
+            // ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                "assets/waptrend-logo.jpg",
+                height: Get.height * 0.1,
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(
-              height: Get.height * 0.05,
-            ),
-            SizedBox(
-                height: Get.height * 0.12,
-                child: Stack(
-                  alignment: Alignment.center,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Heading3Text(createAnAccountString.tr,
-                            weight: TextWeight.bold)
-                        .rp(100),
-
+                        textAlign: TextAlign.center, weight: TextWeight.bold),
                   ],
                 )),
             SizedBox(
-              height: Get.height * 0.05,
+                child: BodyMediumText(
+              createAnAccountString2,
+              weight: TextWeight.regular,
+            )),
+            SizedBox(
+              height: Get.height * 0.04,
             ),
             Stack(
               children: [
-                AppTextField(
-                  icon: ThemeIcon.account,
-                  hintText: userNameString.tr,
-                  controller: userName,
-                  onChanged: (value) {
-                    if (value.length > 3) {
-                      profileController.verifyUsername(userName: value);
-                    }
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BodyMediumText(
+                      userNameString.tr,
+                      weight: TextWeight.semiBold,
+                    ),
+                    AppTextField(
+                      // icon: ThemeIcon.account,
+                      hintText: userNameString.tr,
+                      controller: userName,
+                      onChanged: (value) {
+                        if (value.length > 3) {
+                          profileController.verifyUsername(userName: value);
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 Positioned(
                   right: DesignConstants.horizontalPadding,
@@ -97,21 +114,39 @@ class SignUpScreenState extends State<SignUpScreen> {
             SizedBox(
               height: Get.height * 0.015,
             ),
-            AppTextField(
-              icon: ThemeIcon.email,
-              controller: email,
-              hintText: emailString,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BodyMediumText(
+                  emailString.tr,
+                  weight: TextWeight.semiBold,
+                ),
+                AppTextField(
+                  // icon: ThemeIcon.email,
+                  controller: email,
+                  hintText: emailString,
+                ),
+              ],
             ),
             SizedBox(
               height: Get.height * 0.015,
             ),
-            AppPasswordTextField(
-              controller: password,
-              hintText: passwordString.tr,
-              icon: ThemeIcon.lock,
-              onChanged: (value) {
-                loginController.checkPassword(value);
-              },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BodyMediumText(
+                  passwordString.tr,
+                  weight: TextWeight.semiBold,
+                ),
+                AppPasswordTextField(
+                  controller: password,
+                  hintText: passwordString.tr,
+                  // icon: ThemeIcon.lock,
+                  onChanged: (value) {
+                    loginController.checkPassword(value);
+                  },
+                ),
+              ],
             ),
             Obx(() {
               return loginController.passwordStrength.value < 0.8 &&
@@ -189,6 +224,23 @@ class SignUpScreenState extends State<SignUpScreen> {
             ),
             addSignUpBtn(),
             SizedBox(
+              height: Get.height * 0.01,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                    width: Get.width * 0.25, child: divider(height: 1).vp(20)),
+                BodyMediumText(continueWithAccountsString),
+                SizedBox(
+                    width: Get.width * 0.25, child: divider(height: 1).vp(20)),
+              ],
+            ),
+            const SocialLogin(
+              hidePhoneLogin: false,
+            ).setPadding(left: 45, right: 45),
+            SizedBox(
               height: Get.height * 0.02,
             ),
             Wrap(
@@ -198,22 +250,12 @@ class SignUpScreenState extends State<SignUpScreen> {
                 BodySmallText(
                   signInString,
                   weight: TextWeight.bold,
+                  color: AppColorConstants.themeColor,
                 ),
               ],
             ).ripple(() {
               Get.to(() => const LoginScreen());
             }),
-            divider(height: 1).vp(40),
-            BodyMediumText(continueWithAccountsString),
-            SizedBox(
-              height: Get.height * 0.04,
-            ),
-            const SocialLogin(
-              hidePhoneLogin: false,
-            ).setPadding(left: 45, right: 45),
-            SizedBox(
-              height: Get.height * 0.2,
-            ),
           ]),
         ).setPadding(left: 25, right: 25),
       ),

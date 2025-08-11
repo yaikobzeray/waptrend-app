@@ -43,8 +43,7 @@ class PostApi {
       'club_id': clubId,
       'event_id': eventId,
       'campaign_id': fundRaisingCampaignId,
-      'post_content_type':
-          postContentTypeIdFrom(postContentType).toString(),
+      'post_content_type': postContentTypeIdFrom(postContentType).toString(),
       'audio_id': audioId,
       'audio_start_time': audioStartTime,
       'audio_end_time': audioEndTime,
@@ -104,8 +103,7 @@ class PostApi {
       String? title,
       String? hashtag,
       int page = 0,
-      required Function(List<PostModel>, APIMetaData)
-          resultCallback}) async {
+      required Function(List<PostModel>, APIMetaData) resultCallback}) async {
     var url = NetworkConstantsUtil.searchPost;
 
     if (postType != null) {
@@ -163,13 +161,13 @@ class PostApi {
       if (response?.data != null) {
         List<PostModel> posts = [];
         var items = response!.data['post']['items'];
-        posts =
-            List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
-                .toList();
+
+        posts = List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
+            .toList();
 
         APIMetaData metaData =
             APIMetaData.fromJson(response.data['post']['_meta']);
-
+        print('items $items');
         resultCallback(posts, metaData);
       }
     });
@@ -177,8 +175,7 @@ class PostApi {
 
   static getPromotionalPosts(
       {int page = 0,
-      required Function(List<PostModel>, APIMetaData)
-          resultCallback}) async {
+      required Function(List<PostModel>, APIMetaData) resultCallback}) async {
     var url = NetworkConstantsUtil.getPromotedPosts;
 
     await ApiWrapper().getApi(url: url).then((response) {
@@ -187,12 +184,11 @@ class PostApi {
       if (response?.data != null) {
         List<PostModel> posts = [];
         var items = response!.data['postPromotionList']['items'];
-        posts =
-            List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
-                .toList();
+        posts = List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
+            .toList();
 
-        APIMetaData metaData = APIMetaData.fromJson(
-            response.data['postPromotionList']['_meta']);
+        APIMetaData metaData =
+            APIMetaData.fromJson(response.data['postPromotionList']['_meta']);
 
         resultCallback(posts, metaData);
       }
@@ -202,17 +198,15 @@ class PostApi {
   static getMentionedPosts(
       {int? userId,
       int page = 1,
-      required Function(List<PostModel>, APIMetaData)
-          resultCallback}) async {
+      required Function(List<PostModel>, APIMetaData) resultCallback}) async {
     var url = '${NetworkConstantsUtil.mentionedPosts}$userId&page=$page';
 
     await ApiWrapper().getApi(url: url).then((response) {
       if (response?.data != null) {
         List<PostModel> posts = [];
         var items = response!.data['post']['items'];
-        posts =
-            List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
-                .toList();
+        posts = List<PostModel>.from(items.map((x) => PostModel.fromJson(x)))
+            .toList();
 
         APIMetaData metaData =
             APIMetaData.fromJson(response.data['post']['_meta']);
@@ -272,8 +266,7 @@ class PostApi {
       if (response?.success == true) {
         var items = response!.data['comment']['items'];
         resultCallback(
-            List<CommentModel>.from(
-                items.map((x) => CommentModel.fromJson(x))),
+            List<CommentModel>.from(items.map((x) => CommentModel.fromJson(x))),
             APIMetaData.fromJson(response.data['comment']['_meta']));
       }
     });
@@ -310,8 +303,7 @@ class PostApi {
   }
 
   static deleteComment(
-      {required int commentId,
-      required VoidCallback resultCallback}) async {
+      {required int commentId, required VoidCallback resultCallback}) async {
     var url = NetworkConstantsUtil.deleteComment + commentId.toString();
 
     await ApiWrapper().deleteApi(url: url).then((value) {
@@ -320,8 +312,7 @@ class PostApi {
   }
 
   static reportComment(
-      {required int commentId,
-      required VoidCallback resultCallback}) async {
+      {required int commentId, required VoidCallback resultCallback}) async {
     var url = NetworkConstantsUtil.reportComment;
 
     await ApiWrapper().postApi(
@@ -332,8 +323,7 @@ class PostApi {
   }
 
   static favComment(
-      {required int commentId,
-      required VoidCallback resultCallback}) async {
+      {required int commentId, required VoidCallback resultCallback}) async {
     var url = NetworkConstantsUtil.likeComment;
 
     await ApiWrapper().postApi(url: url, param: {
@@ -345,8 +335,7 @@ class PostApi {
   }
 
   static unfavComment(
-      {required int commentId,
-      required VoidCallback resultCallback}) async {
+      {required int commentId, required VoidCallback resultCallback}) async {
     var url = NetworkConstantsUtil.unLikeComment;
 
     await ApiWrapper().postApi(url: url, param: {
@@ -361,8 +350,8 @@ class PostApi {
       {required int postId, required VoidCallback resultCallback}) async {
     var url = NetworkConstantsUtil.reportPost;
 
-    await ApiWrapper().postApi(
-        url: url, param: {"post_id": postId.toString()}).then((value) {
+    await ApiWrapper()
+        .postApi(url: url, param: {"post_id": postId.toString()}).then((value) {
       resultCallback();
     });
   }
@@ -399,8 +388,7 @@ class PostApi {
   static Future<void> postLikedByUsers(
       {required int postId,
       required int page,
-      required Function(List<UserModel>, APIMetaData)
-          resultCallback}) async {
+      required Function(List<UserModel>, APIMetaData) resultCallback}) async {
     var url = NetworkConstantsUtil.postLikedByUsers
         .replaceAll('{{post_id}}', postId.toString());
 

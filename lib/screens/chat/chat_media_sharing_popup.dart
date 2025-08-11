@@ -116,34 +116,51 @@ class _ChatMediaSharingOptionPopupState
   Widget build(BuildContext context) {
     return Container(
       color: AppColorConstants.backgroundColor,
-      child: ListView.separated(
+      padding: EdgeInsets.all(DesignConstants.horizontalPadding),
+      child: GridView.builder(
         itemCount: mediaTypes.length,
-        padding: EdgeInsets.all(DesignConstants.horizontalPadding),
+        shrinkWrap: true,
         // physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // 3 items per row
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1, // square items
+        ),
         itemBuilder: (ctx, index) {
-          return SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                ThemeIconWidget(
-                  mediaTypes[index].icon,
-                  size: 18,
-                  color: AppColorConstants.iconColor,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                BodyMediumText(
-                  mediaTypes[index].text,
-                )
-              ],
-            ).ripple(() {
-              handleAction(mediaTypes[index]);
-            }),
+          final media = mediaTypes[index];
+          return GestureDetector(
+            onTap: () => handleAction(media),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColorConstants.cardColor, // nice card background
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ThemeIconWidget(
+                    media.icon,
+                    size: 28,
+                    color: AppColorConstants.iconColor,
+                  ),
+                  const SizedBox(height: 8),
+                  BodyMediumText(
+                    media.text,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           );
-        },
-        separatorBuilder: (ctx, index) {
-          return divider().vP8;
         },
       ),
     ).round(20);

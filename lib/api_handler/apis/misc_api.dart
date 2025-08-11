@@ -154,6 +154,7 @@ class MiscApi {
     await ApiWrapper().getApiWithoutToken(url: url).then((result) {
       if (result?.success == true) {
         var setting = result!.data['setting'];
+        print('settings $setting');
         resultCallback(SettingModel.fromJson(setting));
       }
     });

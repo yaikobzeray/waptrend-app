@@ -171,7 +171,7 @@ class _ChatDetailState extends State<ChatDetail> {
         ).hp(DesignConstants.horizontalPadding),
         Positioned(
           left: DesignConstants.horizontalPadding,
-          right: DesignConstants.horizontalPadding,
+          right: DesignConstants.horizontalPadding * 9,
           child: Column(
             children: [
               Row(
@@ -185,6 +185,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                 .chatRoom.value!.roomMembers.isEmpty
                         ? Container()
                         : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -243,7 +244,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                                   .userDetail
                                                   .userName] ==
                                           true
-                                      ? BodyMediumText(
+                                      ? BodySmallText(
                                           typingString.tr,
                                         )
                                       : _chatDetailController
@@ -255,7 +256,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                                   true &&
                                               _userProfileManager.user.value!
                                                   .isShareOnlineStatus
-                                          ? BodyMediumText(
+                                          ? BodySmallText(
                                               _chatDetailController
                                                           .chatRoom
                                                           .value!
@@ -273,7 +274,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                           : Container()
                                   : SizedBox(
                                       width: Get.width - 120,
-                                      child: BodyMediumText(
+                                      child: BodySmallText(
                                         _chatDetailController
                                                 .whoIsTyping.isNotEmpty
                                             ? '${_chatDetailController.whoIsTyping.join(',')} ${typingString.tr}'
@@ -442,7 +443,7 @@ class _ChatDetailState extends State<ChatDetail> {
             ? replyMessageView()
             : Container(),
         Container(
-          color: AppColorConstants.backgroundColor.darken(0.02),
+          // color: AppColorConstants.backgroundColor.darken(0.02),
           // height: 70,
           child: Column(
             children: [
@@ -474,17 +475,26 @@ class _ChatDetailState extends State<ChatDetail> {
                                   decoration: InputDecoration(
                                       floatingLabelBehavior:
                                           FloatingLabelBehavior.never,
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 10, right: 10, top: 5),
-                                      labelStyle: TextStyle(
-                                          fontSize: FontSizes.b2,
-                                          fontWeight: TextWeight.medium,
-                                          color: AppColorConstants.themeColor),
-                                      hintStyle: TextStyle(
-                                          fontSize: FontSizes.h6,
-                                          fontWeight: TextWeight.regular,
-                                          color: AppColorConstants.themeColor),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: AppColorConstants.borderColor
+                                                  .withOpacity(0.5))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          borderSide: BorderSide(
+                                              color: AppColorConstants
+                                                  .borderColor
+                                                  .withOpacity(0.3))),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(10)),
+                                          borderSide: BorderSide(color: AppColorConstants.themeColor.withOpacity(0.5))),
+                                      contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                                      labelStyle: TextStyle(fontSize: FontSizes.b2, fontWeight: TextWeight.medium, color: AppColorConstants.themeColor),
+                                      hintStyle: TextStyle(fontSize: FontSizes.b3, fontWeight: TextWeight.regular, color: AppColorConstants.mainTextColor.withOpacity(0.5)),
                                       hintText: pleaseEnterMessageString.tr),
                                 )),
                           ),
@@ -495,19 +505,27 @@ class _ChatDetailState extends State<ChatDetail> {
                         Obx(() {
                           return _chatDetailController
                                   .messageTf.value.text.isNotEmpty
-                              ? Heading5Text(
-                                  sendString.tr,
-                                  weight: TextWeight.bold,
+                              ? Container(
+                                  height: 40,
+                                  width: 40,
                                   color: AppColorConstants.themeColor,
-                                ).ripple(() {
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.send_rounded,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ).circular.ripple(() {
                                   sendMessage();
                                 })
                               : Container(
-                                  height: 30,
-                                  width: 30,
+                                  height: 40,
+                                  width: 40,
                                   color: AppColorConstants.themeColor,
-                                  child: ThemeIconWidget(
-                                    ThemeIcon.plusSymbol,
+                                  child: Icon(
+                                    Icons.attach_file_outlined,
+                                    size: 30,
                                     color: Colors.white,
                                   ),
                                 ).circular.ripple(() {
@@ -600,7 +618,7 @@ class _ChatDetailState extends State<ChatDetail> {
                             },
                             separatorBuilder: (ctx, index) {
                               return const SizedBox(
-                                height: 20,
+                                height: 10,
                               );
                             })
                         .addPullToRefresh(
@@ -730,13 +748,15 @@ class _ChatDetailState extends State<ChatDetail> {
 
   Widget dateSeparatorWidget(ChatMessageModel chatMessage) {
     return Container(
-      color: AppColorConstants.themeColor.lighten(0.2).withValues(alpha: 0.5),
+      // color: AppColorConstants.themeColor.lighten(0.2).withValues(alpha: 0.5),
       width: 120,
       child: Center(
-        child: BodySmallText(chatMessage.dateString)
-            .setPadding(left: 8, right: 8, top: 4, bottom: 4),
+        child: BodySmallText(
+          chatMessage.dateString,
+          color: AppColorConstants.mainTextColor.withOpacity(0.3),
+        ).setPadding(left: 8, right: 8, top: 4, bottom: 10),
       ),
-    ).round(15).bP25;
+    ).round(15);
   }
 
   void messageTapped(ChatMessageModel model) async {
@@ -775,7 +795,6 @@ class _ChatDetailState extends State<ChatDetail> {
       Get.to(() => StoryViewer(
             story: model.repliedOnStory,
             storyDeleted: () {},
-
           ));
     } else if (model.messageContentType == MessageContentType.contact) {
       openActionPopupForContact(model.mediaContent.contact!);

@@ -49,83 +49,144 @@ class _SocialLoginState extends State<SocialLogin> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 30,
-      children: [
-        widget.hidePhoneLogin == false
-            ? Container(
-                height: 40,
-                width: 40,
-                color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-                child: Center(
-                    child: Image.asset(
-                  'assets/phone.png',
-                  height: 20,
-                  width: 20,
-                  color: isDarkMode
-                      ? Colors.white
-                      : AppColorConstants.mainTextColor,
-                ))).round(10).ripple(() {
-                Get.offAll(() => const PhoneLoginScreen());
-              })
-            : Container(
-                height: 40,
-                width: 40,
-                color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-                child: Center(
-                    child: Image.asset(
-                  'assets/email.png',
-                  height: 20,
-                  width: 20,
-                  color: isDarkMode
-                      ? Colors.white
-                      : AppColorConstants.mainTextColor,
-                ))).round(10).ripple(() {
-                Get.offAll(() => const LoginScreen());
-              }),
-        Container(
-            height: 40,
-            width: 40,
-            color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-            child: Center(
-                child: Image.asset(
-              'assets/google.png',
-              height: 20,
-              width: 20,
-            ))).round(10).ripple(() {
-          signInWithGoogle();
-        }),
-        if (Platform.isIOS)
+    return SizedBox(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          widget.hidePhoneLogin == false
+              ? Container(
+                  height: 40,
+                  width: Get.width * 0.3,
+                  // color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    AppColorConstants.themeColor,
+                    AppColorConstants.themeColor.darken()
+                  ])),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5,
+                    children: [
+                      SizedBox(
+                        child: Image.asset(
+                          'assets/phone.png',
+                          height: 20,
+                          width: 20,
+                          color: Colors.white,
+                          // color: isDarkMode
+                          //     ? Colors.white
+                          //     : AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                      BodySmallText(
+                        "Phone",
+                        color: Colors.white,
+                      )
+                    ],
+                  )).round(10).ripple(() {
+                  Get.offAll(() => const PhoneLoginScreen());
+                })
+              : Container(
+                  height: 40,
+                  // width: 40,
+                  width: Get.width * 0.3,
+                  // color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    AppColorConstants.themeColor,
+                    AppColorConstants.themeColor.darken()
+                  ])),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5,
+                    children: [
+                      SizedBox(
+                        child: Image.asset(
+                          'assets/email.png',
+                          height: 20,
+                          width: 20,
+                          color: Colors.white,
+                          // color: isDarkMode
+                          //     ? Colors.white
+                          //     : AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                      BodySmallText(
+                        "Email",
+                        color: Colors.white,
+                      )
+                    ],
+                  )).round(10).ripple(() {
+                  Get.offAll(() => const LoginScreen());
+                }),
           Container(
               height: 40,
-              width: 40,
-              color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-              child: Center(
-                  child: Image.asset(
-                'assets/apple.png',
-                height: 20,
-                width: 20,
-                color:
-                    isDarkMode ? Colors.white : AppColorConstants.mainTextColor,
-              ))).round(10).ripple(() {
-            //signInWithGoogle();
-            _handleAppleSignIn();
-            // Get.to(() => const InstagramView());
+              // width: 40,
+              // color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+              width: Get.width * 0.3,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                AppColorConstants.themeColor,
+                AppColorConstants.themeColor.darken()
+              ])),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 5,
+                children: [
+                  SizedBox(
+                      child: Image.asset(
+                    'assets/google.png',
+                    height: 18,
+                    width: 18,
+                    color: Colors.white,
+                  )),
+                  BodySmallText(
+                    "Gmail",
+                    color: Colors.white,
+                  )
+                ],
+              )).round(10).ripple(() {
+            signInWithGoogle();
           }),
-        // Container(
-        //     height: 40,
-        //     width: 40,
-        //     color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-        //     child: Center(
-        //         child: Image.asset(
-        //       'assets/facebook.png',
-        //       height: 20,
-        //       width: 20,
-        //     ))).round(10).ripple(() {
-        //   // fbSignInAction();
-        // }),
-      ],
+          if (Platform.isIOS)
+            Container(
+                height: 40,
+                width: Get.width * 0.3,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                  AppColorConstants.themeColor,
+                  AppColorConstants.themeColor.darken()
+                ])),
+                // width: 40,
+                // color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+                child: Center(
+                    child: Image.asset(
+                  'assets/apple.png',
+                  height: 20,
+                  width: 20,
+                  color: Colors.white,
+                  // color:
+                  //     isDarkMode ? Colors.white : AppColorConstants.mainTextColor,
+                ))).round(10).ripple(() {
+              //signInWithGoogle();
+              _handleAppleSignIn();
+              // Get.to(() => const InstagramView());
+            }),
+          // Container(
+          //     height: 40,
+          //     width: 40,
+          //     color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+          //     child: Center(
+          //         child: Image.asset(
+          //       'assets/facebook.png',
+          //       height: 20,
+          //       width: 20,
+          //     ))).round(10).ripple(() {
+          //   // fbSignInAction();
+          // }),
+        ],
+      ),
     );
   }
 

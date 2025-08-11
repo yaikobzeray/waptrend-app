@@ -29,6 +29,7 @@ class InputField extends StatefulWidget {
   final bool? iconOnRightSide;
   final Color? backgroundColor;
   final bool? showBorder;
+  final bool? filled;
   final Color? borderColor;
   final double? cornerRadius;
   final Color? cursorColor;
@@ -61,7 +62,8 @@ class InputField extends StatefulWidget {
       this.cursorColor,
       this.maxLength,
       this.contentPadding,
-      this.focusStatusChangeHandler});
+      this.focusStatusChangeHandler,
+      this.filled = false});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -116,9 +118,7 @@ class _InputFieldState extends State<InputField> {
                           widget.label!,
                         ).bP4
                       : Container(),
-                  widget.iconOnRightSide == false
-                      ? iconView().lP16
-                      : Container(),
+                  widget.iconOnRightSide == false ? iconView() : Container(),
                   Expanded(
                     child: Focus(
                       child: TextField(
@@ -133,15 +133,33 @@ class _InputFieldState extends State<InputField> {
                         maxLines: widget.maxLines,
                         decoration: InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                    color: AppColorConstants.borderColor
+                                        .withOpacity(0.5))),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide: BorderSide(
+                                    color: AppColorConstants.borderColor
+                                        .withOpacity(0.3))),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide: BorderSide(
+                                    color: AppColorConstants.themeColor
+                                        .withOpacity(0.5))),
                             counterText: "",
                             contentPadding: widget.contentPadding ??
                                 const EdgeInsets.all(0),
+                            filled: widget.filled,
                             // labelText: hintText,
                             hintStyle: TextStyle(
                                 fontSize: FontSizes.b3,
                                 color: AppColorConstants
-                                    .inputFieldPlaceholderTextColor),
+                                    .inputFieldPlaceholderTextColor
+                                    .withOpacity(0.5)),
                             hintText: widget.hintText),
                       ),
                       onFocusChange: (hasFocus) {
@@ -279,7 +297,7 @@ class _PasswordFieldState extends State<PasswordField> {
                           widget.label!,
                         ).bP4
                       : Container(),
-                  iconView().lP16,
+                  iconView(),
                   Expanded(
                       child: Focus(
                     child: TextField(
@@ -291,12 +309,42 @@ class _PasswordFieldState extends State<PasswordField> {
                         cursorColor: AppColorConstants.themeColor,
                         obscureText: !showPassword,
                         decoration: InputDecoration(
+                          suffixIcon: InkWell(
+                            splashColor: Colors.transparent,
+                            child: Icon(showPassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined),
+                            onTap: () {
+                              setState(() {
+                                showPassword = !showPassword;
+                              });
+                            },
+                          ),
+                          filled: false,
                           hintText: widget.hintText,
                           hintStyle: TextStyle(
                               fontSize: FontSizes.b3,
                               color: AppColorConstants
-                                  .inputFieldPlaceholderTextColor),
-                          border: InputBorder.none,
+                                  .inputFieldPlaceholderTextColor
+                                  .withOpacity(0.5)),
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: AppColorConstants.borderColor
+                                      .withOpacity(0.5))),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: AppColorConstants.borderColor
+                                      .withOpacity(0.3))),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: AppColorConstants.themeColor
+                                      .withOpacity(0.5))),
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                         )),
                     onFocusChange: (hasFocus) {
@@ -448,20 +496,20 @@ class _RoundedInputMobileNumberFieldState
               : Container(),
           Container(
             decoration: BoxDecoration(
-              color: widget.isError == false
-                  ? widget.backgroundColor
-                  : (widget.showDivider == false && widget.showBorder == false)
-                      ? AppColorConstants.red
-                      : widget.backgroundColor,
+              // color: widget.isError == false
+              //     ? widget.backgroundColor
+              //     : (widget.showDivider == false && widget.showBorder == false)
+              //         ? AppColorConstants.red
+              //         : widget.backgroundColor,
               borderRadius: BorderRadius.circular(widget.cornerRadius!),
-              border: widget.showBorder == true
-                  ? Border.all(
-                      width: 0.5,
-                      color: widget.isError == true
-                          ? AppColorConstants.red
-                          : widget.borderColor ??
-                              AppColorConstants.dividerColor)
-                  : null,
+              border: Border.all(
+                width: widget.startedEditing! ? 1.5 : 0.5,
+                color: widget.isError == true
+                    ? AppColorConstants.red
+                    : widget.startedEditing!
+                        ? AppColorConstants.themeColor.withOpacity(0.5)
+                        : widget.borderColor ?? AppColorConstants.dividerColor,
+              ),
             ),
             child: Row(
               children: [
@@ -488,6 +536,7 @@ class _RoundedInputMobileNumberFieldState
                       onTap: () {
                         showWKCountyPicker(
                           context: context,
+
                           // showPhoneCode: true,
                           // optional. Shows phone code before the country name.
                           onSelect: (country) {
@@ -499,7 +548,7 @@ class _RoundedInputMobileNumberFieldState
                           },
                         );
                       },
-                    )).rP16,
+                    )),
                 (widget.label != null && widget.showLabelInNewLine == false)
                     ? BodySmallText(
                         widget.label!,
@@ -518,6 +567,8 @@ class _RoundedInputMobileNumberFieldState
                       onChanged: widget.onChanged,
                       maxLines: widget.maxLines,
                       decoration: InputDecoration(
+                          filled: false,
+                          fillColor: AppColorConstants.backgroundColor,
                           floatingLabelBehavior: FloatingLabelBehavior.never,
                           border: InputBorder.none,
                           counterText: "",
