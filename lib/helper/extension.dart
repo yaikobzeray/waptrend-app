@@ -278,26 +278,41 @@ extension BorderView on Widget {
         ),
         child: this,
       );
-
   Widget borderWithRadius({
     required double value,
     required double radius,
     Color? color,
-  }) =>
-      Container(
+    Gradient? gradient, // Add gradient support
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: gradient, // If gradient is provided, use it
+        color: gradient == null ? null : null, // avoid overriding gradient
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      padding: EdgeInsets.all(value), // Border thickness
+      child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-                width: value, color: color ?? AppColorConstants.dividerColor),
-            borderRadius: BorderRadius.all(Radius.circular(radius)),
+            color: Colors.white, // Inner background (change if needed)
+            border: gradient == null
+                ? Border.all(
+                    width: value,
+                    color: color ?? AppColorConstants.dividerColor,
+                  )
+                : null, // skip border when using gradient
+            borderRadius: BorderRadius.circular(radius - value),
           ),
-          child: round(radius - 1));
+          child: round(radius - 1)),
+    );
+  }
 }
 
 extension ShimmerView on Widget {
   Shimmer addShimmer() => Shimmer.fromColors(
         enabled: true,
         baseColor: Theme.of(Get.context!).highlightColor.withValues(alpha: 0.1),
-        highlightColor: Theme.of(Get.context!).highlightColor.withValues(alpha: 0.2),
+        highlightColor:
+            Theme.of(Get.context!).highlightColor.withValues(alpha: 0.2),
         child: this,
       );
 }
@@ -425,7 +440,8 @@ extension PinchZoomImage on Widget {
 
 extension AppChip on Widget {
   Widget makeChip({Color? backGroundColor}) => Container(
-        color: backGroundColor ?? AppColorConstants.themeColor.withValues(alpha: 0.2),
+        color: backGroundColor ??
+            AppColorConstants.themeColor.withValues(alpha: 0.2),
         child: setPadding(
             left: DesignConstants.horizontalPadding,
             right: DesignConstants.horizontalPadding,

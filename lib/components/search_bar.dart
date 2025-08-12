@@ -1,4 +1,5 @@
 import 'package:foap/helper/imports/common_import.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SFSearchBar extends StatefulWidget {
   final ValueChanged<String>? onSearchChanged;
@@ -125,6 +126,7 @@ class _SFSearchBarState extends State<SFSearchBar> {
                   style: textStyle ??
                       TextStyle(
                           fontSize: FontSizes.b3,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: AppColorConstants.mainTextColor),
                   cursorColor: AppColorConstants.iconColor,
                   decoration: InputDecoration(
@@ -135,8 +137,11 @@ class _SFSearchBarState extends State<SFSearchBar> {
                             fontSize: FontSizes.b3,
                             color: AppColorConstants.mainTextColor),
                     hintText: hintText ?? searchAnythingString.tr,
-                    border: InputBorder.none,
-                  )).setPadding(bottom: 4, left: 8),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide:
+                            BorderSide(color: AppColorConstants.themeColor)),
+                  )).setPadding(bottom: 0, left: 0),
             ),
           ],
         ),

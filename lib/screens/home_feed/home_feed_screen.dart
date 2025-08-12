@@ -111,11 +111,9 @@ class HomeFeedState extends State<HomeFeedScreen> {
                             : null,
                       ).hP4,
                       1: BodySmallText(followingString.tr,
-                              color:
-                                  _homeController.selectedSegment.value ==
-                                          1
-                                      ? Colors.white
-                                      : null)
+                              color: _homeController.selectedSegment.value == 1
+                                  ? Colors.white
+                                  : null)
                           .hP4,
                     },
                     unselectedColor: AppColorConstants.backgroundColor,
@@ -135,9 +133,8 @@ class HomeFeedState extends State<HomeFeedScreen> {
                     Duration.zero,
                     () => showGeneralDialog(
                         context: Get.context!,
-                        pageBuilder:
-                            (context, animation, secondaryAnimation) =>
-                                const ContentCreatorView()),
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const ContentCreatorView()),
                   );
                 }),
                 const SizedBox(
@@ -167,18 +164,17 @@ class HomeFeedState extends State<HomeFeedScreen> {
                       ).ripple(() {
                         Get.to(() => const ChatHistory());
                       }),
-                      Obx(() =>
-                          _dashboardController.unreadMsgCount.value == 0
-                              ? Container()
-                              : Positioned(
-                                  top: 0,
-                                  right: 5,
-                                  child: Container(
-                                    color: AppColorConstants.red,
-                                    height: 10,
-                                    width: 10,
-                                  ).circular,
-                                ))
+                      Obx(() => _dashboardController.unreadMsgCount.value == 0
+                          ? Container()
+                          : Positioned(
+                              top: 0,
+                              right: 5,
+                              child: Container(
+                                color: AppColorConstants.red,
+                                height: 10,
+                                width: 10,
+                              ).circular,
+                            ))
                     ],
                   ),
                 ),
@@ -204,21 +200,17 @@ class HomeFeedState extends State<HomeFeedScreen> {
                 _addPostController.postingMedia.isNotEmpty &&
                         _addPostController.postingMedia.first.mediaType !=
                             GalleryMediaType.gif
-                    ? _addPostController.postingMedia.first.thumbnail !=
-                            null
+                    ? _addPostController.postingMedia.first.thumbnail != null
                         ? Image.memory(
-                            _addPostController
-                                .postingMedia.first.thumbnail!,
+                            _addPostController.postingMedia.first.thumbnail!,
                             fit: BoxFit.cover,
                             width: 40,
                             height: 40,
                           ).round(5)
-                        : _addPostController
-                                    .postingMedia.first.mediaType ==
+                        : _addPostController.postingMedia.first.mediaType ==
                                 GalleryMediaType.photo
                             ? Image.file(
-                                _addPostController
-                                    .postingMedia.first.file!,
+                                _addPostController.postingMedia.first.file!,
                                 fit: BoxFit.cover,
                                 width: 40,
                                 height: 40,
@@ -265,7 +257,7 @@ class HomeFeedState extends State<HomeFeedScreen> {
 
   Widget storiesView() {
     return SizedBox(
-      height: storyCircleSize + (storyCircleSize / 2),
+      height: storyCircleSize + (storyCircleSize / 1.2),
       child: GetBuilder<HomeController>(
           init: _homeController,
           builder: (ctx) {
@@ -278,8 +270,7 @@ class HomeFeedState extends State<HomeFeedScreen> {
               viewStoryCallback: (story) {
                 if (story.isLive) {
                   LiveModel live = LiveModel();
-                  live.channelName =
-                      story.user!.liveCallDetail!.channelName;
+                  live.channelName = story.user!.liveCallDetail!.channelName;
                   live.mainHostUserDetail = story.user;
                   live.token = story.user!.liveCallDetail!.token;
                   live.id = story.user!.liveCallDetail!.id;

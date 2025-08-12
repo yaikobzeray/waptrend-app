@@ -220,12 +220,17 @@ class BodyLargeText extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
+  final String? fontFamily;
   final FontWeight? weight;
   final Color? color;
 
   const BodyLargeText(this.text,
-      {super.key, this.textAlign, this.maxLines, this.weight, this.color});
+      {super.key,
+      this.textAlign,
+      this.fontFamily,
+      this.maxLines,
+      this.weight,
+      this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +241,7 @@ class BodyLargeText extends StatelessWidget {
         style: TextStyle(
             fontSize: FontSizes.b2,
             color: color ?? AppColorConstants.mainTextColor,
+            fontFamily: fontFamily,
             fontWeight: weight ?? TextWeight.medium));
   }
 }

@@ -17,109 +17,197 @@ class AdCard extends StatefulWidget {
 }
 
 class _AdCardState extends State<AdCard> {
+  bool _isFavoriteHovered = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => widget.pressed(),
       child: Container(
-        height: 250,
-        color: AppColorConstants.cardColor,
-        child: Column(
+        height: 280,
+        decoration: BoxDecoration(
+          color: AppColorConstants.cardColor,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                  child: Stack(
+              // Image Section
+              Stack(
                 children: [
                   SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: (widget.ad.images).isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: widget.ad.images.first,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      AppUtil.addProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ).round(15)
-                              : const Icon(Icons.error))
-                      .bP16,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      widget.ad.isDeal == 1
-                          ? Container(
-                              color: AppColorConstants.red,
-                              width: 140,
-                              height: 30,
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(
-                                    Icons.local_offer,
-                                    color: AppColorConstants.iconColor,
-                                    size: 18,
-                                  ).rP4,
-                                  BodySmallText(
-                                    widget.ad.actualPriceString,
-                                  ).rP4,
-                                  BodyLargeText(
-                                    widget.ad.dealPriceString,
-                                    weight: TextWeight.bold,
-                                  ).rP4
-                                ],
-                              ).hP16,
-                            ).round(25).bP8
-                          : Container(),
-                      widget.ad.featured == 1
-                          ? Container(
-                              width: 120,
-                              color: Colors.yellow,
-                              child: Center(
-                                  child: BodySmallText(
-                                'Featured',
-                                weight: TextWeight.bold,
-                              )).p8,
-                            )
-                          : Container()
-                    ],
-                  )
-                ],
-              )),
-              BodyLargeText(widget.ad.title!,
-                      maxLines: 1, weight: TextWeight.bold)
-                  .bP4,
-              BodyExtraSmallText(
-                widget.ad.locations!.customLocation!,
-                weight: TextWeight.semiBold,
-                color: AppColorConstants.subHeadingTextColor,
-                maxLines: 1,
-              ).bP4,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  BodyExtraSmallText(
-                    widget.ad.finalPriceString,
-                    weight: TextWeight.bold,
-                    color: AppColorConstants.red,
+                    height: 160,
+                    width: double.infinity,
+                    child: widget.ad.images.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: widget.ad.images.first,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Center(
+                              child: AppUtil.addProgressIndicator(size: 30),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: const Icon(Icons.broken_image, size: 40),
+                            ),
+                          )
+                        : Container(
+                            color: Colors.grey[200],
+                            child:
+                                const Icon(Icons.image_not_supported, size: 40),
+                          ),
                   ),
-                  Icon(Icons.favorite,
-                          color: widget.ad.isFavorite == 1
-                              ? AppColorConstants.red
-                              : AppColorConstants.mainTextColor)
-                      .ripple(() {
-                    if (widget.ad.isFavorite == 0) {
-                      widget.ad.isFavorite = 1;
-                    } else {
-                      widget.ad.isFavorite = 0;
-                    }
-                    widget.favPressed();
-                    setState(() {});
-                  })
+
+                  // Deal & Featured Badges
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.ad.isDeal == 1)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColorConstants.red.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.local_offer,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                BodySmallText(
+                                  widget.ad.actualPriceString,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 4),
+                                BodyMediumText(
+                                  widget.ad.dealPriceString,
+                                  color: Colors.white,
+                                  weight: TextWeight.bold,
+                                ),
+                              ],
+                            ),
+                          ).bP8,
+                        if (widget.ad.featured == 1)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.yellow[700],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            child: BodySmallText(
+                              'FEATURED',
+                              color: Colors.black,
+                              weight: TextWeight.bold,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ],
-              )
-            ]).p16,
-      ).round(10),
+              ),
+
+              // Content Section
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BodyLargeText(
+                            widget.ad.title ?? 'No Title',
+                            maxLines: 1,
+                            weight: TextWeight.bold,
+                          ).bP4,
+                          Row(
+                            children: [
+                              Icon(Icons.location_on,
+                                  size: 14,
+                                  color: AppColorConstants.subHeadingTextColor),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: BodySmallText(
+                                  widget.ad.locations?.customLocation ??
+                                      'Location not specified',
+                                  color: AppColorConstants.subHeadingTextColor,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ).bP8,
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BodyMediumText(
+                            widget.ad.finalPriceString,
+                            weight: TextWeight.bold,
+                            color: AppColorConstants.red,
+                          ),
+                          MouseRegion(
+                            onEnter: (_) =>
+                                setState(() => _isFavoriteHovered = true),
+                            onExit: (_) =>
+                                setState(() => _isFavoriteHovered = false),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: _isFavoriteHovered
+                                    ? (widget.ad.isFavorite == 1
+                                        ? Colors.red[100]
+                                        : Colors.grey[200])
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                widget.ad.isFavorite == 1
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: widget.ad.isFavorite == 1
+                                    ? AppColorConstants.red
+                                    : AppColorConstants.mainTextColor,
+                                size: 20,
+                              ),
+                            ).ripple(() {
+                              setState(() {
+                                widget.ad.isFavorite =
+                                    widget.ad.isFavorite == 1 ? 0 : 1;
+                              });
+                              widget.favPressed();
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -146,8 +234,7 @@ class _HorizontalAdCardState extends State<HorizontalAdCard> {
       onTap: () => widget.pressed(),
       child: SizedBox(
         width: Get.width * 0.8,
-        child:
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(
               width: 100,
               child: (widget.ad.images).isNotEmpty
@@ -216,8 +303,7 @@ class MyAdCard extends StatefulWidget {
   final AdModel ad;
   final Function actionHandler;
 
-  const MyAdCard(
-      {super.key, required this.ad, required this.actionHandler});
+  const MyAdCard({super.key, required this.ad, required this.actionHandler});
 
   @override
   State<MyAdCard> createState() => _MyAdCardState();
