@@ -137,10 +137,10 @@ class SmartTextFieldController extends GetxController {
     String newText = '';
     if (isHashtag) {
       newText =
-      '${currentText.substring(0, index)}#$text${currentText.substring(endIndex)}';
+          '${currentText.substring(0, index)}#$text${currentText.substring(endIndex)}';
     } else {
       newText =
-      '${currentText.substring(0, index)}@$text${currentText.substring(endIndex)}';
+          '${currentText.substring(0, index)}@$text${currentText.substring(endIndex)}';
     }
     // Update the text field
     textField.value.text = newText;
@@ -165,12 +165,11 @@ class SmartTextField extends StatelessWidget {
 
   const SmartTextField(
       {super.key,
-        required this.controller,
-        this.maxLine,
-        this.maxChar,
-        required this.onTextChangeActionHandler,
-        required this.onFocusChangeActionHandler})
-      ;
+      required this.controller,
+      this.maxLine,
+      this.maxChar,
+      required this.onTextChangeActionHandler,
+      required this.onFocusChangeActionHandler});
 
   @override
   Widget build(BuildContext context) {
@@ -187,11 +186,16 @@ class SmartTextField extends StatelessWidget {
         },
         decoration: InputDecoration(
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            // border: OutlineInputBorder(
+            // borderSide: BorderSide(
+            //     color: AppColorConstants.borderColor.withOpacity(0.4))),
+            // contentPadding: const EdgeInsets.only(top: 10, left: 10, right: 10),
             counterText: "",
             hintStyle: TextStyle(
-                fontSize: FontSizes.b3, color: AppColorConstants.mainTextColor),
-            hintText: titleString.tr),
+              fontSize: FontSizes.b2,
+              color: AppColorConstants.mainTextColor,
+            ),
+            hintText: descriptionString.tr),
       ).round(10),
       onFocusChange: (hasFocus) {
         onFocusChangeActionHandler(hasFocus);

@@ -81,6 +81,7 @@ class _ChatHistoryState extends State<ChatHistory> {
                       top: 8,
                       bottom: 8),
                   SFSearchBar(
+                          // backgroundColor: Colors.transparent,
                           showSearchIcon: true,
                           iconColor: AppColorConstants.themeColor,
                           onSearchChanged: (value) {
@@ -124,11 +125,11 @@ class _ChatHistoryState extends State<ChatHistory> {
                         _chatController.groupedRooms[key] ?? [];
 
                     return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Heading5Text(
+                        BodyMediumText(
                           key,
-                          weight: TextWeight.bold,
+                          weight: TextWeight.regular,
                         ),
                         const SizedBox(
                           height: 15,

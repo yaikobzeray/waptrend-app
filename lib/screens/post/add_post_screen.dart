@@ -95,73 +95,80 @@ class AddPostState extends State<AddPostScreen> {
                       const SizedBox(
                         height: 55,
                       ),
-                      Row(
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                Get.back();
-                                addPostController.clear();
+                      Container(
+                        decoration: BoxDecoration(
+                          border: BorderDirectional(
+                              bottom: BorderSide(
+                            color: AppColorConstants.dividerColor
+                                .withOpacity(0.32),
+                            width: 2,
+                          )),
+                        ),
+                        child: Row(
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  Get.back();
+                                  addPostController.clear();
 
-                                if (!settingsController
-                                    .setting.value!.enableReel) {
-                                  DashboardController dashboardController =
-                                      Get.find();
+                                  if (!settingsController
+                                      .setting.value!.enableReel) {
+                                    DashboardController dashboardController =
+                                        Get.find();
 
-                                  dashboardController.indexChanged(0);
-                                }
-                              },
-                              child: ThemeIconWidget(ThemeIcon.backArrow)),
-                          const Spacer(),
-                          Container(
-                                  color: AppColorConstants.themeColor,
-                                  child: BodyLargeText(
-                                    widget.competition == null
-                                        ? postString.tr
-                                        : submitString.tr,
-                                    weight: TextWeight.medium,
-                                    color: Colors.white,
-                                  ).setPadding(
-                                      left: 8,
-                                      right: 8,
-                                      top: 5,
-                                      bottom: 5))
-                              .round(10)
-                              .ripple(() {
-                            if ((widget.items ??
+                                    dashboardController.indexChanged(0);
+                                  }
+                                },
+                                child: ThemeIconWidget(ThemeIcon.backArrow)),
+                            const Spacer(),
+                            Container(
+                                    color: AppColorConstants.themeColor,
+                                    child: BodyLargeText(
+                                      widget.competition == null
+                                          ? postString.tr
+                                          : submitString.tr,
+                                      weight: TextWeight.medium,
+                                      color: Colors.white,
+                                    ).setPadding(
+                                        left: 8, right: 8, top: 5, bottom: 5))
+                                .round(10)
+                                .ripple(() {
+                              if ((widget.items ??
+                                          _selectPostMediaController
+                                              .selectedMediaList)
+                                      .isNotEmpty ||
+                                  _smartTextFieldController
+                                      .textField.value.text.isNotEmpty) {
+                                addPostController.submitPost(
+                                    allowComments:
+                                        addPostController.enableComments.value,
+                                    postType: widget.postType,
+                                    isPaidContent:
+                                        addPostController.isPaidContent.value,
+                                    isReel: widget.isReel ?? false,
+                                    audioId: widget.audioId,
+                                    audioStartTime: widget.audioStartTime,
+                                    audioEndTime: widget.audioEndTime,
+                                    items: widget.items ??
                                         _selectPostMediaController
-                                            .selectedMediaList)
-                                    .isNotEmpty ||
-                                _smartTextFieldController
-                                    .textField.value.text.isNotEmpty) {
-                              addPostController.submitPost(
-                                  allowComments: addPostController
-                                      .enableComments.value,
-                                  postType: widget.postType,
-                                  isPaidContent: addPostController
-                                      .isPaidContent.value,
-                                  isReel: widget.isReel ?? false,
-                                  audioId: widget.audioId,
-                                  audioStartTime: widget.audioStartTime,
-                                  audioEndTime: widget.audioEndTime,
-                                  items: widget.items ??
-                                      _selectPostMediaController
-                                          .selectedMediaList,
-                                  title: _smartTextFieldController
-                                      .textField.value.text,
-                                  competitionId: widget.competition?.id,
-                                  clubId: widget.club?.id,
-                                  eventId: widget.event?.id,
-                                  fundRaisingCampaignId:
-                                      widget.fundRaisingCampaign?.id,
-                                  postCompletionHandler:
-                                      widget.postCompletionHandler);
-                            }
-                          }),
-                        ],
-                      ).hp(DesignConstants.horizontalPadding),
-                      const SizedBox(
-                        height: 30,
+                                            .selectedMediaList,
+                                    title: _smartTextFieldController
+                                        .textField.value.text,
+                                    competitionId: widget.competition?.id,
+                                    clubId: widget.club?.id,
+                                    eventId: widget.event?.id,
+                                    fundRaisingCampaignId:
+                                        widget.fundRaisingCampaign?.id,
+                                    postCompletionHandler:
+                                        widget.postCompletionHandler);
+                              }
+                            }),
+                          ],
+                        ).hp(DesignConstants.horizontalPadding).bP16,
                       ),
+                      // const SizedBox(
+                      //   height: 30,
+                      // ),
                       postSourceWidget(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,8 +184,8 @@ class AddPostState extends State<AddPostScreen> {
                                   return FractionallySizedBox(
                                       heightFactor: 1,
                                       child: Container(
-                                        color: AppColorConstants
-                                            .backgroundColor,
+                                        color:
+                                            AppColorConstants.backgroundColor,
                                         child: AddedMediaList(
                                           selectPostMediaController:
                                               _selectPostMediaController,
@@ -188,7 +195,7 @@ class AddPostState extends State<AddPostScreen> {
                           }),
                           Expanded(child: addDescriptionView()),
                         ],
-                      ).hp(DesignConstants.horizontalPadding),
+                      ),
                       if (widget.isReel != true)
                         PostOptionsPopup(
                           callbackHandler: (option) {
@@ -205,10 +212,10 @@ class AddPostState extends State<AddPostScreen> {
                             ),
                             BodyMediumText(allowCommentsString),
                             const Spacer(),
-                            Obx(() => ThemeIconWidget(addPostController
-                                            .enableComments.value
-                                        ? ThemeIcon.selectedCheckbox
-                                        : ThemeIcon.emptyCheckbox)
+                            Obx(() => ThemeIconWidget(
+                                        addPostController.enableComments.value
+                                            ? ThemeIcon.selectedCheckbox
+                                            : ThemeIcon.emptyCheckbox)
                                     .ripple(() {
                                   addPostController.toggleEnableComments();
                                 })),
@@ -227,13 +234,12 @@ class AddPostState extends State<AddPostScreen> {
                               ),
                               BodyMediumText(forSubscribersOnlyString),
                               const Spacer(),
-                              Obx(() => ThemeIconWidget(addPostController
-                                              .isPaidContent.value
-                                          ? ThemeIcon.selectedCheckbox
-                                          : ThemeIcon.emptyCheckbox)
+                              Obx(() => ThemeIconWidget(
+                                          addPostController.isPaidContent.value
+                                              ? ThemeIcon.selectedCheckbox
+                                              : ThemeIcon.emptyCheckbox)
                                       .ripple(() {
-                                    addPostController
-                                        .togglePaidContentMode();
+                                    addPostController.togglePaidContentMode();
                                   })),
                             ],
                           ),
@@ -248,21 +254,17 @@ class AddPostState extends State<AddPostScreen> {
                               width: 10,
                             ),
                             Obx(() =>
-                                addPostController.taggedLocation.value ==
-                                        null
+                                addPostController.taggedLocation.value == null
                                     ? BodyMediumText(addLocationString)
                                     : BodyLargeText(addPostController
                                         .taggedLocation.value!.name)),
                             const Spacer(),
-                            Obx(() =>
-                                addPostController.taggedLocation.value ==
-                                        null
-                                    ? ThemeIconWidget(ThemeIcon.nextArrow)
-                                    : ThemeIconWidget(ThemeIcon.close)
-                                        .ripple(() {
-                                        addPostController
-                                            .setTaggedLocation(null);
-                                      })),
+                            Obx(() => addPostController.taggedLocation.value ==
+                                    null
+                                ? ThemeIconWidget(ThemeIcon.nextArrow)
+                                : ThemeIconWidget(ThemeIcon.close).ripple(() {
+                                    addPostController.setTaggedLocation(null);
+                                  })),
                           ],
                         ),
                       ).hp(DesignConstants.horizontalPadding).ripple(() {
@@ -299,8 +301,7 @@ class AddPostState extends State<AddPostScreen> {
                         height: 10,
                       ),
                       Obx(() {
-                        return _smartTextFieldController.isEditing.value ==
-                                1
+                        return _smartTextFieldController.isEditing.value == 1
                             ? Expanded(
                                 child: Container(
                                   // height: 500,
@@ -314,18 +315,16 @@ class AddPostState extends State<AddPostScreen> {
                                               .currentUserTag.isNotEmpty
                                           ? TagUsersView()
                                           : Container().ripple(() {
-                                              FocusManager
-                                                  .instance.primaryFocus
+                                              FocusManager.instance.primaryFocus
                                                   ?.unfocus();
                                             }),
                                 ),
                               )
                             : Container();
                       }),
-                      Obx(() =>
-                          _smartTextFieldController.isEditing.value == 0
-                              ? const Spacer()
-                              : Container()),
+                      Obx(() => _smartTextFieldController.isEditing.value == 0
+                          ? const Spacer()
+                          : Container()),
                     ]),
               ],
             );
@@ -463,10 +462,10 @@ class AddPostState extends State<AddPostScreen> {
 
   Widget addDescriptionView() {
     return SizedBox(
-      height: 70,
+      // height: 70,
       child: Obx(() {
         return Container(
-          color: AppColorConstants.cardColor,
+          // color: AppColorConstants.cardColor,
           child: SmartTextField(
               maxLine: 5,
               controller: _smartTextFieldController.textField.value,
@@ -480,9 +479,9 @@ class AddPostState extends State<AddPostScreen> {
                   _smartTextFieldController.stoppedEditing();
                 }
               }),
-        ).round(5);
+        );
       }),
-    );
+    ).hP4;
   }
 
   void openLocationPicker() {
@@ -534,8 +533,7 @@ class AddPostState extends State<AddPostScreen> {
   }
 
   convertToMedias(
-      {required List<XFile> files,
-      required GalleryMediaType mediaType}) async {
+      {required List<XFile> files, required GalleryMediaType mediaType}) async {
     List<Media> medias = [];
     for (XFile mediaFile in files) {
       Media media = Media();
@@ -546,8 +544,8 @@ class AddPostState extends State<AddPostScreen> {
       if (mediaType == GalleryMediaType.video) {
         final videoInfo = await VideoCompress.getMediaInfo(mediaFile.path);
 
-        media.size = Size(
-            videoInfo.width!.toDouble(), videoInfo.height!.toDouble());
+        media.size =
+            Size(videoInfo.width!.toDouble(), videoInfo.height!.toDouble());
 
         media.thumbnail = await VideoThumbnail.thumbnailData(
           video: mediaFile.path,
@@ -680,8 +678,7 @@ class AddedMediaList extends StatelessWidget {
                                   ? CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl: media.filePath!)
-                                  : media.mediaType ==
-                                          GalleryMediaType.video
+                                  : media.mediaType == GalleryMediaType.video
                                       ? VideoPostTile(
                                           width: Get.width,
                                           url: media.file!.path,
@@ -704,14 +701,12 @@ class AddedMediaList extends StatelessWidget {
                       height: double.infinity,
                       viewportFraction: 1,
                       onPageChanged: (index) {
-                        selectPostMediaController
-                            .updateGallerySlider(index);
+                        selectPostMediaController.updateGallerySlider(index);
                       },
                     );
                   }),
                   Obx(() {
-                    return selectPostMediaController
-                                .selectedMediaList.length >
+                    return selectPostMediaController.selectedMediaList.length >
                             1
                         ? Positioned(
                             bottom: 10,
@@ -723,17 +718,14 @@ class AddedMediaList extends StatelessWidget {
                                         height: 25,
                                         color: AppColorConstants.cardColor,
                                         child: WKIndicator1(
-                                          dotsCount:
-                                              selectPostMediaController
-                                                  .selectedMediaList
-                                                  .length,
-                                          position:
-                                              selectPostMediaController
-                                                  .currentIndex.value,
+                                          dotsCount: selectPostMediaController
+                                              .selectedMediaList.length,
+                                          position: selectPostMediaController
+                                              .currentIndex.value,
                                           activeDotColor:
                                               AppColorConstants.themeColor,
-                                          dotColor: AppColorConstants
-                                              .disabledColor,
+                                          dotColor:
+                                              AppColorConstants.disabledColor,
                                         ).hP8)
                                     .round(20)),
                           )

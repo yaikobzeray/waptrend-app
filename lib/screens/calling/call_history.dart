@@ -7,7 +7,7 @@ import 'package:foap/screens/chat/chat_detail.dart';
 import 'package:foap/screens/chat/select_users.dart';
 
 class CallHistory extends StatefulWidget {
-  const CallHistory({super.key}) ;
+  const CallHistory({super.key});
 
   @override
   State<CallHistory> createState() => _CallHistoryState();
@@ -73,11 +73,11 @@ class _CallHistoryState extends State<CallHistory> {
                                       [];
 
                               return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Heading5Text(
+                                  BodyMediumText(
                                     key,
-                                    weight: TextWeight.bold,
+                                    weight: TextWeight.regular,
                                   ),
                                   const SizedBox(
                                     height: 15,

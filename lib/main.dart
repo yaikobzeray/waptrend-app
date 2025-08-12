@@ -92,7 +92,7 @@ bool isAnyPageInStack = false;
 bool isPermissionsAsked = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Permission.camera.request();
+  // await Permission.camera.request();
   cameras = await availableCameras();
   HttpOverrides.global = MyHttpOverrides();
 

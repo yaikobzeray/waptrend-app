@@ -19,7 +19,6 @@ export 'package:foap/screens/chat/wallpapers.dart';
 export 'package:foap/screens/chat/starred_messages.dart';
 export 'package:foap/components/chat_cells/chat_cells.dart';
 
-
 export 'package:foap/components/chat_cells/audio_chat_cell.dart';
 export 'package:foap/components/chat_cells/contact_chat_cell.dart';
 export 'package:foap/components/chat_cells/image_chat_cell.dart';
@@ -45,7 +44,6 @@ export 'package:foap/components/reply_chat_cells/file_reply_chat_cell.dart';
 export 'package:foap/components/reply_chat_cells/reply_chat_cell.dart';
 
 export 'package:foap/components/message_image.dart';
-
 
 export 'package:foap/controllers/chat_and_call/random_chat_and_call_controller.dart';
 export 'package:foap/controllers/chat_and_call/conatcts_controller.dart';

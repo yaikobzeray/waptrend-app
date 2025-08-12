@@ -56,8 +56,8 @@ class _CreateReelScreenState extends State<CreateReelScreen>
       body: Column(
         children: [
           const SizedBox(
-            height: 40,
-          ),
+              // height: 40,
+              ),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -65,7 +65,7 @@ class _CreateReelScreenState extends State<CreateReelScreen>
               Positioned(
                 left: 15,
                 right: 15,
-                top: 25,
+                top: 45,
                 child: Column(
                   children: [
                     Row(

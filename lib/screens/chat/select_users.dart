@@ -74,8 +74,8 @@ class SelectUserForChatState extends State<SelectUserForChat> {
                             .hp(DesignConstants.horizontalPadding)
                         : usersList.isNotEmpty
                             ? ListView.separated(
-                                padding: const EdgeInsets.only(
-                                    top: 20, bottom: 50),
+                                padding:
+                                    const EdgeInsets.only(top: 20, bottom: 50),
                                 controller: scrollController,
                                 itemCount: usersList.length + 2,
                                 itemBuilder: (context, index) {
@@ -91,9 +91,8 @@ class SelectUserForChatState extends State<SelectUserForChat> {
                                                   child: ThemeIconWidget(
                                                     ThemeIcon.group,
                                                     size: 15,
-                                                    color:
-                                                        AppColorConstants
-                                                            .themeColor,
+                                                    color: AppColorConstants
+                                                        .themeColor,
                                                   ).p8)
                                               .circular,
                                           const SizedBox(
@@ -107,10 +106,9 @@ class SelectUserForChatState extends State<SelectUserForChat> {
                                       ),
                                     ).ripple(() {
                                       Get.back();
-                                      Get.to(() =>
-                                          const SelectUserForGroupChat());
-                                    }).hp(
-                                        DesignConstants.horizontalPadding);
+                                      Get.to(
+                                          () => const SelectUserForGroupChat());
+                                    }).hp(DesignConstants.horizontalPadding);
                                   } else if (index == 1) {
                                     return SizedBox(
                                       height: 30,
@@ -123,9 +121,8 @@ class SelectUserForChatState extends State<SelectUserForChat> {
                                                   child: ThemeIconWidget(
                                                     ThemeIcon.randomChat,
                                                     size: 15,
-                                                    color:
-                                                        AppColorConstants
-                                                            .themeColor,
+                                                    color: AppColorConstants
+                                                        .themeColor,
                                                   ).p8)
                                               .circular,
                                           const SizedBox(
@@ -138,41 +135,34 @@ class SelectUserForChatState extends State<SelectUserForChat> {
                                         ],
                                       ),
                                     ).ripple(() {
-                                      Get.to(() =>
-                                          const ChooseProfileCategory(
+                                      Get.to(() => const ChooseProfileCategory(
                                             isCalling: false,
                                           ));
-                                    }).hp(
-                                        DesignConstants.horizontalPadding);
+                                    }).hp(DesignConstants.horizontalPadding);
                                   } else {
                                     return UserTile(
                                       profile: usersList[index - 2],
                                       viewCallback: () {
-                                        Loader.show(
-                                            status: loadingString.tr);
+                                        Loader.show(status: loadingString.tr);
 
-                                        widget.userSelected(
-                                            usersList[index - 2]);
+                                        widget
+                                            .userSelected(usersList[index - 2]);
                                       },
                                       audioCallCallback: () {
                                         Get.back();
-                                        initiateAudioCall(
-                                            usersList[index - 2]);
+                                        initiateAudioCall(usersList[index - 2]);
                                       },
                                       chatCallback: () {
-                                        Loader.show(
-                                            status: loadingString.tr);
+                                        Loader.show(status: loadingString.tr);
 
-                                        widget.userSelected(
-                                            usersList[index - 2]);
+                                        widget
+                                            .userSelected(usersList[index - 2]);
                                       },
                                       videoCallCallback: () {
                                         Get.back();
-                                        initiateVideoCall(
-                                            usersList[index - 2]);
+                                        initiateVideoCall(usersList[index - 2]);
                                       },
-                                    ).hp(
-                                        DesignConstants.horizontalPadding);
+                                    ).hp(DesignConstants.horizontalPadding);
                                   }
                                 },
                                 separatorBuilder: (context, index) {
@@ -289,8 +279,7 @@ class SelectFollowingUserForMessageSendingState
             scrollController.addListener(() {
               if (scrollController.position.maxScrollExtent ==
                   scrollController.position.pixels) {
-                if (!selectUserForChatController
-                    .dataWrapper.isLoading.value) {
+                if (!selectUserForChatController.dataWrapper.isLoading.value) {
                   selectUserForChatController.loadUsers(() {});
                 }
               }
@@ -300,7 +289,9 @@ class SelectFollowingUserForMessageSendingState
                 selectUserForChatController.searchedUsers;
             return Column(
               children: [
-                const SizedBox(height: 15,),
+                const SizedBox(
+                  height: 15,
+                ),
                 SFSearchBar(
                   onSearchCompleted: (value) {},
                   onSearchChanged: (value) {
@@ -309,13 +300,12 @@ class SelectFollowingUserForMessageSendingState
                   hintText: searchUsersString.tr,
                 ),
                 Expanded(
-                  child: selectUserForChatController
-                          .dataWrapper.isLoading.value
+                  child: selectUserForChatController.dataWrapper.isLoading.value
                       ? const ShimmerUsers()
                       : usersList.isNotEmpty
                           ? ListView.separated(
-                              padding: const EdgeInsets.only(
-                                  top: 20, bottom: 50),
+                              padding:
+                                  const EdgeInsets.only(top: 20, bottom: 50),
                               controller: scrollController,
                               itemCount: usersList.length,
                               itemBuilder: (context, index) {
@@ -337,8 +327,7 @@ class SelectFollowingUserForMessageSendingState
                                   profile: usersList[index],
                                   sendCallback: () {
                                     Get.back();
-                                    widget.sendToUserCallback(
-                                        usersList[index]);
+                                    widget.sendToUserCallback(usersList[index]);
                                   },
                                 );
                               },

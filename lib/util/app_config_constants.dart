@@ -13,7 +13,7 @@ class AppConfigConstants {
   static const liveAppLink = 'https://www.google.com/';
 
   static String appTagline = 'Share your day activity with friends';
-  static const googleMapApiKey = 'your_key';
+  static const googleMapApiKey = 'AIzaSyA0967NSl34U777ZcAhRBj3Uxq3pX_Djqo';
   static const restApiBaseUrl = 'https://back.waptrend.com/api/web/v1/';
 
   // Socket api url

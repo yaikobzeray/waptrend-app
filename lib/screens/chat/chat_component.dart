@@ -19,6 +19,7 @@ Widget messageTypeShortInfoFromType({
 }) {
   return type == MessageContentType.text
       ? BodyMediumText(
+          color: AppColorConstants.mainTextColor.withOpacity(0.3),
           message.textMessage,
           maxLines: 1,
         )

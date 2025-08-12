@@ -13,8 +13,8 @@ class CameraControllerService extends GetxController {
   late CameraController controller;
 
   Future<void> initializeCamera(CameraLensDirection lensDirection) async {
-    final camera = cameras
-        .firstWhere((camera) => camera.lensDirection == lensDirection);
+    final camera =
+        cameras.firstWhere((camera) => camera.lensDirection == lensDirection);
 
     controller = CameraController(camera, ResolutionPreset.max);
     await controller.initialize().then((_) {}).catchError((Object e) {
@@ -62,14 +62,16 @@ class CameraView extends StatelessWidget {
 
         return Transform(
           alignment: Alignment.center,
-          // transform: isFrontCamera
-          //     ? (Matrix4.identity()..scale(-1.0, 1.0)) // Flip horizontally
-          //     : Matrix4.identity(),
-          transform: Matrix4.identity(),
+          transform: isFrontCamera
+              ? (Matrix4.identity()..scale(-1.0, 1.0)) // Flip horizontally
+              : Matrix4.identity(),
+          // transform: Matrix4.identity(),
           // above code of scale was not working for iphone as it was flipping camera on iphone
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20), // Rounds corners
-            child: CameraPreview(controllerService.controller),
+            borderRadius: BorderRadius.circular(0), // Rounds corners
+            child: SizedBox(
+                height: Get.height * 0.85,
+                child: CameraPreview(controllerService.controller)),
           ),
         );
       },
@@ -155,16 +157,14 @@ class _ContentCreatorViewState extends State<ContentCreatorView>
                       const CreateReelScreen(),
                     // Container(),
                     if (_settingsController.setting.value!.enableLive)
-                      CheckingLiveFeasibility(
-                          successCallbackHandler: () {})
+                      CheckingLiveFeasibility(successCallbackHandler: () {})
                   ]),
             ),
             Obx(() => _agoraLiveController.startLiveStreaming.value !=
                     LiveStreamingStatus.none
                 ? Container()
                 : Container(
-                    color: AppColorConstants.themeColor
-                        .withValues(alpha: 0.2),
+                    color: AppColorConstants.themeColor.withValues(alpha: 0.2),
                     child: SMTabBar(
                       tabs: tabs,
                       canScroll: true,

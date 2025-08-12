@@ -130,29 +130,51 @@ class ModalComponents extends StatelessWidget {
   final String name;
   final VoidCallback? onPress;
 
-  const ModalComponents(
-      {super.key,
-      required this.check,
-      this.imageUrl,
-      required this.icon,
-      required this.name,
-      this.onPress});
+  const ModalComponents({
+    super.key,
+    required this.check,
+    this.imageUrl,
+    required this.icon,
+    required this.name,
+    this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ThemeIconWidget(icon),
-        const SizedBox(
-          width: 10,
+    final theme = Theme.of(context);
+
+    return Material(
+      color: check ? theme.primaryColor.withOpacity(0.1) : Colors.transparent,
+      borderRadius: BorderRadius.circular(6),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: onPress,
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: check ? theme.primaryColor : theme.dividerColor,
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ThemeIconWidget(
+                icon,
+                color: check ? theme.primaryColor : theme.iconTheme.color,
+              ),
+              const SizedBox(width: 10),
+              BodySmallText(
+                name,
+                color: check ? theme.primaryColor : null,
+                // fontWeight: check ? FontWeight.w600 : null,
+              ),
+            ],
+          ),
         ),
-        BodySmallText(
-          name,
-        ),
-      ],
-    ).hP8.borderWithRadius(value: 0.5, radius: 5).ripple(() {
-      onPress!();
-    });
+      ),
+    );
   }
 }
