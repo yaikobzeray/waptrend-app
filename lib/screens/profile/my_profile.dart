@@ -1,17 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:foap/components/sm_tab_bar.dart';
 import 'package:foap/controllers/notification/notifications_controller.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/login_signup_imports.dart';
 import 'package:foap/helper/imports/reel_imports.dart';
 import 'package:foap/model/account.dart';
-import 'package:foap/screens/profile/sliver_app_bar.dart';
+import 'package:foap/model/highlights.dart';
 import 'package:foap/screens/profile/update_profile.dart';
-import 'package:foap/screens/profile/user_profile_stat.dart';
 import 'package:foap/screens/settings_menu/notifications.dart';
 import 'package:foap/screens/settings_menu/settings.dart';
 import 'package:foap/util/shared_prefs.dart';
 import '../../components/highlights_bar.dart';
-import '../../components/post_card/post_card.dart';
 import '../../controllers/story/highlights_controller.dart';
 import '../../controllers/profile/profile_controller.dart';
 import '../highlights/choose_stories.dart';
@@ -34,18 +33,12 @@ class MyProfileState extends State<MyProfile> {
   final UserProfileManager _userProfileManager = Get.find();
   final NotificationController _notificationController = Get.find();
 
-  List<String> tabs = [
-    postsString.tr,
-    reelsString.tr,
-    mentionsString.tr,
-    collaborationsString.tr
-  ];
+  List<String> tabs = ['Posts', 'Reels', 'Tagged'];
 
   @override
   void initState() {
     super.initState();
     _notificationController.getNotificationInfo();
-
     initialLoad();
   }
 
@@ -70,9 +63,6 @@ class MyProfileState extends State<MyProfile> {
 
   loadData() {
     _profileController.getMyProfile();
-
-    _profileController.getMentionPosts(_userProfileManager.user.value!.id);
-    _profileController.getCollaborationsPosts();
     _profileController.getPosts(
         userId: _userProfileManager.user.value!.id, callback: () {});
     _profileController.getReels(_userProfileManager.user.value!.id);
@@ -85,172 +75,61 @@ class MyProfileState extends State<MyProfile> {
     return Obx(() => AppScaffold(
           backgroundColor: AppColorConstants.backgroundColor,
           body: _profileController.user.value == null
-              ? Container()
-              : Column(
-                  children: [
-                    appBar(),
-                    Expanded(
-                      child: DefaultTabController(
-                        length: tabs.length,
-                        child: NestedScrollView(
-                          headerSliverBuilder: (BuildContext context,
-                              bool innerBoxIsScrolled) {
-                            return <Widget>[
-                              SliverAppBar(
-                                backgroundColor:
-                                    AppColorConstants.backgroundColor,
-                                pinned: false,
-                                automaticallyImplyLeading: false,
-                                expandedHeight: headerHeight(),
-                                toolbarHeight: 0,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  background: header(),
-                                ),
-                              ),
-                              SliverPersistentHeader(
-                                delegate: SliverAppBarDelegate(SizedBox(
-                                    height: 50,
-                                    child: SMTabBar(
-                                        tabs: tabs, canScroll: false))),
-                                pinned: true,
-                                // floating: true,
-                              )
-                            ];
-                          },
-                          body: body(),
+              ? const Center(child: CircularProgressIndicator())
+              : DefaultTabController(
+                  length: tabs.length,
+                  child: NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return [
+                        SliverAppBar(
+                          backgroundColor: AppColorConstants.backgroundColor,
+                          expandedHeight: 380,
+                          floating: false,
+                          pinned: true,
+                          automaticallyImplyLeading: false,
+                          flexibleSpace: FlexibleSpaceBar(
+                            background: Column(
+                              children: [
+                                // Top app bar
+                                _buildInstagramAppBar(),
+                                // Profile header
+                                _buildProfileHeader(),
+                                // Highlights
+                                _buildHighlights(),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                        SliverPersistentHeader(
+                          delegate: _SliverAppBarDelegate(
+                            TabBar(
+                              tabs: tabs
+                                  .map((String name) => Tab(text: name))
+                                  .toList(),
+                              indicatorColor: AppColorConstants.themeColor,
+                              labelColor: AppColorConstants.themeColor,
+                              unselectedLabelColor:
+                                  AppColorConstants.themeColor.withOpacity(0.5),
+                            ),
+                          ),
+                          pinned: true,
+                        ),
+                      ];
+                    },
+                    body: TabBarView(
+                      children: [
+                        _buildPostsView(),
+                        _buildReelsView(),
+                        _buildTaggedView(),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
         ));
   }
 
-  double headerHeight() {
-    double categoryPortionHt =
-        _profileController.user.value!.profileCategoryTypeId != 0 ? 20 : 0;
-    double cityNamePortionHt =
-        _profileController.user.value?.country != null ? 20 : 0;
-
-    return 385 + categoryPortionHt + cityNamePortionHt;
-  }
-
-  Widget header() {
-    return SizedBox(
-      height: headerHeight(),
-      child: Column(
-        children: [
-          addProfileView().bP16,
-          addHighlightsView().bP16,
-        ],
-      ),
-    );
-  }
-
-  Widget body() {
-    return Column(
-      children: [
-        if (_settingsController.appearanceChanged!.value) Container(),
-        Flexible(
-          // Use Flexible to ensure proper layout
-          child: TabBarView(
-            children: [
-              postsView(),
-              reelsView(),
-              mentionedView(),
-              collaborationsView()
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget addProfileView() {
-    return GetBuilder<ProfileController>(
-        init: _profileController,
-        builder: (ctx) {
-          return _profileController.user.value != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                      UserAvatarView(
-                          user: _profileController.user.value!,
-                          size: 75,
-                          onTapHandler: () {}),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          BodyLargeText(
-                            _profileController.user.value!.userName,
-                            weight: TextWeight.bold,
-                          ),
-                          if (_profileController.user.value!.isVerified)
-                            verifiedUserTag()
-                        ],
-                      ).bP4,
-                      if (_profileController
-                              .user.value!.profileCategoryTypeId !=
-                          0)
-                        BodyMediumText(
-                          _profileController
-                              .user.value!.profileCategoryTypeName,
-                          weight: TextWeight.medium,
-                          color: AppColorConstants.mainTextColor,
-                        ).bP4,
-                      if (_profileController.user.value!.country != null)
-                        BodyMediumText(
-                          '${_profileController.user.value!.country}, ${_profileController.user.value!.city}',
-                          color: AppColorConstants.mainTextColor,
-                        ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      UserProfileStatistics(
-                        user: _profileController.user.value!,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      AppThemeButton(
-                          height: 40,
-                          text: editProfileString.tr,
-                          onPress: () {
-                            Get.to(() => const UpdateProfile())!
-                                .then((value) {
-                              loadData();
-                            });
-                          })
-                    ]).p16
-              : Container();
-        });
-  }
-
-  Widget addHighlightsView() {
-    return GetBuilder<HighlightsController>(
-        init: _highlightsController,
-        builder: (ctx) {
-          return _highlightsController.isLoading.value == true
-              ? const StoryAndHighlightsShimmer()
-              : HighlightsBar(
-                  highlights: _highlightsController.highlights,
-                  addHighlightCallback: () {
-                    Get.to(() => const ChooseStoryForHighlights());
-                  },
-                  viewHighlightCallback: (highlight) {
-                    Get.to(() => HighlightViewer(highlight: highlight))!
-                        .then((value) {
-                      loadData();
-                    });
-                  },
-                );
-        });
-  }
-
-  Widget appBar() {
+  Widget _buildInstagramAppBar() {
     return SizedBox(
       height: 100,
       width: double.infinity,
@@ -273,8 +152,7 @@ class MyProfileState extends State<MyProfile> {
                   await SharedPrefs().getAccounts();
               accounts = accounts
                   .where((e) =>
-                      e.userId !=
-                      _userProfileManager.user.value!.id.toString())
+                      e.userId != _userProfileManager.user.value!.id.toString())
                   .toList();
               Get.bottomSheet(LinkedAccountsList(
                 accounts: accounts,
@@ -328,14 +206,10 @@ class MyProfileState extends State<MyProfile> {
                                           .unreadNotificationCount.value
                                           .toString(),
                                       style: const TextStyle(
-                                          fontSize: 8,
-                                          color: Colors.white),
+                                          fontSize: 8, color: Colors.white),
                                       textAlign: TextAlign.center,
                                     ).setPadding(
-                                        top: 2,
-                                        bottom: 2,
-                                        left: 4,
-                                        right: 4),
+                                        top: 2, bottom: 2, left: 4, right: 4),
                                   ),
                                 ).circular)
                         ],
@@ -343,8 +217,8 @@ class MyProfileState extends State<MyProfile> {
                   const SizedBox(
                     width: 20,
                   ),
-                  ThemeIconWidget(
-                    ThemeIcon.setting,
+                  Icon(
+                    Icons.menu,
                     size: 25,
                     color: AppColorConstants.themeColor,
                   ).ripple(() {
@@ -362,184 +236,319 @@ class MyProfileState extends State<MyProfile> {
     );
   }
 
-  postsView() {
-    ScrollController scrollController = ScrollController();
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.position.pixels) {
-        _profileController.getPosts(
-            userId: _userProfileManager.user.value!.id, callback: () {});
-      }
-    });
-
-    return GetBuilder<ProfileController>(
-        init: _profileController,
-        builder: (ctx) {
-          List<PostModel> posts = _profileController.posts;
-
-          return _profileController.postDataWrapper.isLoading.value
-              ? const HomeScreenShimmer()
-              : posts.isEmpty
-                  ? Center(child: BodyLargeText(noDataString.tr))
-                  : ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 50),
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        PostModel model = posts[index];
-                        return PostCard(
-                            model: model,
-                            removePostHandler: () {
-                              _profileController.removePostFromList(model);
-                            },
-                            blockUserHandler: () {
-                              _profileController
-                                  .removeUsersAllPostFromList(model);
-                            });
-                      },
-                      separatorBuilder: (ctx, index) {
-                        return const SizedBox(
-                          height: 15,
-                        );
-                      },
-                    );
-        });
+  Widget _buildProfileHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              // Profile picture
+              Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: UserAvatarView(
+                    user: _profileController.user.value!,
+                    size: 80,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 30),
+              // Stats
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatColumn(
+                        'Posts', _profileController.user.value!.totalPost),
+                    _buildStatColumn('Followers',
+                        _profileController.user.value!.totalFollower),
+                    _buildStatColumn('Following',
+                        _profileController.user.value!.totalFollowing),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Bio
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BodyLargeText(
+                  _profileController.user.value!.userName,
+                  weight: TextWeight.bold,
+                ),
+                if (_profileController.user.value!.bio != null)
+                  BodyMediumText(_profileController.user.value!.bio!),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Edit profile button
+          SizedBox(
+            width: double.infinity,
+            child: AppThemeButton(
+              height: 35,
+              text: editProfileString.tr,
+              onPress: () {
+                Get.to(() => const UpdateProfile())!.then((value) {
+                  loadData();
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  reelsView() {
-    ScrollController scrollController = ScrollController();
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.position.pixels) {
-        _profileController.getReels(_userProfileManager.user.value!.id);
-      }
-    });
-
-    return GetBuilder<ProfileController>(
-        init: _profileController,
-        builder: (ctx) {
-          List<PostModel> posts = _profileController.reels;
-
-          return _profileController.reelsDataWrapper.isLoading.value
-              ? const HomeScreenShimmer()
-              : posts.isEmpty
-                  ? Center(child: BodyLargeText(noDataString.tr))
-                  : ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 50),
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        PostModel model = posts[index];
-                        return PostCard(
-                            model: model,
-                            removePostHandler: () {
-                              _profileController.removePostFromList(model);
-                            },
-                            blockUserHandler: () {
-                              _profileController
-                                  .removeUsersAllPostFromList(model);
-                            });
-                      },
-                      separatorBuilder: (ctx, index) {
-                        return const SizedBox(
-                          height: 15,
-                        );
-                      },
-                    );
-        });
+  Widget _buildStatColumn(String label, int value) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BodyLargeText(
+          value.toString(),
+          weight: TextWeight.bold,
+        ),
+        BodySmallText(label),
+      ],
+    );
   }
 
-  mentionedView() {
-    ScrollController scrollController = ScrollController();
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.position.pixels) {
-        _profileController
-            .getMentionPosts(_userProfileManager.user.value!.id);
-      }
-    });
-
-    return GetBuilder<ProfileController>(
-        init: _profileController,
+  Widget _buildHighlights() {
+    return SizedBox(
+      height: 100,
+      child: GetBuilder<HighlightsController>(
         builder: (ctx) {
-          List<PostModel> posts = _profileController.mentions;
-
-          return _profileController
-                  .mentionedPostDataWrapper.isLoading.value
-              ? const HomeScreenShimmer()
-              : posts.isEmpty
-                  ? Center(child: BodyLargeText(noDataString.tr))
-                  : ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 50),
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        PostModel model = posts[index];
-                        return PostCard(
-                            model: model,
-                            removePostHandler: () {
-                              _profileController.removePostFromList(model);
-                            },
-                            blockUserHandler: () {
-                              _profileController
-                                  .removeUsersAllPostFromList(model);
-                            });
-                      },
-                      separatorBuilder: (ctx, index) {
-                        return const SizedBox(
-                          height: 15,
-                        );
-                      },
-                    );
-        });
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _highlightsController.highlights.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _buildAddHighlight();
+              }
+              final highlight = _highlightsController.highlights[index - 1];
+              return _buildHighlightItem(highlight);
+            },
+          );
+        },
+      ),
+    );
   }
 
-  collaborationsView() {
-    ScrollController scrollController = ScrollController();
-    scrollController.addListener(() {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.position.pixels) {
-        _profileController.getCollaborationsPosts();
-      }
-    });
+  Widget _buildAddHighlight() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Get.to(() => const ChooseStoryForHighlights());
+            },
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Icon(Icons.add),
+            ),
+          ),
+          const SizedBox(height: 4),
+          const BodySmallText('New'),
+        ],
+      ),
+    );
+  }
 
+  Widget addHighlightsView() {
+    return GetBuilder<HighlightsController>(
+      init: _highlightsController,
+      builder: (ctx) {
+        return _highlightsController.isLoading.value == true
+            ? const StoryAndHighlightsShimmer()
+            : HighlightsBar(
+                highlights: _highlightsController.highlights,
+                addHighlightCallback: () {
+                  Get.to(() => const ChooseStoryForHighlights());
+                },
+                viewHighlightCallback: (highlight) {
+                  print("Tapped highlight: ${highlight.id}");
+                  Get.to(() => HighlightViewer(highlight: highlight))
+                      ?.then((_) => loadData());
+                },
+              );
+      },
+    );
+  }
+
+  Widget _buildHighlightItem(HighlightsModel highlight) {
+    return GestureDetector(
+      onTap: () {
+        // Call the same callback that opens HighlightViewer
+        Get.to(() => HighlightViewer(highlight: highlight))
+            ?.then((_) => loadData());
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.yellow.shade600,
+                    Colors.orange,
+                    Colors.red,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.all(2),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: highlight.coverImage,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            BodySmallText(
+              highlight.name,
+              maxLines: 1,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPostsView() {
     return GetBuilder<ProfileController>(
-        init: _profileController,
-        builder: (ctx) {
-          List<PostModel> posts = _profileController.collaborations;
+      builder: (ctx) {
+        return GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          itemCount: _profileController.posts.length,
+          itemBuilder: (context, index) {
+            return CachedNetworkImage(
+              imageUrl: _profileController.posts[index].gallery.first.thumbnail,
+              fit: BoxFit.cover,
+            );
+          },
+        );
+      },
+    );
+  }
 
-          return _profileController
-                  .collaborationsDataWrapper.isLoading.value
-              ? const HomeScreenShimmer()
-              : posts.isEmpty
-                  ? Center(child: BodyLargeText(noDataString.tr))
-                  : ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 50),
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        PostModel model = posts[index];
-                        return PostCard(
-                            model: model,
-                            removePostHandler: () {
-                              _profileController.removePostFromList(model);
-                            },
-                            blockUserHandler: () {
-                              _profileController
-                                  .removeUsersAllPostFromList(model);
-                            });
-                      },
-                      separatorBuilder: (ctx, index) {
-                        return const SizedBox(
-                          height: 15,
-                        );
-                      },
-                    );
-        });
+  Widget _buildReelsView() {
+    return GetBuilder<ProfileController>(
+      builder: (ctx) {
+        return GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          itemCount: _profileController.reels.length,
+          itemBuilder: (context, index) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                CachedNetworkImage(
+                  imageUrl:
+                      _profileController.reels[index].gallery.first.thumbnail,
+                  fit: BoxFit.cover,
+                ),
+                const Center(
+                  child: Icon(Icons.play_arrow, color: Colors.white),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildTaggedView() {
+    return GetBuilder<ProfileController>(
+      builder: (ctx) {
+        return GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          itemCount: _profileController.mentions.length,
+          itemBuilder: (context, index) {
+            return CachedNetworkImage(
+              imageUrl:
+                  _profileController.mentions[index].gallery.first.thumbnail,
+              fit: BoxFit.cover,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar _tabBar;
+
+  _SliverAppBarDelegate(this._tabBar);
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }
 

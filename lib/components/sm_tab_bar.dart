@@ -6,12 +6,13 @@ class SMTabBar extends StatelessWidget {
   final bool canScroll;
   final bool hideDivider;
 
-  const SMTabBar(
-      {super.key,
-      required this.tabs,
-      required this.canScroll,
-      this.controller,
-      this.hideDivider = true});
+  const SMTabBar({
+    super.key,
+    required this.tabs,
+    required this.canScroll,
+    this.controller,
+    this.hideDivider = true,
+  });
 
   @override
   Widget build(BuildContext context) {
