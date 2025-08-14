@@ -82,7 +82,7 @@
 
             android:name="com.google.android.geo.API_KEY"
 
-            android:value="@string/google_map_id" />
+            android:value="AIzaSyBf0qYuC5t8eVAainhDSguav-JCP-szQk8" />
 
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"

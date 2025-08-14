@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:foap/screens/add_on/controller/reel/create_reel_controller.dart';
 import 'package:foap/screens/add_on/ui/reel/select_music.dart';
 import 'package:foap/helper/imports/common_import.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../../../content_creator_view.dart';
 
 class CreateReelScreen extends StatefulWidget {
@@ -73,13 +74,24 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                       children: [
                         Container(
                                 color: AppColorConstants.themeColor,
-                                child: ThemeIconWidget(ThemeIcon.close).p4)
+                                child: Icon(
+                                  AntDesign.close_outline,
+                                  color: AppColorConstants.backgroundColor,
+                                  size: 20,
+                                ).p4)
                             .circular
                             .ripple(() {
                           Get.back();
                         }),
                         Obx(() => Container(
-                                color: AppColorConstants.themeColor,
+                                // color: AppColorConstants.themeColor,
+
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(colors: [
+                                    AppColorConstants.themeColor,
+                                    AppColorConstants.themeColor.darken()
+                                  ]),
+                                ),
                                 child: Row(
                                   children: [
                                     if (_createReelController
@@ -89,14 +101,15 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                                         ThemeIcon.music,
                                         color: AppColorConstants.mainTextColor,
                                       ),
-                                    BodyLargeText(
+                                    BodyMediumText(
                                       _createReelController
                                                   .selectedAudio.value !=
                                               null
                                           ? _createReelController
                                               .selectedAudio.value!.name
                                           : selectMusicString.tr,
-                                      weight: TextWeight.bold,
+                                      color: AppColorConstants.backgroundColor,
+                                      weight: TextWeight.medium,
                                     ),
                                   ],
                                 ).setPadding(
@@ -129,11 +142,13 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                 ),
               ),
               Positioned(
-                left: 15,
-                top: 150,
+                right: 15,
+                top: 200,
                 child: Container(
+                  // width: Get.width * 0.6,
                   color: AppColorConstants.cardColor.withValues(alpha: 0.4),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -151,7 +166,7 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                           }
                         },
                         child: Icon(
-                          Icons.cameraswitch_outlined,
+                          ZondIcons.camera,
                           size: 30,
                           color: AppColorConstants.themeColor,
                         ),
@@ -169,14 +184,14 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                                 _createReelController.turnOffFlash();
                               } else {
                                 cameraService.controller
-                                    .setFlashMode(FlashMode.always);
+                                    .setFlashMode(FlashMode.torch);
                                 _createReelController.turnOnFlash();
                               }
                             },
                             child: Icon(
                               _createReelController.flashSetting.value
-                                  ? Icons.flash_on
-                                  : Icons.flash_off,
+                                  ? IonIcons.flash_off
+                                  : IonIcons.flash,
                               size: 30,
                               color: AppColorConstants.themeColor,
                             ),
@@ -197,9 +212,17 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                                   color: _createReelController
                                               .recordingLength.value ==
                                           15
-                                      ? AppColorConstants.themeColor
+                                      ? AppColorConstants.themeColor.darken()
                                       : AppColorConstants.backgroundColor),
-                              child: const Center(child: BodySmallText('15s')),
+                              child: Center(
+                                  child: BodySmallText(
+                                '15s',
+                                color: _createReelController
+                                            .recordingLength.value ==
+                                        15
+                                    ? AppColorConstants.backgroundColor
+                                    : AppColorConstants.themeColor.darken(),
+                              )),
                             ),
                           )),
                       const SizedBox(
@@ -218,9 +241,17 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                                   color: _createReelController
                                               .recordingLength.value ==
                                           30
-                                      ? AppColorConstants.themeColor
+                                      ? AppColorConstants.themeColor.darken()
                                       : AppColorConstants.backgroundColor),
-                              child: const Center(child: BodySmallText('30s')),
+                              child: Center(
+                                  child: BodySmallText(
+                                '30s',
+                                color: _createReelController
+                                            .recordingLength.value ==
+                                        30
+                                    ? AppColorConstants.backgroundColor
+                                    : AppColorConstants.themeColor.darken(),
+                              )),
                             ),
                           ))
                     ],
@@ -247,16 +278,12 @@ class _CreateReelScreenState extends State<CreateReelScreen>
                                 AppColorConstants.themeColor),
                           ),
                         ),
-                        Obx(() => Container(
-                              height: 50,
-                              width: 50,
+                        Obx(() => Icon(
                               color: AppColorConstants.themeColor,
-                              child: ThemeIconWidget(
-                                _createReelController.isRecording.value
-                                    ? ThemeIcon.pause
-                                    : ThemeIcon.play,
-                                size: 30,
-                              ),
+                              _createReelController.isRecording.value
+                                  ? AntDesign.pause_circle_fill
+                                  : AntDesign.play_circle_fill,
+                              size: 50,
                             ).circular)
                       ],
                     ),

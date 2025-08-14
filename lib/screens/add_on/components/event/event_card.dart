@@ -1,5 +1,6 @@
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/event_imports.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 import '../../model/create_event_model.dart';
 
@@ -19,50 +20,60 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Get.width * 0.6,
-      color: AppColorConstants.cardColor,
+      width: Get.width * 0.45,
+      // height: Get.height * 0.3,
+      // color: AppColorConstants.cardColor,
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
-              CachedNetworkImage(
-                imageUrl: event.image,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: Get.width * 0.45,
-              ).round(25).ripple(() {
-                previewBtnClicked();
-              }),
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                child: CachedNetworkImage(
+                        imageUrl: event.image,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: Get.width * 0.4)
+                    .ripple(() {
+                  previewBtnClicked();
+                }),
+              ),
               if (event.isFree)
                 Positioned(
                     top: 10,
                     right: 10,
                     child: Container(
-                      color: AppColorConstants.themeColor,
+                      color: AppColorConstants.themeColor.darken(),
                       child: BodyLargeText(
                         freeString.tr,
                         color: Colors.white,
-                      ).p8,
+                      ).p4,
                     ).round(5))
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          Heading5Text(
+          Heading6Text(
             event.name,
-            weight: TextWeight.semiBold,
+            // weight: TextWeight.semiBold,
             maxLines: 1,
-          ),
+          ).hP8,
           const SizedBox(
-            height: 5,
+            height: 2,
           ),
           BodyMediumText(
             event.startAtDateTime,
             weight: TextWeight.regular,
             color: AppColorConstants.themeColor,
-          ),
+          ).hP8,
           const SizedBox(
             height: 8,
           ),
@@ -76,17 +87,16 @@ class EventCard extends StatelessWidget {
               const SizedBox(
                 width: 5,
               ),
-              Expanded(
-                  child: BodyLargeText(
+              BodyMediumText(
                 event.placeName,
                 weight: TextWeight.regular,
                 maxLines: 1,
-              )),
+              ),
             ],
-          ),
+          ).hP8,
         ],
-      ).p8,
-    ).round(25);
+      ),
+    ).round(20);
   }
 }
 
@@ -106,74 +116,77 @@ class EventCard2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
-      color: AppColorConstants.cardColor,
+      height: 120,
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+      ),
       child: Row(
         children: [
           Stack(
             children: [
-              CachedNetworkImage(
-                imageUrl: event.image,
-                fit: BoxFit.cover,
-                width: 120,
-                height: double.infinity,
-              ).round(15).ripple(() {
-                previewBtnClicked();
-              }),
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15),
+                    topLeft: Radius.circular(15)),
+                child: CachedNetworkImage(
+                  imageUrl: event.image,
+                  fit: BoxFit.cover,
+                  width: 130,
+                  height: double.infinity,
+                ).ripple(() {
+                  previewBtnClicked();
+                }),
+              ),
               if (event.isFree)
                 Positioned(
                     top: 10,
                     right: 10,
                     child: Container(
                       color: AppColorConstants.themeColor,
-                      child: BodyLargeText(
+                      child: BodySmallText(
                         freeString.tr,
                         color: Colors.white,
-                        weight: TextWeight.bold,
+                        weight: TextWeight.semiBold,
                       ).p4,
                     ).round(5))
             ],
           ),
           const SizedBox(
-            width: 15,
+            width: 10,
           ),
           Expanded(
             child: Stack(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Heading5Text(event.name,
-                        maxLines: 1, weight: TextWeight.semiBold),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
-                    BodyMediumText(event.startAtDateTime.toUpperCase(),
+                    BodyExtraLargeText(event.name,
+                        maxLines: 1, weight: TextWeight.medium),
+
+                    BodySmallText(event.startAtDateTime.toUpperCase(),
                         maxLines: 1,
                         weight: TextWeight.regular,
                         color: AppColorConstants.themeColor),
                     const SizedBox(
-                      height: 10,
+                      height: 4,
                     ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          ThemeIconWidget(
-                            ThemeIcon.location,
-                            color: AppColorConstants.themeColor,
-                            size: 17,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: BodyMediumText(event.placeName,
-                                weight: TextWeight.medium),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Iconsax.location_outline,
+                            color: AppColorConstants.themeColor, size: 17),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: BodyMediumText(event.placeName,
+                              weight: TextWeight.medium),
+                        ),
+                      ],
                     ),
                     // const SizedBox(
                     //   height: 20,
@@ -200,8 +213,8 @@ class EventCard2 extends StatelessWidget {
             ),
           ),
         ],
-      ).p(12),
-    ).round(25);
+      ),
+    ).round(15);
   }
 }
 
@@ -304,10 +317,9 @@ class ProviderEventCard2 extends StatelessWidget {
                             height: 10,
                           ),
                           Container(
-                            color:
-                                event.statusType == EventStatus.cancelled
-                                    ? AppColorConstants.red
-                                    : AppColorConstants.green,
+                            color: event.statusType == EventStatus.cancelled
+                                ? AppColorConstants.red
+                                : AppColorConstants.green,
                             child: BodyMediumText(
                               event.statusType == EventStatus.cancelled
                                   ? cancelledString.tr

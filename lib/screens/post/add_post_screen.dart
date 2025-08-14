@@ -24,6 +24,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:giphy_get/giphy_get.dart';
 import '../chat/drawing_screen.dart';
 import '../chat/voice_record.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class AddPostScreen extends StatefulWidget {
   final PostCategory postType;
@@ -99,30 +100,40 @@ class AddPostState extends State<AddPostScreen> {
                         decoration: BoxDecoration(
                           border: BorderDirectional(
                               bottom: BorderSide(
-                            color: AppColorConstants.dividerColor
-                                .withOpacity(0.32),
+                            color:
+                                AppColorConstants.dividerColor.withOpacity(0.1),
                             width: 2,
                           )),
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             InkWell(
                                 onTap: () {
                                   Get.back();
                                   addPostController.clear();
-
                                   if (!settingsController
                                       .setting.value!.enableReel) {
                                     DashboardController dashboardController =
                                         Get.find();
-
                                     dashboardController.indexChanged(0);
                                   }
                                 },
-                                child: ThemeIconWidget(ThemeIcon.backArrow)),
-                            const Spacer(),
+                                child: ThemeIconWidget(
+                                  ThemeIcon.close,
+                                  size: 30,
+                                )),
+                            BodyMediumText(
+                              "Create Post",
+                              color: Colors.black,
+                            ),
                             Container(
-                                    color: AppColorConstants.themeColor,
+                                    // color: AppColorConstants.themeColor,
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(colors: [
+                                      AppColorConstants.themeColor,
+                                      AppColorConstants.themeColor.darken()
+                                    ])),
                                     child: BodyLargeText(
                                       widget.competition == null
                                           ? postString.tr
@@ -206,16 +217,17 @@ class AddPostState extends State<AddPostScreen> {
                         height: 50,
                         child: Row(
                           children: [
-                            ThemeIconWidget(ThemeIcon.message),
+                            Icon(AntDesign.message_outline),
                             const SizedBox(
                               width: 10,
                             ),
                             BodyMediumText(allowCommentsString),
                             const Spacer(),
-                            Obx(() => ThemeIconWidget(
+                            Obx(() => Icon(
+                                        color: AppColorConstants.themeColor,
                                         addPostController.enableComments.value
-                                            ? ThemeIcon.selectedCheckbox
-                                            : ThemeIcon.emptyCheckbox)
+                                            ? AntDesign.check_circle_fill
+                                            : AntDesign.check_circle_outline)
                                     .ripple(() {
                                   addPostController.toggleEnableComments();
                                 })),
@@ -244,12 +256,15 @@ class AddPostState extends State<AddPostScreen> {
                             ],
                           ),
                         ).hp(DesignConstants.horizontalPadding),
-                      divider(height: 0.5),
+                      divider(
+                          height: 0.5,
+                          color:
+                              AppColorConstants.dividerColor.withOpacity(0.25)),
                       SizedBox(
                         height: 50,
                         child: Row(
                           children: [
-                            ThemeIconWidget(ThemeIcon.location),
+                            Icon(Bootstrap.geo_fill),
                             const SizedBox(
                               width: 10,
                             ),
@@ -261,21 +276,32 @@ class AddPostState extends State<AddPostScreen> {
                             const Spacer(),
                             Obx(() => addPostController.taggedLocation.value ==
                                     null
-                                ? ThemeIconWidget(ThemeIcon.nextArrow)
-                                : ThemeIconWidget(ThemeIcon.close).ripple(() {
-                                    addPostController.setTaggedLocation(null);
-                                  })),
+                                ? Icon(
+                                    AntDesign.right_circle_outline,
+                                    color:
+                                        AppColorConstants.themeColor.darken(),
+                                  )
+                                : Icon(
+                                    AntDesign.close_circle_fill,
+                                    color:
+                                        AppColorConstants.themeColor.darken(),
+                                  )).ripple(() {
+                              addPostController.setTaggedLocation(null);
+                            })
                           ],
                         ),
                       ).hp(DesignConstants.horizontalPadding).ripple(() {
                         openLocationPicker();
                       }),
-                      divider(height: 0.5),
+                      divider(
+                          height: 0.5,
+                          color:
+                              AppColorConstants.dividerColor.withOpacity(0.25)),
                       SizedBox(
                         height: 50,
                         child: Row(
                           children: [
-                            ThemeIconWidget(ThemeIcon.account),
+                            Icon(AntDesign.user_outline),
                             const SizedBox(
                               width: 10,
                             ),
@@ -289,14 +315,16 @@ class AddPostState extends State<AddPostScreen> {
                                   ],
                                 )),
                             const Spacer(),
-                            ThemeIconWidget(ThemeIcon.nextArrow),
+                            Icon(AntDesign.right_circle_outline,
+                                color: AppColorConstants.themeColor.darken()),
+                            // ThemeIconWidget(ThemeIcon.nextArrow),
                           ],
                         ),
                       ).hp(DesignConstants.horizontalPadding).ripple(() {
                         Get.to(() => const AddCollaborators(),
                             fullscreenDialog: true);
                       }),
-                      divider(height: 0.5),
+                      // divider(height: 0.5),
                       const SizedBox(
                         height: 10,
                       ),
@@ -490,7 +518,7 @@ class AddPostState extends State<AddPostScreen> {
         context: context,
         isScrollControlled: true,
         builder: (context) => FractionallySizedBox(
-            heightFactor: 0.9,
+            heightFactor: 0.8,
             child: PlacePicker(
               apiKey: AppConfigConstants.googleMapApiKey,
               displayLocation: null,

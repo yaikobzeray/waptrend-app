@@ -67,12 +67,9 @@ class CameraView extends StatelessWidget {
               : Matrix4.identity(),
           // transform: Matrix4.identity(),
           // above code of scale was not working for iphone as it was flipping camera on iphone
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(0), // Rounds corners
-            child: SizedBox(
-                height: Get.height * 0.85,
-                child: CameraPreview(controllerService.controller)),
-          ),
+          child: SizedBox(
+              height: Get.height * 0.85,
+              child: CameraPreview(controllerService.controller)),
         );
       },
     );
@@ -164,7 +161,13 @@ class _ContentCreatorViewState extends State<ContentCreatorView>
                     LiveStreamingStatus.none
                 ? Container()
                 : Container(
-                    color: AppColorConstants.themeColor.withValues(alpha: 0.2),
+                    // width: Get.width,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        AppColorConstants.themeColor,
+                        AppColorConstants.themeColor.darken()
+                      ]),
+                    ),
                     child: SMTabBar(
                       tabs: tabs,
                       canScroll: true,

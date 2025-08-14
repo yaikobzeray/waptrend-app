@@ -1,4 +1,5 @@
 import 'package:foap/helper/imports/common_import.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../controller/event/create_event/add_event_controller.dart';
 
@@ -89,16 +90,17 @@ class _UploadEventImagesState extends State<UploadEventImages> {
             child: SizedBox(
                     height: 180,
                     width: double.infinity,
-                    child: addEventController.creatingEvent.value.image ==
-                            null
+                    child: addEventController.creatingEvent.value.image == null
                         ? Center(
-                            child: ThemeIconWidget(
-                            ThemeIcon.plus,
-                            size: 50,
-                          ))
+                            child: Icon(
+                              Iconsax.gallery_add_outline,
+                              size: 50,
+                              color: AppColorConstants.themeColor.darken(),
+                            ),
+                          )
                         : CachedNetworkImage(
-                            imageUrl: addEventController
-                                .creatingEvent.value.image!,
+                            imageUrl:
+                                addEventController.creatingEvent.value.image!,
                             fit: BoxFit.cover,
                             height: double.infinity,
                             width: double.infinity))
@@ -120,15 +122,13 @@ class _UploadEventImagesState extends State<UploadEventImages> {
         ),
         padding: EdgeInsets.zero,
         shrinkWrap: true,
-        itemCount:
-            (addEventController.creatingEvent.value.gallery).length + 1,
+        itemCount: (addEventController.creatingEvent.value.gallery).length + 1,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return InkWell(
               onTap: () async {
                 if (index ==
-                    (addEventController.creatingEvent.value.gallery)
-                        .length) {
+                    (addEventController.creatingEvent.value.gallery).length) {
                   openImagePickingPopup(false);
                 }
               },
@@ -136,21 +136,19 @@ class _UploadEventImagesState extends State<UploadEventImages> {
                       height: double.infinity,
                       width: double.infinity,
                       child: index ==
-                              (addEventController
-                                      .creatingEvent.value.gallery)
+                              (addEventController.creatingEvent.value.gallery)
                                   .length
                           ? Center(
-                              child: ThemeIconWidget(
-                              ThemeIcon.plus,
+                              child: Icon(
+                              color: AppColorConstants.themeColor.darken(),
+                              Iconsax.gallery_add_outline,
                               size: 50,
                             ))
                           : Stack(
                               children: [
                                 CachedNetworkImage(
                                     imageUrl: (addEventController
-                                        .creatingEvent
-                                        .value
-                                        .gallery)[index],
+                                        .creatingEvent.value.gallery)[index],
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity),
@@ -164,8 +162,7 @@ class _UploadEventImagesState extends State<UploadEventImages> {
                                         color: Colors.white,
                                       ).p8,
                                     ).round(10).ripple(() {
-                                      addEventController
-                                          .removeImageAt(index);
+                                      addEventController.removeImageAt(index);
                                     }))
                               ],
                             ))
@@ -177,33 +174,65 @@ class _UploadEventImagesState extends State<UploadEventImages> {
     showModalBottomSheet(
         context: context,
         builder: (context) => Container(
-              color: AppColorConstants.cardColor,
-              child: Wrap(
+              decoration: BoxDecoration(
+                color: AppColorConstants.cardColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  )
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, top: 20, bottom: 25),
-                      child: BodyLargeText(
-                        addPhotoString.tr,
-                        color: AppColorConstants.mainTextColor,
-                        weight: TextWeight.semiBold,
-                      )),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
+                    child: BodyLargeText(
+                      addPhotoString.tr,
+                      color: AppColorConstants.mainTextColor,
+                      weight: TextWeight.semiBold,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Divider(height: 1, thickness: 0.5),
                   ListTile(
-                      leading: ThemeIconWidget(ThemeIcon.camera),
-                      title: BodyLargeText(cameraString.tr),
-                      onTap: () async {
-                        chooseImage(ImageSource.camera, isCoverImage);
-                      }),
+                    leading: Icon(
+                      Iconsax.camera_bold,
+                      color: AppColorConstants.themeColor.darken(),
+                    ),
+                    title: BodyLargeText(cameraString.tr),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    minLeadingWidth: 24,
+                    onTap: () => chooseImage(ImageSource.camera, isCoverImage),
+                  ),
+                  const Divider(height: 1, thickness: 0.5),
                   ListTile(
-                      leading: ThemeIconWidget(ThemeIcon.gallery),
-                      title: BodyLargeText(galleryString.tr),
-                      onTap: () async {
-                        chooseImage(ImageSource.gallery, isCoverImage);
-                      }),
+                    leading: Icon(
+                      Iconsax.gallery_bold,
+                      color: AppColorConstants.themeColor.darken(),
+                    ),
+                    title: BodyLargeText(galleryString.tr),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    minLeadingWidth: 24,
+                    onTap: () => chooseImage(ImageSource.gallery, isCoverImage),
+                  ),
+                  const Divider(height: 1, thickness: 0.5),
                   ListTile(
-                      leading: ThemeIconWidget(ThemeIcon.close),
-                      title: BodyLargeText(cancelString.tr),
-                      onTap: () => Navigator.of(context).pop()),
+                    leading: Icon(
+                      Iconsax.close_circle_bold,
+                      color: AppColorConstants.red,
+                    ),
+                    title: BodyLargeText(
+                      cancelString.tr,
+                      color: AppColorConstants.red,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    minLeadingWidth: 24,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
                 ],
               ),
             ));

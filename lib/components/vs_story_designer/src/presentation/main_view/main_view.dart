@@ -358,7 +358,8 @@ class _MainViewState extends State<MainView> {
                                         package: 'vs_story_designer',
                                         fontWeight: FontWeight.w500,
                                         fontSize: 25,
-                                        color: Colors.white.withValues(alpha: 0.5),
+                                        color:
+                                            Colors.white.withValues(alpha: 0.5),
                                         shadows: !controlNotifier
                                                 .enableTextShadow
                                             ? []

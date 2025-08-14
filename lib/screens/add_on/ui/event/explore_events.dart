@@ -43,7 +43,7 @@ class ExploreEventsState extends State<ExploreEvents> {
       floatingActionButton: Container(
         height: 50,
         width: 50,
-        color: AppColorConstants.themeColor,
+        color: AppColorConstants.themeColor.darken(),
         child: ThemeIconWidget(
           ThemeIcon.plusSymbol,
           color: Colors.white,
@@ -74,8 +74,7 @@ class ExploreEventsState extends State<ExploreEvents> {
                                 return ListView.separated(
                                     padding: const EdgeInsets.only(
                                         top: 25, bottom: 50),
-                                    itemBuilder:
-                                        (ctx, categoryGroupIndex) {
+                                    itemBuilder: (ctx, categoryGroupIndex) {
                                       return Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -87,30 +86,31 @@ class ExploreEventsState extends State<ExploreEvents> {
                                                           .categories[
                                                               categoryGroupIndex]
                                                           .name,
-                                                      weight:
-                                                          TextWeight.bold)
+                                                      weight: TextWeight.bold)
                                                   .lP16,
                                               const Spacer(),
                                               Row(children: [
                                                 BodySmallText(
+                                                  color: AppColorConstants
+                                                      .themeColor,
                                                   seeAllString.tr,
                                                 ),
                                                 const SizedBox(
                                                   width: 5,
                                                 ),
                                                 ThemeIconWidget(
+                                                  color: AppColorConstants
+                                                      .themeColor,
                                                   ThemeIcon.nextArrow,
                                                   size: 15,
                                                 ).rP16,
                                               ]).ripple(() {
-                                                _eventsController
-                                                    .setCategoryId(
-                                                        _eventsController
-                                                            .categories[
-                                                                categoryGroupIndex]
-                                                            .id);
-                                                _eventsController
-                                                    .getEvents();
+                                                _eventsController.setCategoryId(
+                                                    _eventsController
+                                                        .categories[
+                                                            categoryGroupIndex]
+                                                        .id);
+                                                _eventsController.getEvents();
                                                 Get.to(() => CategoryEventsListing(
                                                     category: _eventsController
                                                             .categories[
@@ -122,15 +122,14 @@ class ExploreEventsState extends State<ExploreEvents> {
                                             height: 25,
                                           ),
                                           SizedBox(
-                                            height: 310,
+                                            height: Get.height * 0.31,
                                             child: ListView.separated(
                                               padding: EdgeInsets.only(
                                                   left: DesignConstants
                                                       .horizontalPadding,
                                                   right: DesignConstants
                                                       .horizontalPadding),
-                                              scrollDirection:
-                                                  Axis.horizontal,
+                                              scrollDirection: Axis.horizontal,
                                               itemCount: _eventsController
                                                   .categories[
                                                       categoryGroupIndex]
@@ -155,8 +154,7 @@ class ExploreEventsState extends State<ExploreEvents> {
                                                   },
                                                 ).ripple(() {});
                                               },
-                                              separatorBuilder:
-                                                  (ctx, index) {
+                                              separatorBuilder: (ctx, index) {
                                                 return const SizedBox(
                                                     width: 10);
                                               },
@@ -170,8 +168,8 @@ class ExploreEventsState extends State<ExploreEvents> {
                                         height: 40,
                                       );
                                     },
-                                    itemCount: _eventsController
-                                        .categories.length);
+                                    itemCount:
+                                        _eventsController.categories.length);
                               }),
                         ),
                       ],

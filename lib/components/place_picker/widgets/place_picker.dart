@@ -36,8 +36,7 @@ class PlacePicker extends StatefulWidget {
       {super.key,
       required this.apiKey,
       this.displayLocation,
-      this.localizationItem})
-       {
+      this.localizationItem}) {
     localizationItem ??= LocalizationItem();
   }
 
@@ -49,6 +48,7 @@ class PlacePicker extends StatefulWidget {
 class PlacePickerState extends State<PlacePicker> {
   final Completer<GoogleMapController> mapController = Completer();
   final LocationManager _locationManager = Get.find();
+
   /// Indicator for the selected location
   final Set<Marker> markers = {};
 
@@ -242,7 +242,8 @@ class PlacePickerState extends State<PlacePicker> {
           "input={$place}&sessiontoken=$sessionToken";
 
       if (locationResult != null) {
-        endpoint += "&location=${locationResult!.latLng!.latitude}," "${locationResult!.latLng!.longitude}";
+        endpoint += "&location=${locationResult!.latLng!.latitude},"
+            "${locationResult!.latLng!.longitude}";
       }
 
       final response = await http.get(Uri.parse(endpoint));
@@ -487,7 +488,7 @@ class PlacePickerState extends State<PlacePicker> {
             }
           }
         }
-        locality = locality ;
+        locality = locality;
         city = locality;
         locationResult = LocationResult()
           ..name = name
@@ -537,7 +538,7 @@ class PlacePickerState extends State<PlacePicker> {
     //   return;
     // }
 
-    _locationManager.getLocation(locationCallback: (location){
+    _locationManager.getLocation(locationCallback: (location) {
       LatLng target = LatLng(location.latitude, location.longitude);
       moveToLocation(target);
     });

@@ -8,8 +8,7 @@ class CategoryAvatarType1 extends StatelessWidget {
   final CategoryModel category;
   final double? size;
 
-  const CategoryAvatarType1({super.key, required this.category, this.size})
-      ;
+  const CategoryAvatarType1({super.key, required this.category, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +25,8 @@ class CategoryAvatarType1 extends StatelessWidget {
             color: Colors.black45,
           ),
           Positioned(
-              bottom: 5,
-              left: 5,
-              right: 5,
+              bottom: Get.height * 0.02,
+              left: Get.width * 0.08,
               child: BodyMediumText(
                 category.name,
                 maxLines: 1,
@@ -45,8 +43,7 @@ class CategoryAvatarType2 extends StatelessWidget {
   final CategoryModel category;
   final double? size;
 
-  const CategoryAvatarType2({super.key, required this.category, this.size})
-      ;
+  const CategoryAvatarType2({super.key, required this.category, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +70,7 @@ class OfferCategoryCard extends StatelessWidget {
   final OffersCategoryModel category;
   final double? size;
 
-  const OfferCategoryCard({super.key, required this.category, this.size})
-      ;
+  const OfferCategoryCard({super.key, required this.category, this.size});
 
   @override
   Widget build(BuildContext context) {

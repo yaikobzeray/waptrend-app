@@ -1,6 +1,7 @@
 import 'package:foap/controllers/post/add_post_controller.dart';
 
 import '../../helper/imports/common_import.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class CreatePoll extends StatefulWidget {
   const CreatePoll({super.key});
@@ -35,8 +36,7 @@ class _CreatePollState extends State<CreatePoll> {
 
     if (options.length < 2) {
       AppUtil.showToast(
-          message: atleastTwoOptionsAreRequiredString.tr,
-          isSuccess: false);
+          message: atleastTwoOptionsAreRequiredString.tr, isSuccess: false);
       return;
     }
 
@@ -57,7 +57,6 @@ class _CreatePollState extends State<CreatePoll> {
           backNavigationBar(title: createPollString.tr),
           const SizedBox(height: 20),
           form().hp(DesignConstants.horizontalPadding),
-
         ],
       ),
     );
@@ -66,10 +65,13 @@ class _CreatePollState extends State<CreatePoll> {
   Widget form() {
     return Column(
       children: [
-        AppTextField(
-          controller: pollName,
-          hintText: askQuestionString.tr,
-          label: questionString.tr,
+        SizedBox(
+          height: 80,
+          child: AppTextField(
+            controller: pollName,
+            hintText: askQuestionString.tr,
+            label: questionString.tr,
+          ),
         ),
         const SizedBox(height: 20),
         ...List.generate(optionControllers.length, (index) {
@@ -79,10 +81,13 @@ class _CreatePollState extends State<CreatePoll> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: AppTextField(
-                    controller: optionControllers[index],
-                    hintText: "${optionString.tr} ${index + 1}",
-                    label: "${optionString.tr} ${index + 1}",
+                  child: SizedBox(
+                    height: 80,
+                    child: AppTextField(
+                      controller: optionControllers[index],
+                      hintText: "${optionString.tr} ${index + 1}",
+                      label: "${optionString.tr} ${index + 1}",
+                    ),
                   ),
                 ),
                 if (optionControllers.length > 2)
@@ -119,29 +124,28 @@ class _CreatePollState extends State<CreatePoll> {
             },
           ),
         const SizedBox(height: 20),
-
         SizedBox(
           height: 50,
           child: Row(
             children: [
-              ThemeIconWidget(ThemeIcon.message),
+              Icon(AntDesign.message_outline),
               const SizedBox(
                 width: 10,
               ),
               BodyMediumText(allowCommentsString),
               const Spacer(),
-              Obx(() => ThemeIconWidget(_addPostController
-                  .enableComments.value
-                  ? ThemeIcon.selectedCheckbox
-                  : ThemeIcon.emptyCheckbox)
-                  .ripple(() {
-                _addPostController.toggleEnableComments();
-              })),
+              Obx(() => Icon(
+                          color: AppColorConstants.themeColor.darken(),
+                          _addPostController.enableComments.value
+                              ? AntDesign.check_circle_fill
+                              : AntDesign.check_circle_outline)
+                      .ripple(() {
+                    _addPostController.toggleEnableComments();
+                  })),
             ],
           ),
         ),
-        if (_userProfileManager
-            .user.value!.subscriptionPlans.isNotEmpty)
+        if (_userProfileManager.user.value!.subscriptionPlans.isNotEmpty)
           SizedBox(
             height: 50,
             child: Row(
@@ -152,14 +156,12 @@ class _CreatePollState extends State<CreatePoll> {
                 ),
                 BodyMediumText(forSubscribersOnlyString),
                 const Spacer(),
-                Obx(() => ThemeIconWidget(_addPostController
-                    .isPaidContent.value
-                    ? ThemeIcon.selectedCheckbox
-                    : ThemeIcon.emptyCheckbox)
-                    .ripple(() {
-                  _addPostController
-                      .togglePaidContentMode();
-                })),
+                Obx(() => ThemeIconWidget(_addPostController.isPaidContent.value
+                            ? ThemeIcon.selectedCheckbox
+                            : ThemeIcon.emptyCheckbox)
+                        .ripple(() {
+                      _addPostController.togglePaidContentMode();
+                    })),
               ],
             ),
           ),

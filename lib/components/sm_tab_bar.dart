@@ -36,8 +36,7 @@ class SMIconTabBar extends StatelessWidget {
       {super.key,
       required this.tabs,
       this.controller,
-      required this.selectedTab})
-      ;
+      required this.selectedTab});
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +65,7 @@ class SMIconAndTextTabBar extends StatelessWidget {
       required this.icons,
       required this.texts,
       this.controller,
-      required this.selectedTab})
-      ;
+      required this.selectedTab});
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +78,7 @@ class SMIconAndTextTabBar extends StatelessWidget {
             height: 2,
             color: AppColorConstants.dividerColor,
           ).round(5)),
-      getIconAndTexTabBar(
-          icons: icons, texts: texts, selectedTab: selectedTab)
+      getIconAndTexTabBar(icons: icons, texts: texts, selectedTab: selectedTab)
     ]);
   }
 }
@@ -98,9 +95,8 @@ TabBar getTextTabBar(
     tabAlignment: canScroll == true ? TabAlignment.start : null,
     dividerHeight: hideDivider ? 0 : 1,
     indicator: UnderlineTabIndicator(
-
       borderSide:
-          BorderSide(width: 3.0, color: AppColorConstants.themeColor),
+          BorderSide(width: 3.0, color: AppColorConstants.backgroundColor),
       insets: const EdgeInsets.symmetric(horizontal: 16.0),
     ),
     onTap: (status) {
@@ -108,9 +104,9 @@ TabBar getTextTabBar(
     },
     labelStyle: TextStyle(
         fontSize: FontSizes.b2,
-        color: AppColorConstants.themeColor,
-        fontWeight: TextWeight.regular),
-    labelColor: AppColorConstants.themeColor,
+        // color: AppColorConstants.backgroundColor,
+        fontWeight: TextWeight.medium),
+    labelColor: AppColorConstants.backgroundColor,
     unselectedLabelColor: AppColorConstants.subHeadingTextColor,
     tabs: List.generate(tabs.length, (int index) {
       return Tab(
@@ -127,8 +123,7 @@ TabBar getIconTabBar(
   return TabBar(
     controller: controller,
     indicator: UnderlineTabIndicator(
-      borderSide:
-          BorderSide(width: 3.0, color: AppColorConstants.themeColor),
+      borderSide: BorderSide(width: 3.0, color: AppColorConstants.themeColor),
       insets: const EdgeInsets.symmetric(horizontal: 16.0),
     ),
     labelColor: AppColorConstants.themeColor,
@@ -155,8 +150,7 @@ TabBar getIconAndTexTabBar(
   return TabBar(
     controller: controller,
     indicator: UnderlineTabIndicator(
-      borderSide:
-          BorderSide(width: 3.0, color: AppColorConstants.themeColor),
+      borderSide: BorderSide(width: 3.0, color: AppColorConstants.themeColor),
       insets: const EdgeInsets.symmetric(horizontal: 16.0),
     ),
     labelColor: AppColorConstants.themeColor,

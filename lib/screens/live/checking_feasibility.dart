@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/live_imports.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../content_creator_view.dart';
 
@@ -58,8 +59,8 @@ class _CheckingLiveFeasibilityState extends State<CheckingLiveFeasibility> {
                   Column(
                     children: [
                       const SizedBox(
-                        height: 40,
-                      ),
+                          // height: 40,
+                          ),
                       Stack(
                         children: [
                           const CameraView(),
@@ -67,18 +68,21 @@ class _CheckingLiveFeasibilityState extends State<CheckingLiveFeasibility> {
                                   LiveStreamingStatus.checking
                               ? Container()
                               : Positioned(
-                                  top: 20,
+                                  top: 40,
                                   left: DesignConstants.horizontalPadding,
                                   child: Row(
                                     children: [
                                       Container(
-                                        height: 40,
-                                        width: 40,
-                                        color:
-                                            AppColorConstants.backgroundColor,
+                                        height: 30,
+                                        width: 30,
+                                        color: AppColorConstants.themeColor,
                                         child: Center(
-                                          child:
-                                              ThemeIconWidget(ThemeIcon.close),
+                                          child: Icon(
+                                            AntDesign.close_outline,
+                                            color: AppColorConstants
+                                                .backgroundColor,
+                                            size: 20,
+                                          ),
                                         ),
                                       ).circular.ripple(() {
                                         Get.back();

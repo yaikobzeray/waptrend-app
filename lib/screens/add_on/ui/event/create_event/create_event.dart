@@ -28,14 +28,10 @@ class EnterEventDetailState extends State<EnterEventDetail> {
 
   void fillForm() {
     name.text = addEventController.creatingEvent.value.name ?? '';
-    description.text =
-        addEventController.creatingEvent.value.description ?? '';
-    disclaimer.text =
-        addEventController.creatingEvent.value.disclaimer ?? '';
-    placeName.text =
-        addEventController.creatingEvent.value.placeName ?? '';
-    address.text =
-        addEventController.creatingEvent.value.completeAddress ?? '';
+    description.text = addEventController.creatingEvent.value.description ?? '';
+    disclaimer.text = addEventController.creatingEvent.value.disclaimer ?? '';
+    placeName.text = addEventController.creatingEvent.value.placeName ?? '';
+    address.text = addEventController.creatingEvent.value.completeAddress ?? '';
   }
 
   @override
@@ -59,11 +55,14 @@ class EnterEventDetailState extends State<EnterEventDetail> {
                           const SizedBox(
                             height: 25,
                           ),
-                          AppTextField(
-                            label: nameString.tr,
-                            hintText: enterNameString.tr,
-                            controller: name,
-                            onChanged: (value) {},
+                          SizedBox(
+                            height: Get.height * 0.1,
+                            child: AppTextField(
+                              label: nameString.tr,
+                              hintText: enterNameString.tr,
+                              controller: name,
+                              onChanged: (value) {},
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -169,11 +168,14 @@ class EnterEventDetailState extends State<EnterEventDetail> {
                           // const SizedBox(
                           //   height: 20,
                           // ),
-                          AppTextField(
-                            label: placeNameString.tr,
-                            hintText: typeHereString.tr,
-                            controller: placeName,
-                            onChanged: (value) {},
+                          SizedBox(
+                            height: Get.height * 0.1,
+                            child: AppTextField(
+                              label: placeNameString.tr,
+                              hintText: typeHereString.tr,
+                              controller: placeName,
+                              onChanged: (value) {},
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -226,8 +228,7 @@ class EnterEventDetailState extends State<EnterEventDetail> {
                                         minDate: addEventController
                                             .creatingEvent.value.startDate,
                                         onChanged: (date) {
-                                          addEventController
-                                              .setEndDate(date);
+                                          addEventController.setEndDate(date);
                                         },
                                       ),
                                       const SizedBox(
@@ -267,29 +268,23 @@ class EnterEventDetailState extends State<EnterEventDetail> {
 
   void nextBtnClicked() {
     if (name.text.isEmpty) {
-      AppUtil.showToast(
-          message: pleaseEnterNameString.tr, isSuccess: false);
+      AppUtil.showToast(message: pleaseEnterNameString.tr, isSuccess: false);
     } else if (description.text.isEmpty) {
       AppUtil.showToast(
           message: pleaseEnterDescriptionString.tr, isSuccess: false);
-    } else if (addEventController.creatingEvent.value.completeAddress ==
-        null) {
-      AppUtil.showToast(
-          message: pleaseEnterAddressString.tr, isSuccess: false);
-    } else if (addEventController
-            .creatingEvent.value.startDateInMillisecond ==
+    } else if (addEventController.creatingEvent.value.completeAddress == null) {
+      AppUtil.showToast(message: pleaseEnterAddressString.tr, isSuccess: false);
+    } else if (addEventController.creatingEvent.value.startDateInMillisecond ==
         null) {
       AppUtil.showToast(
           message: pleaseSelectStartDateString.tr, isSuccess: false);
-    } else if (addEventController
-            .creatingEvent.value.endDateInMillisecond ==
+    } else if (addEventController.creatingEvent.value.endDateInMillisecond ==
         null) {
       AppUtil.showToast(
           message: pleaseSelectEndDateString.tr, isSuccess: false);
     } else {
       addEventController.creatingEvent.value.name = name.text;
-      addEventController.creatingEvent.value.description =
-          description.text;
+      addEventController.creatingEvent.value.description = description.text;
       addEventController.creatingEvent.value.disclaimer = disclaimer.text;
       addEventController.creatingEvent.value.placeName = placeName.text;
 
@@ -326,17 +321,14 @@ class EnterEventDetailState extends State<EnterEventDetail> {
       if (location != null) {
         LocationResult result = location as LocationResult;
 
-        addEventController.creatingEvent.value.completeAddress =
-            result.name;
+        addEventController.creatingEvent.value.completeAddress = result.name;
         addEventController.creatingEvent.value.latitude =
             result.latLng!.latitude.toString();
         addEventController.creatingEvent.value.longitude =
             result.latLng!.longitude.toString();
 
         address.text = result.name ?? '';
-      } else {
-
-      }
+      } else {}
     });
   }
 }
