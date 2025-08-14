@@ -49,12 +49,13 @@ class _ChooseListingCategoryState extends State<ChooseListingCategory> {
               ),
               Expanded(
                 child: Obx(() => GridView.builder(
-                      padding: EdgeInsets.zero,
+                      padding: EdgeInsets.all(10),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1.5,
-                      ),
+                              crossAxisCount: 2,
+                              childAspectRatio: 1.5,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10),
                       scrollDirection: Axis.vertical,
                       itemCount: shopController.categories.length,
                       itemBuilder: (context, index) {
@@ -68,7 +69,7 @@ class _ChooseListingCategoryState extends State<ChooseListingCategory> {
                               Get.to(() => ChooseListingSubCategory(
                                   ad: ad,
                                   category: shopController.categories[index]));
-                            });
+                            }).round(10);
                       },
                     ).addPullToRefresh(
                         refreshController: refreshController,

@@ -48,8 +48,7 @@ class PostMediaTile extends StatelessWidget {
   final PostModel model;
   final bool isResharedPost;
 
-  PostMediaTile(
-      {super.key, required this.model, required this.isResharedPost});
+  PostMediaTile({super.key, required this.model, required this.isResharedPost});
 
   @override
   Widget build(BuildContext context) {
@@ -133,8 +132,7 @@ class PostMediaTile extends StatelessWidget {
                                   post: model,
                                   isResharedPost: isResharedPost,
                                 )
-                              : model.contentType ==
-                                      PostContentType.classified
+                              : model.contentType == PostContentType.classified
                                   ? ClassifiedProductPostTile(
                                       post: model,
                                       isResharedPost: isResharedPost,
@@ -149,8 +147,7 @@ class PostMediaTile extends StatelessWidget {
                                               PostContentType.club
                                           ? ClubPostTile(
                                               post: model,
-                                              isResharedPost:
-                                                  isResharedPost,
+                                              isResharedPost: isResharedPost,
                                             )
                                           : model.contentType ==
                                                   PostContentType.poll
@@ -173,8 +170,7 @@ class PostMediaTile extends StatelessWidget {
     }).toList();
   }
 
-  Widget videoPostTile(
-      {required PostGallery media, required bool isReshared}) {
+  Widget videoPostTile({required PostGallery media, required bool isReshared}) {
     return VisibilityDetector(
       key: Key(media.id.toString()),
       onVisibilityChanged: (visibilityInfo) {
@@ -185,8 +181,7 @@ class PostMediaTile extends StatelessWidget {
       child: Obx(() => VideoPostTile(
             media: media,
             width: isReshared
-                ? Get.width -
-                    ((DesignConstants.horizontalPadding * 3) + 10)
+                ? Get.width - ((DesignConstants.horizontalPadding * 3) + 10)
                 : Get.width,
             url: media.filePath,
             isLocalFile: false,
@@ -201,8 +196,7 @@ class PostMediaTile extends StatelessWidget {
       imageUrl: media.filePath,
       fit: BoxFit.cover,
       width: Get.width,
-      placeholder: (context, url) =>
-          AppUtil.addProgressIndicator(size: 100),
+      placeholder: (context, url) => AppUtil.addProgressIndicator(size: 100),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
@@ -249,12 +243,11 @@ class PostContent extends StatelessWidget {
                         isResharedPost: model.sharedPost != null,
                       ),
                       if (model.sharedPost != null)
-                        ResharedPostCard(model: model.sharedPost!)
-                            .setPadding(
-                                left: DesignConstants.horizontalPadding,
-                                right: 10,
-                                top: 5,
-                                bottom: 15),
+                        ResharedPostCard(model: model.sharedPost!).setPadding(
+                            left: DesignConstants.horizontalPadding,
+                            right: 10,
+                            top: 5,
+                            bottom: 15),
                     ],
                   ),
                 if (!model.isLocked)
@@ -301,8 +294,8 @@ class PostContent extends StatelessWidget {
                           height: 20,
                         ),
                         Heading5Text(
-                          subscribeToViewThisContentString.tr.replaceAll(
-                              '{{userName}}', model.user.userName),
+                          subscribeToViewThisContentString.tr
+                              .replaceAll('{{userName}}', model.user.userName),
                           color: Colors.white,
                           textAlign: TextAlign.center,
                         ),
@@ -377,461 +370,436 @@ class PostCardState extends State<PostCard> {
                 postPromotionId: widget.model.postPromotionData?.id);
           }
         },
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              Expanded(
+                  child: PostUserInfo(
+                post: widget.model,
+                isSponsored: widget.model.postPromotionData != null,
+                removePostHandler: widget.removePostHandler,
+                blockUserHandler: widget.blockUserHandler,
+                isResharedPost: false,
+              )),
+            ],
+          ).setPadding(
+              left: DesignConstants.horizontalPadding / 2,
+              right: DesignConstants.horizontalPadding / 2,
+              bottom: 16),
+          PostContent(
+            model: widget.model,
+            isSponsored: widget.model.postPromotionData != null,
+          ),
+          if (widget.model.isMyPost)
+            Container(
+              color: AppColorConstants.cardColor.darken(),
+              height: 50,
+              width: double.infinity,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                      child: PostUserInfo(
-                    post: widget.model,
-                    isSponsored: widget.model.postPromotionData != null,
-                    removePostHandler: widget.removePostHandler,
-                    blockUserHandler: widget.blockUserHandler,
-                    isResharedPost: false,
-                  )),
+                  BodyLargeText(
+                    viewInsightsString.tr,
+                    weight: TextWeight.semiBold,
+                  ).ripple(() {
+                    Get.to(() => ViewPostInsights(post: widget.model));
+                  }),
+                  AppThemeButton(
+                      text: boostPost.tr,
+                      cornerRadius: 5,
+                      height: 36,
+                      onPress: () {
+                        _promotionController.setPromotingPost(widget.model);
+                        Get.to(() => PostPromotionScreen());
+                      })
                 ],
-              ).setPadding(
-                  left: DesignConstants.horizontalPadding / 2,
-                  right: DesignConstants.horizontalPadding / 2,
-                  bottom: 16),
-              PostContent(
-                model: widget.model,
-                isSponsored: widget.model.postPromotionData != null,
-              ),
-              if (widget.model.isMyPost)
-                Container(
-                  color: AppColorConstants.cardColor.darken(),
-                  height: 50,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ).hp(DesignConstants.horizontalPadding),
+            ),
+          if (!widget.model.isMyPost &&
+              widget.model.isPendingCollaborationRequest)
+            Container(
+              color: AppColorConstants.cardColor.darken(),
+              height: 50,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BodyLargeText(
+                    collaborationRequestString.tr,
+                    weight: TextWeight.semiBold,
+                  ),
+                  Row(
                     children: [
-                      BodyLargeText(
-                        viewInsightsString.tr,
-                        weight: TextWeight.semiBold,
-                      ).ripple(() {
-                        Get.to(() => ViewPostInsights(post: widget.model));
-                      }),
                       AppThemeButton(
-                          text: boostPost.tr,
+                          text: acceptString.tr,
                           cornerRadius: 5,
                           height: 36,
                           onPress: () {
-                            _promotionController
-                                .setPromotingPost(widget.model);
-                            Get.to(() => PostPromotionScreen());
+                            AddPostController controller = Get.find();
+                            controller.updateCollaborationStatus(
+                                id: widget.model.myCollaboration.id,
+                                status: CollaborationStatusType.accepted);
+                            setState(() {
+                              widget.model.acceptMyCollaboration();
+                            });
+                          }),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      AppThemeButton(
+                          backgroundColor: AppColorConstants.red,
+                          text: rejectString.tr,
+                          cornerRadius: 5,
+                          height: 36,
+                          onPress: () {
+                            setState(() {
+                              widget.model.removeMyCollaboration();
+                            });
+                            AddPostController controller = Get.find();
+                            controller.updateCollaborationStatus(
+                                id: widget.model.myCollaboration.id,
+                                status: CollaborationStatusType.rejected);
                           })
                     ],
-                  ).hp(DesignConstants.horizontalPadding),
-                ),
-              if (!widget.model.isMyPost &&
-                  widget.model.isPendingCollaborationRequest)
-                Container(
-                  color: AppColorConstants.cardColor.darken(),
-                  height: 50,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BodyLargeText(
-                        collaborationRequestString.tr,
-                        weight: TextWeight.semiBold,
-                      ),
-                      Row(
-                        children: [
-                          AppThemeButton(
-                              text: acceptString.tr,
-                              cornerRadius: 5,
-                              height: 36,
-                              onPress: () {
-                                AddPostController controller = Get.find();
-                                controller.updateCollaborationStatus(
-                                    id: widget.model.myCollaboration.id,
-                                    status:
-                                        CollaborationStatusType.accepted);
-                                setState(() {
-                                  widget.model.acceptMyCollaboration();
-                                });
-                              }),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          AppThemeButton(
-                              backgroundColor: AppColorConstants.red,
-                              text: rejectString.tr,
-                              cornerRadius: 5,
-                              height: 36,
-                              onPress: () {
-                                setState(() {
-                                  widget.model.removeMyCollaboration();
-                                });
-                                AddPostController controller = Get.find();
-                                controller.updateCollaborationStatus(
-                                    id: widget.model.myCollaboration.id,
-                                    status:
-                                        CollaborationStatusType.rejected);
-                              })
-                        ],
-                      )
-                    ],
-                  ).hp(DesignConstants.horizontalPadding),
-                ),
-              const SizedBox(
-                height: 20,
-              ),
-              if (widget.model.postPromotionData != null)
-                sponsoredPostView().bP16,
-              commentAndLikeWidget()
-                  .hp(DesignConstants.horizontalPadding / 2),
-            ]));
+                  )
+                ],
+              ).hp(DesignConstants.horizontalPadding),
+            ),
+          const SizedBox(
+            height: 20,
+          ),
+          if (widget.model.postPromotionData != null) sponsoredPostView().bP16,
+          commentAndLikeWidget().hp(DesignConstants.horizontalPadding / 2),
+        ]));
   }
 
   Widget sponsoredPostView() {
     return Container(
       color: AppColorConstants.themeColor,
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BodyLargeText(
-              widget.model.postPromotionData?.type == GoalType.website
-                  ? widget.model.postPromotionData!.urlText!
-                  : widget.model.postPromotionData?.type ==
-                          GoalType.message
-                      ? sendMessagesString.tr
-                      : viewProfileString.tr,
-              color: Colors.white,
-              weight: TextWeight.semiBold,
-            ),
-            ThemeIconWidget(ThemeIcon.nextArrow,
-                size: 25, color: Colors.white)
-          ]).p8.ripple(() {
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        BodyLargeText(
+          widget.model.postPromotionData?.type == GoalType.website
+              ? widget.model.postPromotionData!.urlText!
+              : widget.model.postPromotionData?.type == GoalType.message
+                  ? sendMessagesString.tr
+                  : viewProfileString.tr,
+          color: Colors.white,
+          weight: TextWeight.semiBold,
+        ),
+        ThemeIconWidget(ThemeIcon.nextArrow, size: 25, color: Colors.white)
+      ]).p8.ripple(() {
         widget.model.postPromotionData?.type == GoalType.website
-            ? launchUrl(
-                Uri.parse(widget.model.postPromotionData?.url ?? ''))
+            ? launchUrl(Uri.parse(widget.model.postPromotionData?.url ?? ''))
             : widget.model.postPromotionData?.type == GoalType.message
                 ? openChatRoom()
                 : Get.to(() => OtherUserProfile(
-                    userId: widget.model.user.id,
-                    user: widget.model.user));
+                    userId: widget.model.user.id, user: widget.model.user));
       }),
     );
   }
 
   Widget commentAndLikeWidget() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Row(
         children: [
-          Row(
-            children: [
-              Obx(() => ThemeIconWidget(
-                    postCardController.likedPosts.contains(widget.model) ||
-                            widget.model.isLike
-                        ? ThemeIcon.favFilled
-                        : ThemeIcon.fav,
-                    color: postCardController.likedPosts
-                                .contains(widget.model) ||
-                            widget.model.isLike
-                        ? AppColorConstants.red
-                        : AppColorConstants.iconColor,
-                    size: 15,
-                  ).ripple(() {
-                    postCardController.likeUnlikePost(
-                      post: widget.model,
-                    );
-                  })),
-              const SizedBox(
-                width: 5,
-              ),
-              Obx(() {
-                int totalLikes = 0;
-                if (postCardController.likedPosts.contains(widget.model)) {
-                  PostModel post = postCardController.likedPosts
-                      .where((e) => e.id == widget.model.id)
-                      .first;
-                  totalLikes = post.totalLike;
-                } else {
-                  totalLikes = widget.model.totalLike;
-                }
-                return BodyMediumText(
-                  '$totalLikes',
-                  color: AppColorConstants.mainTextColor,
-                ).ripple(() {
-                  Get.to(() => LikedByUsers(
-                        postId: widget.model.id,
-                      ));
-                });
-              }),
-            ],
+          Obx(() => ThemeIconWidget(
+                postCardController.likedPosts.contains(widget.model) ||
+                        widget.model.isLike
+                    ? ThemeIcon.favFilled
+                    : ThemeIcon.fav,
+                color: postCardController.likedPosts.contains(widget.model) ||
+                        widget.model.isLike
+                    ? AppColorConstants.red
+                    : AppColorConstants.iconColor,
+                size: 15,
+              ).ripple(() {
+                postCardController.likeUnlikePost(
+                  post: widget.model,
+                );
+              })),
+          const SizedBox(
+            width: 5,
           ),
-          if (widget.model.commentsEnabled)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.message,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(
-                  '${widget.model.totalComment}',
-                  color: AppColorConstants.mainTextColor,
-                ).ripple(() {
-                  openComments();
-                }),
-              ],
+          Obx(() {
+            int totalLikes = 0;
+            if (postCardController.likedPosts.contains(widget.model)) {
+              PostModel post = postCardController.likedPosts
+                  .where((e) => e.id == widget.model.id)
+                  .first;
+              totalLikes = post.totalLike;
+            } else {
+              totalLikes = widget.model.totalLike;
+            }
+            return BodyMediumText(
+              '$totalLikes',
+              color: AppColorConstants.mainTextColor,
+            ).ripple(() {
+              Get.to(() => LikedByUsers(
+                    postId: widget.model.id,
+                  ));
+            });
+          }),
+        ],
+      ),
+      if (widget.model.commentsEnabled)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.message,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(
+              '${widget.model.totalComment}',
+              color: AppColorConstants.mainTextColor,
             ).ripple(() {
               openComments();
             }),
+          ],
+        ).ripple(() {
+          openComments();
+        }),
+      Row(
+        children: [
+          ThemeIconWidget(
+            ThemeIcon.eye,
+            size: 15,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          BodyMediumText(
+            '${widget.model.totalView}',
+            // weight: TextWeight.semiBold,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ],
+      ),
+      if (widget.model.sharedPost == null)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.share,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(
+              '${widget.model.totalShare}',
+              color: AppColorConstants.mainTextColor,
+            )
+          ],
+        ).ripple(() {
+          showModalBottomSheet(
+              backgroundColor: Colors.transparent,
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => FractionallySizedBox(
+                  heightFactor: 0.95, child: SharePost(post: widget.model)));
+        }),
+      if (!widget.model.isMyPost && widget.model.user.role != UserRole.admin)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.gift,
+              size: 15,
+            ),
+          ],
+        ).ripple(() {
+          showModalBottomSheet<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return FractionallySizedBox(
+                    heightFactor: 0.8,
+                    child: GiftsPageView(giftSelectedCompletion: (gift) {
+                      Get.back();
+                      homeController.sendPostGift(
+                          gift, widget.model.user.id, widget.model.id);
+                    }));
+              });
+        }),
+      if (widget.model.contentType == PostContentType.event)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(!widget.model.event!.isCompleted &&
+                    !widget.model.event!.isTicketBooked
+                ? bookNow.tr
+                : viewString.tr)
+          ],
+        ).ripple(() {
+          Get.to(() => EventDetail(
+              event: widget.model.event!, needRefreshCallback: () {}));
+        }),
+      if (widget.model.contentType == PostContentType.competitionAdded)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(widget.model.competition!.isPast ||
+                    widget.model.competition!.isJoined
+                ? viewString.tr
+                : joinString.tr)
+          ],
+        ).ripple(() {
+          Get.to(() => CompetitionDetailScreen(
+              competitionId: widget.model.competition!.id,
+              refreshPreviousScreen: () {}));
+        }),
+      if (widget.model.contentType == PostContentType.competitionResultDeclared)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(viewResultString.tr)
+          ],
+        ).ripple(() {
+          Get.to(() => CompetitionDetailScreen(
+              competitionId: widget.model.competition!.id,
+              refreshPreviousScreen: () {}));
+        }),
+      if (widget.model.contentType == PostContentType.fundRaising)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(donateNowString.tr)
+          ],
+        ).ripple(() {
+          final FundRaisingController fundRaisingController = Get.find();
+
+          fundRaisingController
+              .setCurrentCampaign(widget.model.fundRaisingCampaign!);
+          Get.to(() => FundRaisingCampaignDetail(
+                campaign: widget.model.fundRaisingCampaign!,
+              ));
+        }),
+      if (widget.model.contentType == PostContentType.job)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(applyString.tr)
+          ],
+        ).ripple(() {
+          Get.to(() => JobDetail(
+                job: widget.model.job!,
+              ));
+        }),
+      if (widget.model.contentType == PostContentType.offer)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(viewString.tr)
+          ],
+        ).ripple(() {
+          final NearByOffersController nearByOffersController = Get.find();
+          nearByOffersController.setCurrentOffer(widget.model.offer!);
+          Get.to(() => OfferDetail(
+                offer: widget.model.offer!,
+              ));
+        }),
+      if (widget.model.contentType == PostContentType.classified)
+        if (widget.model.product?.isSold != true &&
+            widget.model.product?.isDeleted != true)
           Row(
             children: [
               ThemeIconWidget(
-                ThemeIcon.eye,
+                ThemeIcon.cart,
                 size: 15,
               ),
               const SizedBox(
                 width: 5,
               ),
-              BodyMediumText(
-                '${widget.model.totalView}',
-                // weight: TextWeight.semiBold,
-                color: AppColorConstants.mainTextColor,
-              ),
+              BodyMediumText(buyString.tr)
             ],
-          ),
-          if (widget.model.sharedPost == null)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.share,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(
-                  '${widget.model.totalShare}',
-                  color: AppColorConstants.mainTextColor,
-                )
-              ],
-            ).ripple(() {
-              showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => FractionallySizedBox(
-                      heightFactor: 0.95,
-                      child: SharePost(post: widget.model)));
-            }),
-          if (!widget.model.isMyPost &&
-              widget.model.user.role != UserRole.admin)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.gift,
-                  size: 15,
-                ),
-              ],
-            ).ripple(() {
-              showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child:
-                            GiftsPageView(giftSelectedCompletion: (gift) {
-                          Get.back();
-                          homeController.sendPostGift(
-                              gift, widget.model.user.id, widget.model.id);
-                        }));
-                  });
-            }),
+          ).ripple(() {
+            Get.to(() => AdDetailScreen(
+                  adModel: widget.model.product!,
+                ));
+          }),
+      if (widget.model.contentType == PostContentType.donation)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(donateNowString.tr)
+          ],
+        ).ripple(() {
+          final FundRaisingController fundRaisingController = Get.find();
 
-          if (widget.model.contentType == PostContentType.event)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(!widget.model.event!.isCompleted &&
-                        !widget.model.event!.isTicketBooked
-                    ? bookNow.tr
-                    : viewString.tr)
-              ],
-            ).ripple(() {
-              Get.to(() => EventDetail(
-                  event: widget.model.event!, needRefreshCallback: () {}));
-            }),
-          if (widget.model.contentType == PostContentType.competitionAdded)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(widget.model.competition!.isPast ||
-                        widget.model.competition!.isJoined
-                    ? viewString.tr
-                    : joinString.tr)
-              ],
-            ).ripple(() {
-              Get.to(() => CompetitionDetailScreen(
-                  competitionId: widget.model.competition!.id,
-                  refreshPreviousScreen: () {}));
-            }),
-          if (widget.model.contentType ==
-              PostContentType.competitionResultDeclared)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(viewResultString.tr)
-              ],
-            ).ripple(() {
-              Get.to(() => CompetitionDetailScreen(
-                  competitionId: widget.model.competition!.id,
-                  refreshPreviousScreen: () {}));
-            }),
-          if (widget.model.contentType == PostContentType.fundRaising)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(donateNowString.tr)
-              ],
-            ).ripple(() {
-              final FundRaisingController fundRaisingController =
-                  Get.find();
-
-              fundRaisingController
-                  .setCurrentCampaign(widget.model.fundRaisingCampaign!);
-              Get.to(() => FundRaisingCampaignDetail(
-                    campaign: widget.model.fundRaisingCampaign!,
-                  ));
-            }),
-          if (widget.model.contentType == PostContentType.job)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(applyString.tr)
-              ],
-            ).ripple(() {
-              Get.to(() => JobDetail(
-                    job: widget.model.job!,
-                  ));
-            }),
-          if (widget.model.contentType == PostContentType.offer)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(viewString.tr)
-              ],
-            ).ripple(() {
-              final NearByOffersController nearByOffersController =
-                  Get.find();
-              nearByOffersController.setCurrentOffer(widget.model.offer!);
-              Get.to(() => OfferDetail(
-                    offer: widget.model.offer!,
-                  ));
-            }),
-          if (widget.model.contentType == PostContentType.classified)
-            if (widget.model.product?.isSold != true &&
-                widget.model.product?.isDeleted != true)
-              Row(
-                children: [
-                  ThemeIconWidget(
-                    ThemeIcon.cart,
-                    size: 15,
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  BodyMediumText(buyString.tr)
-                ],
-              ).ripple(() {
-                Get.to(() => AdDetailScreen(
-                      widget.model.product!,
-                    ));
-              }),
-          if (widget.model.contentType == PostContentType.donation)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(donateNowString.tr)
-              ],
-            ).ripple(() {
-              final FundRaisingController fundRaisingController =
-                  Get.find();
-
-              fundRaisingController
-                  .setCurrentCampaign(widget.model.fundRaisingCampaign!);
-              Get.to(() => FundRaisingCampaignDetail(
-                    campaign: widget.model.fundRaisingCampaign!,
-                  ));
-            }),
-          if (widget.model.contentType == PostContentType.club)
-            Row(
-              children: [
-                ThemeIconWidget(
-                  ThemeIcon.event,
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                BodyMediumText(widget.model.createdClub!.isJoined == true
-                    ? viewString.tr
-                    : joinString.tr)
-              ],
-            ).ripple(() {
-              ClubsController clubController = Get.find();
-              clubController.getClubDetail(widget.model.createdClub!.id!,
-                  (club) {
-                Get.to(() => ClubDetail(
-                      club: club,
-                      needRefreshCallback: () {},
-                      deleteCallback: (club) {},
-                    ));
-              });
-            })
-        ]);
+          fundRaisingController
+              .setCurrentCampaign(widget.model.fundRaisingCampaign!);
+          Get.to(() => FundRaisingCampaignDetail(
+                campaign: widget.model.fundRaisingCampaign!,
+              ));
+        }),
+      if (widget.model.contentType == PostContentType.club)
+        Row(
+          children: [
+            ThemeIconWidget(
+              ThemeIcon.event,
+              size: 15,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            BodyMediumText(widget.model.createdClub!.isJoined == true
+                ? viewString.tr
+                : joinString.tr)
+          ],
+        ).ripple(() {
+          ClubsController clubController = Get.find();
+          clubController.getClubDetail(widget.model.createdClub!.id!, (club) {
+            Get.to(() => ClubDetail(
+                  club: club,
+                  needRefreshCallback: () {},
+                  deleteCallback: (club) {},
+                ));
+          });
+        })
+    ]);
   }
 
   openChatRoom() {
@@ -851,8 +819,7 @@ class PostCardState extends State<PostCard> {
       final filter = ProfanityFilter();
       bool hasProfanity = filter.hasProfanity(commentInputField.text);
       if (hasProfanity) {
-        AppUtil.showToast(
-            message: notAllowedMessageString.tr, isSuccess: true);
+        AppUtil.showToast(message: notAllowedMessageString.tr, isSuccess: true);
         return;
       }
 

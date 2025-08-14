@@ -1,4 +1,5 @@
 import 'package:foap/helper/imports/common_import.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../model/shop_model/ad_model.dart';
 
 class AdCard extends StatefulWidget {
@@ -24,7 +25,7 @@ class _AdCardState extends State<AdCard> {
     return GestureDetector(
       onTap: () => widget.pressed(),
       child: Container(
-        height: 280,
+        height: 300,
         decoration: BoxDecoration(
           color: AppColorConstants.cardColor,
           borderRadius: BorderRadius.circular(15),
@@ -129,15 +130,58 @@ class _AdCardState extends State<AdCard> {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          BodyLargeText(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              BodyLargeText(
+                                widget.ad.finalPriceString,
+                                weight: TextWeight.bold,
+                                color: AppColorConstants.themeColor,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                              ),
+                              MouseRegion(
+                                onEnter: (_) =>
+                                    setState(() => _isFavoriteHovered = true),
+                                onExit: (_) =>
+                                    setState(() => _isFavoriteHovered = false),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: (widget.ad.isFavorite == 1
+                                        ? Colors.red[100]
+                                        : Colors.green[200]),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    widget.ad.isFavorite == 1
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: widget.ad.isFavorite == 1
+                                        ? AppColorConstants.red
+                                        : AppColorConstants.mainTextColor,
+                                    size: 20,
+                                  ),
+                                ).ripple(() {
+                                  setState(() {
+                                    widget.ad.isFavorite =
+                                        widget.ad.isFavorite == 1 ? 0 : 1;
+                                  });
+                                  widget.favPressed();
+                                }),
+                              ),
+                            ],
+                          ),
+                          BodyMediumText(
                             widget.ad.title ?? 'No Title',
                             maxLines: 1,
                             weight: TextWeight.bold,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
                           ).bP4,
                           Row(
                             children: [
@@ -147,56 +191,14 @@ class _AdCardState extends State<AdCard> {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: BodySmallText(
-                                  widget.ad.locations?.customLocation ??
-                                      'Location not specified',
+                                  widget.ad.locations?.customLocation == ''
+                                      ? 'Location not specified'
+                                      : widget.ad.locations?.customLocation,
                                   color: AppColorConstants.subHeadingTextColor,
                                   maxLines: 1,
                                 ),
                               ),
                             ],
-                          ).bP8,
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BodyMediumText(
-                            widget.ad.finalPriceString,
-                            weight: TextWeight.bold,
-                            color: AppColorConstants.red,
-                          ),
-                          MouseRegion(
-                            onEnter: (_) =>
-                                setState(() => _isFavoriteHovered = true),
-                            onExit: (_) =>
-                                setState(() => _isFavoriteHovered = false),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: _isFavoriteHovered
-                                    ? (widget.ad.isFavorite == 1
-                                        ? Colors.red[100]
-                                        : Colors.grey[200])
-                                    : Colors.transparent,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                widget.ad.isFavorite == 1
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: widget.ad.isFavorite == 1
-                                    ? AppColorConstants.red
-                                    : AppColorConstants.mainTextColor,
-                                size: 20,
-                              ),
-                            ).ripple(() {
-                              setState(() {
-                                widget.ad.isFavorite =
-                                    widget.ad.isFavorite == 1 ? 0 : 1;
-                              });
-                              widget.favPressed();
-                            }),
                           ),
                         ],
                       ),
@@ -317,7 +319,7 @@ class _MyAdCardState extends State<MyAdCard> {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
             height: 100,
-            width: 100,
+            width: 200,
             child: (widget.ad.images).isNotEmpty
                 ? CachedNetworkImage(
                     imageUrl: widget.ad.images.first,
@@ -326,7 +328,7 @@ class _MyAdCardState extends State<MyAdCard> {
                         AppUtil.addProgressIndicator(),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
-                  ).round(10)
+                  ).rightRounded(10)
                 : const Icon(Icons.error)),
         Flexible(
           child: Column(
@@ -363,7 +365,7 @@ class _MyAdCardState extends State<MyAdCard> {
                 ],
               )
             ],
-          ).hP8.tP8,
+          ).lP8.tP8,
         ),
       ]),
     );

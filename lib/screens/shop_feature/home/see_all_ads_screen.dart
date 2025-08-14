@@ -66,8 +66,8 @@ class SeeAllPropertyState extends State<SeeAllAdListing> {
                         return AdCard(
                             ad: shopController.ads[index],
                             pressed: () {
-                              Get.to(() =>
-                                  AdDetailScreen(shopController.ads[index]));
+                              Get.to(() => AdDetailScreen(
+                                  adModel: shopController.ads[index]));
                             },
                             favPressed: () {
                               shopController

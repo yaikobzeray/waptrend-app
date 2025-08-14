@@ -5,7 +5,7 @@ import '../components/ad_card.dart';
 import 'ad_detail_screen.dart';
 
 class FavProductsListScreen extends StatefulWidget {
-  const FavProductsListScreen({super.key}) ;
+  const FavProductsListScreen({super.key});
 
   @override
   FavProductsListScreenState createState() => FavProductsListScreenState();
@@ -45,8 +45,8 @@ class FavProductsListScreenState extends State<FavProductsListScreen> {
                     return AdCard(
                       ad: shopController.favAds[index],
                       pressed: () {
-                        Get.to(
-                            () => AdDetailScreen(shopController.favAds[index]));
+                        Get.to(() => AdDetailScreen(
+                            adModel: shopController.favAds[index]));
                       },
                       favPressed: () {
                         shopController.favUnfavAd(shopController.favAds[index]);

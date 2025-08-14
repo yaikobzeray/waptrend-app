@@ -120,7 +120,7 @@ class _MarketplaceState extends State<Marketplace> {
           return AdCard(
               ad: ads[index],
               pressed: () {
-                Get.to(() => AdDetailScreen(ads[index]));
+                Get.to(() => AdDetailScreen(adModel: ads[index]));
               },
               favPressed: () {
                 shopController.favUnfavAd(ads[index]);

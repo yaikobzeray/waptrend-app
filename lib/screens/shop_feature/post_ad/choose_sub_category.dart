@@ -9,8 +9,7 @@ class ChooseListingSubCategory extends StatefulWidget {
   final ShopCategoryModel? category;
   final AdModel ad;
 
-  const ChooseListingSubCategory({super.key, required this.ad, this.category})
-      ;
+  const ChooseListingSubCategory({super.key, required this.ad, this.category});
 
   @override
   State<ChooseListingSubCategory> createState() =>

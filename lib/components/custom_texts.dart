@@ -239,7 +239,7 @@ class BodyLargeText extends StatelessWidget {
         overflow: TextOverflow.clip,
         maxLines: maxLines,
         style: TextStyle(
-            fontSize: FontSizes.b2,
+            fontSize: FontSizes.b1,
             color: color ?? AppColorConstants.mainTextColor,
             fontFamily: fontFamily,
             fontWeight: weight ?? TextWeight.medium));
@@ -250,12 +250,17 @@ class BodyMediumText extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
+  final String? fontFamily;
   final FontWeight? weight;
   final Color? color;
 
   const BodyMediumText(this.text,
-      {super.key, this.textAlign, this.maxLines, this.weight, this.color});
+      {super.key,
+      this.textAlign,
+      this.fontFamily,
+      this.maxLines,
+      this.weight,
+      this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -264,6 +269,7 @@ class BodyMediumText extends StatelessWidget {
         overflow: TextOverflow.clip,
         maxLines: maxLines,
         style: TextStyle(
+            fontFamily: fontFamily,
             fontSize: FontSizes.b3,
             color: color ?? AppColorConstants.mainTextColor,
             fontWeight: weight ?? TextWeight.medium));
@@ -271,7 +277,7 @@ class BodyMediumText extends StatelessWidget {
 }
 
 class BodySmallText extends StatelessWidget {
-  final String text;
+  final String? text;
   final int? maxLines;
   final TextAlign? textAlign;
 
@@ -283,7 +289,7 @@ class BodySmallText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
+    return Text(text ?? "",
         textAlign: textAlign ?? TextAlign.left,
         maxLines: maxLines,
         overflow: TextOverflow.clip,

@@ -45,9 +45,12 @@ class CategoryCard extends StatelessWidget {
 class CategoryCardForPost extends StatelessWidget {
   final ShopCategoryModel category;
   final VoidCallback? callback;
-
+  final String? categoryImage;
   const CategoryCardForPost(
-      {super.key, required this.category, required this.callback});
+      {super.key,
+      required this.category,
+      this.categoryImage,
+      required this.callback});
 
   @override
   Widget build(BuildContext context) {

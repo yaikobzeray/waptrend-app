@@ -9,145 +9,319 @@ class EnterAdDetail extends StatefulWidget {
   const EnterAdDetail(this.adModel, {super.key});
 
   @override
-  State<EnterAdDetail> createState() => EnterAdDetailState();
+  State<EnterAdDetail> createState() => _EnterAdDetailState();
 }
 
-class EnterAdDetailState extends State<EnterAdDetail> {
-  TextEditingController title = TextEditingController();
-  TextEditingController description = TextEditingController();
-  TextEditingController price = TextEditingController();
+class _EnterAdDetailState extends State<EnterAdDetail> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
-  List<ShopCategoryModel> categories = [];
-
-  String currency = "\$";
+  String _currency = "\$";
 
   @override
   void initState() {
     super.initState();
-    fillForm();
+    _fillForm();
   }
 
-  void fillForm() {
-    title.text = widget.adModel.title ?? '';
-    description.text = widget.adModel.description ?? '';
-    price.text = widget.adModel.price == null ? '' : '${widget.adModel.price}';
-    currency = widget.adModel.currency ?? '\$';
+  void _fillForm() {
+    _titleController.text = widget.adModel.title ?? '';
+    _descriptionController.text = widget.adModel.description ?? '';
+    _priceController.text =
+        widget.adModel.price == null ? '' : '${widget.adModel.price}';
+    _currency = widget.adModel.currency ?? '\$';
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       backgroundColor: AppColorConstants.backgroundColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Column(
-          children: [
-            backNavigationBar(title: enterProductDetailString.tr),
-            Expanded(
+      body: Column(
+        children: [
+          _buildAppBar(),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
               child: SingleChildScrollView(
-                child: Stack(
+                padding: EdgeInsets.symmetric(
+                  horizontal: DesignConstants.horizontalPadding,
+                  vertical: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SingleChildScrollView(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            // AppTextField(
-                            //   label: 'Brand',
-                            //   hintText: 'Enter brand name',
-                            //   controller: brandTF,
-                            //   onChanged: (value) {
-                            //     widget.adModel.brandName = value;
-                            //   },
-                            // ).bP16,
-                            AppTextField(
-                              label: titleString.tr,
-                              hintText: enterTitleString.tr,
-                              controller: title,
-                              onChanged: (value) {
-                                widget.adModel.title = value;
-                              },
-                            ).bP16,
-                            AppTextField(
-                              label: descriptionString.tr,
-                              hintText: enterDescriptionString.tr,
-                              controller: description,
-                              maxLines: 100,
-                              onChanged: (value) {
-                                widget.adModel.description = value;
-                              },
-                            ).bP16,
-                            BodyExtraSmallText(
-                              priceString.tr,
-                              color: AppColorConstants.subHeadingTextColor,
-                              weight: TextWeight.semiBold,
-                            ).bP8,
-                            AppPriceTextField(
-                              hintText: enterPriceString.tr,
-                              controller: price,
-                              currency: currency,
-                              onChanged: (value) {
-                                widget.adModel.price = value;
-                              },
-                              currencyValueChanged: (value) {
-                                currency = value;
-                                widget.adModel.currency = value;
-                              },
-                            ),
-                            SizedBox(height: Get.height * 0.2),
-                          ]),
+                    _buildFormCard(
+                      children: [
+                        _buildSectionTitle(enterProductDetailString.tr),
+                        const SizedBox(height: 25),
+                        _buildTitleField(),
+                        const SizedBox(height: 25),
+                        _buildDescriptionField(),
+                      ],
                     ),
-                    Positioned(
-                        bottom: 20,
-                        left: 0,
-                        right: 0,
-                        child: AppThemeButton(
-                          text: nextString.tr,
-                          onPress: () {
-                            nextBtnClicked();
-                          },
-                        ))
+                    const SizedBox(height: 20),
+                    _buildFormCard(
+                      children: [
+                        _buildSectionTitle(enterProductDetailString.tr),
+                        const SizedBox(height: 15),
+                        _buildPriceSection(),
+                      ],
+                    ),
+                    SizedBox(height: Get.height * 0.1),
                   ],
                 ),
-              ).hp(DesignConstants.horizontalPadding),
+              ),
             ),
-          ],
+          ),
+          _buildNextButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColorConstants.backgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: AppColorConstants.dividerColor.withOpacity(0.2),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: backNavigationBar(title: enterProductDetailString.tr),
+    );
+  }
+
+  Widget _buildFormCard({required List<Widget> children}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColorConstants.themeColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: AppColorConstants.dividerColor.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Heading6Text(
+      title,
+      weight: TextWeight.bold,
+      color: AppColorConstants.themeColor,
+    );
+  }
+
+  Widget _buildTitleField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BodyMediumText(
+          titleString.tr,
+          color: AppColorConstants.subHeadingTextColor,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColorConstants.backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: AppColorConstants.dividerColor.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          child: TextField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              hintText: enterTitleString.tr,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: InputBorder.none,
+              hintStyle: TextStyle(
+                color: AppColorConstants.subHeadingTextColor.withOpacity(0.5),
+              ),
+            ),
+            onChanged: (value) => widget.adModel.title = value,
+            style: TextStyle(
+              color: AppColorConstants.mainTextColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDescriptionField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BodyMediumText(
+          descriptionString.tr,
+          color: AppColorConstants.subHeadingTextColor,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColorConstants.backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: AppColorConstants.dividerColor.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          child: TextField(
+            controller: _descriptionController,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: enterDescriptionString.tr,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              border: InputBorder.none,
+              hintStyle: TextStyle(
+                color: AppColorConstants.subHeadingTextColor.withOpacity(0.5),
+              ),
+            ),
+            onChanged: (value) => widget.adModel.description = value,
+            style: TextStyle(
+              color: AppColorConstants.mainTextColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BodyMediumText(
+          priceString.tr,
+          color: AppColorConstants.subHeadingTextColor,
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColorConstants.backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: AppColorConstants.dividerColor.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _priceController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: enterPriceString.tr,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(
+                      color: AppColorConstants.subHeadingTextColor
+                          .withOpacity(0.5),
+                    ),
+                  ),
+                  onChanged: (value) => widget.adModel.price = value,
+                  style: TextStyle(
+                    color: AppColorConstants.mainTextColor,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: DropdownButton<String>(
+                  value: _currency,
+                  underline: Container(),
+                  items: <String>['\$', '€', '£', '₹', '¥']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _currency = newValue!;
+                      widget.adModel.currency = newValue;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNextButton() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColorConstants.backgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: AppColorConstants.dividerColor.withOpacity(0.2),
+            blurRadius: 5,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: AppThemeButton(
+          text: nextString.tr,
+          onPress: _validateAndProceed,
+          cornerRadius: 10,
         ),
       ),
     );
   }
 
-  void nextBtnClicked() {
+  void _validateAndProceed() {
     if (widget.adModel.categoryId == null) {
       AppUtil.showToast(message: selectAdTypeString, isSuccess: false);
-    } else if (widget.adModel.title == null) {
-      AppUtil.showToast(message: enterTitleString, isSuccess: false);
-    } else if (widget.adModel.description == null) {
-      AppUtil.showToast(message: enterDescriptionString, isSuccess: false);
-    } else if (widget.adModel.price == null) {
-      AppUtil.showToast(message: enterPriceString, isSuccess: false);
-    } else {
-      widget.adModel.currency = currency;
-      Get.to(() => UploadProductImages(widget.adModel));
+      return;
     }
+
+    if (_titleController.text.isEmpty) {
+      AppUtil.showToast(message: enterTitleString, isSuccess: false);
+      return;
+    }
+
+    if (_descriptionController.text.isEmpty) {
+      AppUtil.showToast(message: enterDescriptionString, isSuccess: false);
+      return;
+    }
+
+    if (_priceController.text.isEmpty) {
+      AppUtil.showToast(message: enterPriceString, isSuccess: false);
+      return;
+    }
+
+    Get.to(() => UploadProductImages(widget.adModel));
   }
 
-  void openBottomSheet(Widget child) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
-          ),
-        ),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        builder: (BuildContext bc) {
-          return child;
-        });
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _priceController.dispose();
+    super.dispose();
   }
 }

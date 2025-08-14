@@ -2,337 +2,460 @@ import 'package:foap/controllers/shop/shop_controller.dart';
 import 'package:foap/helper/imports/chat_imports.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/profile_imports.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../model/shop_model/ad_model.dart';
 import 'enlarge_imageview.dart';
 
 class AdDetailScreen extends StatefulWidget {
   final AdModel adModel;
 
-  const AdDetailScreen(this.adModel, {super.key});
+  const AdDetailScreen({Key? key, required this.adModel}) : super(key: key);
 
   @override
   AdDetailState createState() => AdDetailState();
 }
 
 class AdDetailState extends State<AdDetailScreen> {
-  ShopController shopController = Get.find();
+  final ShopController shopController = Get.find();
   final ChatDetailController _chatDetailController = Get.find();
-
-  int _current = 0;
+  int _currentImageIndex = 0;
+  final double _sectionSpacing = 24;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-        backgroundColor: AppColorConstants.backgroundColor,
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                    onTap: () => Get.back(),
-                    child: Icon(Icons.arrow_back_ios,
-                        color: AppColorConstants.themeColor)),
-                Row(
-                  children: [
-                    InkWell(
-                        onTap: () => Scaffold.of(context).openDrawer(),
-                        child: Container(
-                          height: 50,
-                          color: Colors.grey.withValues(alpha: 0.1),
-                          child: IconButton(
-                              onPressed: () {
-                                favBtnClicked();
-                              },
-                              icon: Icon(Icons.favorite,
-                                  color: widget.adModel.isFavorite == 1
-                                      ? AppColorConstants.themeColor
-                                      : Colors.grey.withValues(alpha: 0.5))),
-                        ).round(10)),
-                  ],
-                ),
-              ],
-            ).p(DesignConstants.horizontalPadding),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    (widget.adModel.images).isNotEmpty
-                        ? addCarousalView()
-                        : Container(),
-                    widget.adModel.isDeal == 1
-                        ? Container(
-                            color: AppColorConstants.red,
-                            width: 170,
-                            height: 40,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.local_offer,
-                                  color: AppColorConstants.backgroundColor,
-                                  size: 20,
-                                ).rP4,
-                                BodyLargeText(
-                                  widget.adModel.actualPriceString,
-                                  color: AppColorConstants.subHeadingTextColor,
-                                ).rP16,
-                                BodyLargeText(
-                                  widget.adModel.dealPriceString,
-                                  color: AppColorConstants.themeColor,
-                                ).rP4
-                              ],
-                            ).hP16,
-                          ).round(5).hP16.tP16
-                        : Center(
-                            child: BodyLargeText(
-                              ' ${widget.adModel.currency!} ${widget.adModel.price!}',
-                              weight: TextWeight.bold,
-                            ),
-                          ),
-                    widget.adModel.featured == 1
-                        ? Container(
-                            width: 120,
-                            color: Colors.yellow,
-                            child: Center(
-                                child: BodyLargeText(
-                              'Featured',
-                              weight: TextWeight.bold,
-                            )).p8,
-                          ).hP16.tP16
-                        : Container(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BodyLargeText(widget.adModel.title!,
-                                weight: TextWeight.bold)
-                            .vP16,
-                        // Row(
-                        //   children: [
-                        //     Icon(Icons.location_on,
-                        //             color: AppColorConstants.themeColor,
-                        //             size: 18)
-                        //         .rP4,
-                        //     BodySmallText(
-                        //       widget.adModel.locations!.customLocation!,
-                        //     ),
-                        //   ],
-                        // ).bp(15),
-                        BodyLargeText(
-                          aboutString.tr,
-                          weight: TextWeight.bold,
-                          color: AppColorConstants.mainTextColor,
-                        ).vP16,
-                        BodySmallText(
-                          widget.adModel.description!,
-                        ).bp(10),
-                        BodyLargeText(
-                          addressString.tr,
-                          weight: TextWeight.bold,
-                          color: AppColorConstants.mainTextColor,
-                        ).vP16,
-                        BodySmallText(
-                          widget.adModel.locations?.customLocation ?? '',
-                        ).bp(10)
-                      ],
-                    ).hp(25),
-                    GestureDetector(
-                            onTap: () => {
-                                  Get.to(() => OtherUserProfile(
-                                        user: widget.adModel.user!,
-                                        userId: widget.adModel.user!.id,
-                                      ))
-                                },
-                            child: Container(
-                              color: Colors.grey.withValues(alpha: 0.1),
-                              height: 110,
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                BodyLargeText(
-                                                  sellerString.tr,
-                                                  weight: TextWeight.bold,
-                                                  color: AppColorConstants
-                                                      .themeColor,
-                                                ),
-                                                const SizedBox(height: 15),
-                                                BodyLargeText(
-                                                  widget.adModel.user!.name!,
-                                                  weight: TextWeight.bold,
-                                                ),
-                                                const SizedBox(height: 5),
-                                                BodySmallText(
-                                                  viewProfileString.tr,
-                                                )
-                                              ]),
-                                          Container(
-                                            height: 50,
-                                            color: AppColorConstants.cardColor,
-                                            child: Row(
-                                              children: [
-                                                IconButton(
-                                                    onPressed: () {
-                                                      _chatDetailController
-                                                          .getChatRoomWithUser(
-                                                              userId: widget
-                                                                  .adModel
-                                                                  .user!
-                                                                  .id,
-                                                              callback: (room) =>
-                                                                  Get.to(() =>
-                                                                      ChatDetail(
-                                                                          chatRoom:
-                                                                              room)));
-                                                    },
-                                                    icon: Icon(Icons.chat,
-                                                        color: AppColorConstants
-                                                            .themeColor)),
-                                              ],
-                                            ),
-                                          ).round(10)
-                                        ],
-                                      ).hP16,
-                                    )
-                                  ]),
-                            ).round(10).hp(25))
-                        .vp(50),
-                  ])),
-            ),
-          ],
-        ));
-  }
-
-  addInfoView(String header, String infoValue) {
-    return Container(
-      color: Colors.grey.withValues(alpha: 0.1),
-      height: 65,
-      child: Center(
-        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Icon(Icons.person,
-                  color: AppColorConstants.themeColor.withValues(alpha: 0.8))
-              .rP8,
-          Flexible(child: BodySmallText(infoValue, maxLines: 1)),
-        ]),
-      ).hP16.vP8,
-    ).round(10).bP8;
-  }
-
-  addUtilityView(String icon, String header, String infoValue) {
-    return Container(
-      color: Colors.grey.withValues(alpha: 0.1),
-      height: 65,
-      child: Center(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+      backgroundColor: AppColorConstants.backgroundColor,
+      body: Column(
+        children: [
+          _buildAppBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.person,
-                          color: AppColorConstants.themeColor.withValues(alpha: 0.8))
-                      .rP8,
-                  BodySmallText(
-                    header,
-                    maxLines: 1,
-                  )
+                  _buildImageCarousel(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildAdHeader(),
+                        SizedBox(height: _sectionSpacing),
+                        _buildAboutSection(),
+                        SizedBox(height: _sectionSpacing),
+                        _buildAddressSection(),
+                        SizedBox(height: _sectionSpacing),
+                        _buildPriceSection(),
+                        SizedBox(height: _sectionSpacing * 1.5),
+                        _buildSellerSection(),
+                        SizedBox(height: _sectionSpacing),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              Flexible(
-                  child: BodySmallText(
-                infoValue,
-                maxLines: 1,
-                color: AppColorConstants.subHeadingTextColor,
-              )),
-            ]),
-      ).hP16.vP8,
-    ).round(10).bP8;
-  }
-
-  Widget addCarousalView() {
-    return Column(children: [
-      WKCarouselSlider(
-        items: (widget.adModel.images)
-            .map((item) => InkWell(
-                  onTap: () async {
-                    Get.to(() => EnlargeImageViewScreen(item));
-                  },
-                  child: SizedBox(
-                      width: Get.width,
-                      child: CachedNetworkImage(
-                        imageUrl: item,
-                        fit: BoxFit.fitWidth,
-                        width: double.infinity,
-                        placeholder: (context, url) =>
-                            AppUtil.addProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      )).round(15).hP16,
-                ))
-            .toList(),
-          enlargeCenterPage: false,
-          enableInfiniteScroll: false,
-          viewportFraction: 1,
-          height: 180,
-          onPageChanged: (index) {
-            setState(() {
-              _current = index;
-            });
-          }
+            ),
+          ),
+        ],
       ),
-      (widget.adModel.images).length > 1
-          ? SizedBox(
-              width: Get.width,
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Row(
-                    children: (widget.adModel.images)
-                        .asMap()
-                        .map((index, element) => MapEntry(
-                            index,
-                            Container(
-                              width: 8.0,
-                              height: 8.0,
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 20.0, horizontal: 2.0),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _current == index
-                                    ? AppColorConstants.themeColor
-                                    : const Color.fromRGBO(0, 0, 0, 0.2),
-                              ),
-                            )))
-                        .values
-                        .toList()),
-              ]),
-            )
-          : const SizedBox(height: 25),
-    ]);
+    );
   }
 
-  favBtnClicked() {
-    if (widget.adModel.isFavorite == 1) {
-      widget.adModel.isFavorite = 0;
-    } else {
-      widget.adModel.isFavorite = 1;
-    }
+  Widget _buildAppBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CircleAvatar(
+            backgroundColor: AppColorConstants.cardColor,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: AppColorConstants.themeColor),
+              onPressed: () => Get.back(),
+            ),
+          ),
+          CircleAvatar(
+            backgroundColor: AppColorConstants.cardColor,
+            child: IconButton(
+              icon: Icon(
+                widget.adModel.isFavorite == 1
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+                color: widget.adModel.isFavorite == 1
+                    ? AppColorConstants.red
+                    : AppColorConstants.subHeadingTextColor,
+              ),
+              onPressed: _toggleFavorite,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    setState(() {});
+  Widget _buildImageCarousel() {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: AppColorConstants.cardColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: widget.adModel.images.isNotEmpty
+              ? WKCarouselSlider(
+                  items: widget.adModel.images
+                      .map((item) => GestureDetector(
+                            onTap: () =>
+                                Get.to(() => EnlargeImageViewScreen(item)),
+                            child: Hero(
+                              tag: item,
+                              child: CachedNetworkImage(
+                                imageUrl: item,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColorConstants.themeColor,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  viewportFraction: 1,
+                  height: 300,
+                  onPageChanged: (index) =>
+                      setState(() => _currentImageIndex = index),
+                )
+              : Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    size: 60,
+                    color: AppColorConstants.subHeadingTextColor,
+                  ),
+                ),
+        ),
+        if (widget.adModel.images.length > 1)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: widget.adModel.images.asMap().entries.map((entry) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _currentImageIndex == entry.key ? 20 : 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: _currentImageIndex == entry.key
+                        ? AppColorConstants.themeColor
+                        : Colors.white.withOpacity(0.5),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+      ],
+    );
+  }
 
+  Widget _buildAdHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            if (widget.adModel.featured == 1)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.amber[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'FEATURED',
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.amber[800],
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          widget.adModel.title ?? '',
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Icon(Icons.location_on_outlined,
+                size: 18, color: AppColorConstants.subHeadingTextColor),
+            const SizedBox(width: 4),
+            Text(
+              widget.adModel.locations?.customLocation ?? '',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColorConstants.subHeadingTextColor,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'About this item',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          widget.adModel.description ?? '',
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.5,
+            color: AppColorConstants.subHeadingTextColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddressSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Location',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Icon(Icons.pin_drop_outlined, color: AppColorConstants.themeColor),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                widget.adModel.locations?.customLocation ?? '',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: AppColorConstants.subHeadingTextColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceSection() {
+    return widget.adModel.isDeal == 1
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Deal Price',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: AppColorConstants.subHeadingTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    widget.adModel.actualPriceString,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColorConstants.subHeadingTextColor,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColorConstants.themeColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      widget.adModel.dealPriceString,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: AppColorConstants.themeColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Price',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: AppColorConstants.subHeadingTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${widget.adModel.currency} ${widget.adModel.price}',
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: AppColorConstants.themeColor,
+                ),
+              ),
+            ],
+          );
+  }
+
+  Widget _buildSellerSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: AppColorConstants.backgroundColor,
+                backgroundImage: widget.adModel.user?.picture != null
+                    ? CachedNetworkImageProvider(widget.adModel.user!.picture!)
+                    : null,
+                child: widget.adModel.user?.picture == null
+                    ? Icon(Icons.person, color: AppColorConstants.themeColor)
+                    : null,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Seller',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColorConstants.subHeadingTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.adModel.user?.name ?? '',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _buildChatButton(),
+            ],
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton(
+            onPressed: () => Get.to(() => OtherUserProfile(
+                  user: widget.adModel.user!,
+                  userId: widget.adModel.user!.id,
+                )),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColorConstants.themeColor,
+              side: BorderSide(color: AppColorConstants.themeColor),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('View Profile'),
+                const SizedBox(width: 8),
+                Icon(Icons.arrow_forward, size: 18),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChatButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColorConstants.themeColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: IconButton(
+        icon: Icon(Icons.chat, color: Colors.white),
+        onPressed: _startChatWithSeller,
+      ),
+    );
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      widget.adModel.isFavorite = widget.adModel.isFavorite == 1 ? 0 : 1;
+    });
     shopController.favUnfavAd(widget.adModel);
+  }
+
+  void _startChatWithSeller() {
+    _chatDetailController.getChatRoomWithUser(
+      userId: widget.adModel.user!.id,
+      callback: (room) => Get.to(() => ChatDetail(chatRoom: room)),
+    );
   }
 }
