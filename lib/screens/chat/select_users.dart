@@ -294,6 +294,7 @@ class SelectFollowingUserForMessageSendingState
                 ),
                 SFSearchBar(
                   onSearchCompleted: (value) {},
+                  showSearchIcon: true,
                   onSearchChanged: (value) {
                     selectUserForChatController.searchTextChanged(value);
                   },

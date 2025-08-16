@@ -142,7 +142,6 @@ class _AdCardState extends State<AdCard> {
                                 widget.ad.finalPriceString,
                                 weight: TextWeight.bold,
                                 color: AppColorConstants.themeColor,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                               MouseRegion(
                                 onEnter: (_) =>
@@ -181,7 +180,6 @@ class _AdCardState extends State<AdCard> {
                             widget.ad.title ?? 'No Title',
                             maxLines: 1,
                             weight: TextWeight.bold,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
                           ).bP4,
                           Row(
                             children: [

@@ -1,41 +1,71 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../util/app_config_constants.dart';
 
 class FontSizes {
   static double scale = 1;
 
-  static double get h1 => 48 * scale;
+  // Heading sizes
+  static double get h1 => 32 * scale; // Large heading
+  static double get h2 => 28 * scale; // Page heading
+  static double get h3 => 24 * scale; // Section heading
+  static double get h4 => 20 * scale; // Sub-section heading
+  static double get h5 => 18 * scale; // Small heading
+  static double get h6 => 16 * scale; // Extra small heading
 
-  static double get h2 => 40 * scale;
-
-  static double get h3 => 32 * scale;
-
-  static double get h4 => 24 * scale;
-
-  static double get h5 => 20 * scale;
-
-  static double get h6 => 18 * scale;
-
-  static double get b1 => 18 * scale;
-
-  static double get b2 => 16 * scale;
-
-  static double get b3 => 14 * scale;
-
-  static double get b4 => 12 * scale;
-
-  static double get b5 => 10 * scale;
+  // Body sizes
+  static double get b1 => 16 * scale; // Large body
+  static double get b2 => 14 * scale; // Regular body
+  static double get b3 => 13 * scale; // Medium body
+  static double get b4 => 12 * scale; // Small body
+  static double get b5 => 11 * scale; // Extra small body
 }
 
 class TextWeight {
-  static FontWeight get regular => FontWeight.w300;
-
+  static FontWeight get light => FontWeight.w300;
+  static FontWeight get regular => FontWeight.w400;
   static FontWeight get medium => FontWeight.w500;
+  static FontWeight get semiBold => FontWeight.w600;
+  static FontWeight get bold => FontWeight.w700;
+  static FontWeight get extraBold => FontWeight.w800;
+}
 
-  static FontWeight get semiBold => FontWeight.w700;
+class _BaseText extends StatelessWidget {
+  final String text;
+  final int? maxLines;
+  final TextAlign? textAlign;
+  final FontWeight? weight;
+  final Color? color;
+  final double fontSize;
+  final String? fontFamily;
+  final TextOverflow? overflow;
 
-  static FontWeight get bold => FontWeight.w900;
+  const _BaseText(
+    this.text, {
+    required this.fontSize,
+    super.key,
+    this.textAlign,
+    this.maxLines,
+    this.weight,
+    this.color,
+    this.fontFamily,
+    this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      maxLines: maxLines,
+      overflow: overflow ?? TextOverflow.ellipsis,
+      textAlign: textAlign ?? TextAlign.left,
+      style: GoogleFonts.poppins(
+        fontSize: fontSize,
+        fontWeight: weight ?? TextWeight.regular,
+        color: color ?? AppColorConstants.mainTextColor,
+      ),
+    );
+  }
 }
 
 class Heading1Text extends StatelessWidget {
@@ -50,15 +80,13 @@ class Heading1Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _BaseText(
       text,
+      fontSize: FontSizes.h1,
+      weight: weight ?? TextWeight.bold,
+      color: color,
+      textAlign: textAlign,
       maxLines: maxLines,
-      overflow: TextOverflow.clip,
-      textAlign: textAlign ?? TextAlign.left,
-      style: TextStyle(
-          fontSize: FontSizes.h1,
-          color: color ?? AppColorConstants.mainTextColor,
-          fontWeight: weight ?? TextWeight.medium),
     );
   }
 }
@@ -67,7 +95,6 @@ class Heading2Text extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -76,15 +103,13 @@ class Heading2Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _BaseText(
       text,
+      fontSize: FontSizes.h2,
+      weight: weight ?? TextWeight.bold,
+      color: color,
+      textAlign: textAlign,
       maxLines: maxLines,
-      overflow: TextOverflow.clip,
-      textAlign: textAlign ?? TextAlign.left,
-      style: TextStyle(
-          fontSize: FontSizes.h2,
-          color: color ?? AppColorConstants.mainTextColor,
-          fontWeight: weight ?? TextWeight.medium),
     );
   }
 }
@@ -93,7 +118,6 @@ class Heading3Text extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -102,14 +126,14 @@ class Heading3Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        maxLines: maxLines,
-        overflow: TextOverflow.clip,
-        textAlign: textAlign ?? TextAlign.left,
-        style: TextStyle(
-            fontSize: FontSizes.h3,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text,
+      fontSize: FontSizes.h3,
+      weight: weight ?? TextWeight.semiBold,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }
 
@@ -117,7 +141,6 @@ class Heading4Text extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -126,15 +149,13 @@ class Heading4Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _BaseText(
       text,
+      fontSize: FontSizes.h4,
+      weight: weight ?? TextWeight.semiBold,
+      color: color,
+      textAlign: textAlign,
       maxLines: maxLines,
-      overflow: TextOverflow.clip,
-      textAlign: textAlign ?? TextAlign.left,
-      style: TextStyle(
-          fontSize: FontSizes.h4,
-          color: color ?? AppColorConstants.mainTextColor,
-          fontWeight: weight ?? TextWeight.medium),
     );
   }
 }
@@ -143,7 +164,6 @@ class Heading5Text extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -152,15 +172,13 @@ class Heading5Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _BaseText(
       text,
+      fontSize: FontSizes.h5,
+      weight: weight ?? TextWeight.medium,
+      color: color,
+      textAlign: textAlign,
       maxLines: maxLines,
-      overflow: TextOverflow.clip,
-      textAlign: textAlign ?? TextAlign.left,
-      style: TextStyle(
-          fontSize: FontSizes.h5,
-          color: color ?? AppColorConstants.mainTextColor,
-          fontWeight: weight ?? TextWeight.medium),
     );
   }
 }
@@ -169,7 +187,6 @@ class Heading6Text extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -178,25 +195,21 @@ class Heading6Text extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return _BaseText(
       text,
+      fontSize: FontSizes.h6,
+      weight: weight ?? TextWeight.medium,
+      color: color,
+      textAlign: textAlign,
       maxLines: maxLines,
-      overflow: TextOverflow.clip,
-      textAlign: textAlign ?? TextAlign.left,
-      style: TextStyle(
-          fontSize: FontSizes.h6,
-          color: color ?? AppColorConstants.mainTextColor,
-          fontWeight: weight ?? TextWeight.medium),
     );
   }
 }
 
 class BodyExtraLargeText extends StatelessWidget {
   final String text;
-
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -205,14 +218,14 @@ class BodyExtraLargeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: textAlign ?? TextAlign.left,
-        overflow: TextOverflow.clip,
-        maxLines: maxLines,
-        style: TextStyle(
-            fontSize: FontSizes.b1,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text,
+      fontSize: FontSizes.b1,
+      weight: weight ?? TextWeight.regular,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }
 
@@ -220,29 +233,22 @@ class BodyLargeText extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-  final String? fontFamily;
   final FontWeight? weight;
   final Color? color;
 
   const BodyLargeText(this.text,
-      {super.key,
-      this.textAlign,
-      this.fontFamily,
-      this.maxLines,
-      this.weight,
-      this.color});
+      {super.key, this.textAlign, this.maxLines, this.weight, this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: textAlign ?? TextAlign.left,
-        overflow: TextOverflow.clip,
-        maxLines: maxLines,
-        style: TextStyle(
-            fontSize: FontSizes.b1,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontFamily: fontFamily,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text,
+      fontSize: FontSizes.b1,
+      weight: weight ?? TextWeight.regular,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }
 
@@ -250,29 +256,22 @@ class BodyMediumText extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-  final String? fontFamily;
   final FontWeight? weight;
   final Color? color;
 
   const BodyMediumText(this.text,
-      {super.key,
-      this.textAlign,
-      this.fontFamily,
-      this.maxLines,
-      this.weight,
-      this.color});
+      {super.key, this.textAlign, this.maxLines, this.weight, this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: textAlign ?? TextAlign.left,
-        overflow: TextOverflow.clip,
-        maxLines: maxLines,
-        style: TextStyle(
-            fontFamily: fontFamily,
-            fontSize: FontSizes.b3,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text,
+      fontSize: FontSizes.b2,
+      weight: weight ?? TextWeight.regular,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }
 
@@ -280,7 +279,6 @@ class BodySmallText extends StatelessWidget {
   final String? text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -289,14 +287,14 @@ class BodySmallText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text ?? "",
-        textAlign: textAlign ?? TextAlign.left,
-        maxLines: maxLines,
-        overflow: TextOverflow.clip,
-        style: TextStyle(
-            fontSize: FontSizes.b4,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text ?? "",
+      fontSize: FontSizes.b4,
+      weight: weight ?? TextWeight.regular,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }
 
@@ -304,7 +302,6 @@ class BodyExtraSmallText extends StatelessWidget {
   final String text;
   final int? maxLines;
   final TextAlign? textAlign;
-
   final FontWeight? weight;
   final Color? color;
 
@@ -313,13 +310,13 @@ class BodyExtraSmallText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: textAlign ?? TextAlign.left,
-        overflow: TextOverflow.clip,
-        maxLines: maxLines,
-        style: TextStyle(
-            fontSize: FontSizes.b5,
-            color: color ?? AppColorConstants.mainTextColor,
-            fontWeight: weight ?? TextWeight.medium));
+    return _BaseText(
+      text,
+      fontSize: FontSizes.b5,
+      weight: weight ?? TextWeight.regular,
+      color: color,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
   }
 }

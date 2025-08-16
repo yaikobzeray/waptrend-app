@@ -7,9 +7,11 @@ class AppUtil {
     return DateTime.fromMillisecondsSinceEpoch(value * 1000).toUtc();
   }
 
-  static showToast({required String message, required bool isSuccess}) {
-    Get.snackbar(
-        isSuccess == true ? successString.tr : errorString.tr, message,
+  static showToast({
+    required String message,
+    required bool isSuccess,
+  }) {
+    Get.snackbar(isSuccess == true ? successString.tr : errorString.tr, message,
         snackPosition: SnackPosition.BOTTOM,
         colorText: Colors.white,
         backgroundColor: isSuccess == true
@@ -85,8 +87,7 @@ class AppUtil {
                         color: Colors.white,
                       )
                           .makeChip(
-                              backGroundColor:
-                                  AppColorConstants.themeColor)
+                              backGroundColor: AppColorConstants.themeColor)
                           .ripple(() {
                         Get.back(closeOverlays: true);
                         okHandler();
@@ -170,8 +171,7 @@ class AppUtil {
                       color: AppColorConstants.themeColor,
                     )
                         .makeChip(
-                            backGroundColor:
-                                AppColorConstants.mainTextColor)
+                            backGroundColor: AppColorConstants.mainTextColor)
                         .ripple(() {
                       Get.back(closeOverlays: true);
                       okHandler();
@@ -257,8 +257,7 @@ class AppUtil {
                       color: AppColorConstants.subHeadingTextColor,
                     )
                         .makeChip(
-                            backGroundColor:
-                                AppColorConstants.mainTextColor)
+                            backGroundColor: AppColorConstants.mainTextColor)
                         .ripple(() {
                       Get.back(closeOverlays: true);
                       okHandler();

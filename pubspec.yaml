@@ -114,7 +114,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   lottie: ^3.1.2
   http: ^1.1.0
-  intl: ^0.19.0
+  intl: ^0.20.0
   google_maps_flutter: ^2.3.1
 
   flutter_staggered_animations: ^1.1.1
@@ -169,6 +169,7 @@ dependencies:
       url: https://github.com/Kanwarpalsingh1986/video_thumbnail.git
       ref: master
   icons_plus: ^5.0.0
+  flutter_feather_icons: ^2.0.0+1
   persistent_bottom_nav_bar: ^6.2.1
 
 

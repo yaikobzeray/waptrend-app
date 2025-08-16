@@ -24,8 +24,7 @@ class ResharedPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         PostUserInfo(
           post: model,
           isSponsored: false,
@@ -34,13 +33,11 @@ class ResharedPostCard extends StatelessWidget {
           isResharedPost: true,
         ),
         model.postTitle.isNotEmpty
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                    const SizedBox(height: 4),
-                    RichTextPostTitle(model: model),
-                    const SizedBox(height: 10),
-                  ])
+            ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const SizedBox(height: 4),
+                RichTextPostTitle(model: model),
+                const SizedBox(height: 10),
+              ])
             : const SizedBox(),
         const SizedBox(
           height: 10,

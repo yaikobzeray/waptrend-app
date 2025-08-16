@@ -95,11 +95,9 @@ class SharePost extends StatelessWidget {
                     BodySmallText(copyLinkString.tr)
                   ],
                 ).ripple(() async {
-                  AppUtil.showToast(
-                      message: copiedString.tr, isSuccess: true);
+                  AppUtil.showToast(message: copiedString.tr, isSuccess: true);
 
-                  await Clipboard.setData(
-                      ClipboardData(text: post.shareLink));
+                  await Clipboard.setData(ClipboardData(text: post.shareLink));
                 })
               ],
             ).setPadding(

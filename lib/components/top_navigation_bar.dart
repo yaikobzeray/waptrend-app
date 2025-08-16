@@ -42,7 +42,6 @@ Widget backNavigationBar({required String title}) {
         ),
         BodyLargeText(
           title.tr,
-          fontFamily: GoogleFonts.poppins().fontFamily,
           maxLines: 1,
           weight: TextWeight.bold,
           color: AppColorConstants.themeColor,
@@ -59,7 +58,7 @@ Widget backNavigationBar({required String title}) {
 Widget backNavigationBarWithTrailingWidget(
     {required String title, required Widget widget}) {
   return Container(
-    height: 100,
+    height: 70,
     decoration: BoxDecoration(
       color: AppColorConstants.cardColor,
       boxShadow: [
@@ -84,11 +83,11 @@ Widget backNavigationBarWithTrailingWidget(
                 color: AppColorConstants.themeColor.withOpacity(0.1),
               ),
               child: Align(
-                alignment: Alignment.centerLeft,
-                child: ThemeIconWidget(
-                  ThemeIcon.backArrow,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back,
                   size: 18,
-                  color: AppColorConstants.iconColor,
+                  color: AppColorConstants.themeColor,
                 ),
               ),
             ).ripple(() {

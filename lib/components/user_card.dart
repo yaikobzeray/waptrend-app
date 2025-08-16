@@ -58,8 +58,8 @@ class UserFollowUnfollowButton extends StatelessWidget {
                       FollowingStatus.requested
                   ? AppThemeBorderButton(
                       text: requestedString.tr,
-                      backgroundColor: AppColorConstants.themeColor
-                          .withValues(alpha: 0.2),
+                      backgroundColor:
+                          AppColorConstants.themeColor.withValues(alpha: 0.2),
                       onPress: () {
                         controller.unFollowUser();
                       })
@@ -295,8 +295,7 @@ class UserTile extends StatelessWidget {
                   icon: const Icon(Icons.send, color: Colors.white),
                   color: Colors.deepPurple.shade500),
               ButtonState.loading: IconedButton(
-                  text: loadingString.tr,
-                  color: Colors.deepPurple.shade700),
+                  text: loadingString.tr, color: Colors.deepPurple.shade700),
               ButtonState.fail: IconedButton(
                   text: failedString.tr,
                   icon: const Icon(Icons.cancel, color: Colors.white),
@@ -473,10 +472,7 @@ class SelectableUserTile extends StatefulWidget {
   final VoidCallback? selectionHandler;
 
   const SelectableUserTile(
-      {super.key,
-      required this.model,
-      this.isSelected,
-      this.selectionHandler});
+      {super.key, required this.model, this.isSelected, this.selectionHandler});
 
   @override
   SelectableUserTileState createState() => SelectableUserTileState();
@@ -741,8 +737,7 @@ class ClubMemberTile extends StatelessWidget {
               size: 40,
               onTapHandler: () {
                 LiveModel live = LiveModel();
-                live.channelName =
-                    member.user!.liveCallDetail!.channelName;
+                live.channelName = member.user!.liveCallDetail!.channelName;
                 live.mainHostUserDetail = member.user!;
                 live.token = member.user!.liveCallDetail!.token;
                 live.id = member.user!.liveCallDetail!.id;
@@ -849,35 +844,35 @@ class SendMessageUserTile extends StatelessWidget {
             ? AbsorbPointer(
                 absorbing: state == ButtonState.success,
                 child: SizedBox(
-                  height: 30,
-                  width: 80,
+                  height: 25,
+                  width: 70,
                   child: ProgressButton.icon(
                       radius: 5.0,
-                      textStyle: TextStyle(fontSize: FontSizes.b2),
+                      textStyle: TextStyle(
+                          fontSize: FontSizes.b2,
+                          color: AppColorConstants.backgroundColor),
                       iconedButtons: {
                         ButtonState.idle: IconedButton(
                             text: sendString.tr,
                             icon: Icon(
                               Icons.send,
-                              color: AppColorConstants.iconColor,
+                              color: AppColorConstants.backgroundColor,
                               size: 15,
                             ),
-                            color:
-                                AppColorConstants.themeColor.lighten(0.1)),
+                            color: AppColorConstants.themeColor.darken(0.1)),
                         ButtonState.loading: IconedButton(
                             text: loadingString.tr,
-                            color: AppColorConstants.iconColor),
+                            color: AppColorConstants.backgroundColor),
                         ButtonState.fail: IconedButton(
                             text: failedString.tr,
                             icon: Icon(Icons.cancel,
-                                color: AppColorConstants.iconColor,
+                                color: AppColorConstants.backgroundColor,
                                 size: 15),
                             color: AppColorConstants.red),
                         ButtonState.success: IconedButton(
                             text: sentString.tr,
                             icon: Icon(Icons.check_circle,
-                                color: AppColorConstants.iconColor,
-                                size: 15),
+                                color: AppColorConstants.iconColor, size: 15),
                             color: AppColorConstants.themeColor.darken())
                       },
                       onPressed: sendCallback,
@@ -1285,8 +1280,7 @@ class CollaboratorTile extends StatelessWidget {
                           collaborator.user!.userName,
                           maxLines: 1,
                         ),
-                        if (collaborator.user!.isVerified)
-                          verifiedUserTag(),
+                        if (collaborator.user!.isVerified) verifiedUserTag(),
                         if (collaborator.status ==
                             CollaborationStatusType.pending)
                           BodyLargeText(
