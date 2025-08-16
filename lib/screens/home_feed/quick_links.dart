@@ -22,6 +22,7 @@ import '../club/explore_clubs.dart';
 import '../competitions/competitions_screen.dart';
 import '../content_creator_view.dart';
 import '../highlights/choose_stories.dart';
+import '../post/watch_videos.dart';
 import '../shop_feature/home/shop_dashboard.dart';
 import '../tvs/tv_dashboard.dart';
 
@@ -54,11 +55,12 @@ class QuickLink {
   String subHeading;
   QuickLinkType linkType;
 
-  QuickLink(
-      {required this.icon,
-      required this.heading,
-      required this.subHeading,
-      required this.linkType});
+  QuickLink({
+    required this.icon,
+    required this.heading,
+    required this.subHeading,
+    required this.linkType,
+  });
 }
 
 class QuickLinkWidget extends StatefulWidget {
@@ -79,178 +81,220 @@ class _QuickLinkWidgetState extends State<QuickLinkWidget> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => GridView(
-            padding: EdgeInsets.only(
-                left: DesignConstants.horizontalPadding,
-                right: DesignConstants.horizontalPadding,
-                top: 20,
-                bottom: 100),
-            clipBehavior: Clip.hardEdge,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-                childAspectRatio: 2.8),
-            children: [
-              for (QuickLink link in _homeController.quickLinks)
-                quickLinkView2(link).ripple(() {
+          padding: EdgeInsets.only(
+            left: DesignConstants.horizontalPadding,
+            right: DesignConstants.horizontalPadding,
+            top: 20,
+            bottom: 100,
+          ),
+          physics: const BouncingScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 15,
+            mainAxisSpacing: 15,
+            childAspectRatio: 1.2,
+          ),
+          children: [
+            for (QuickLink link in _homeController.quickLinks)
+              _QuickLinkCard(
+                link: link,
+                onTap: () {
                   widget.callback();
-
-                  if (link.linkType == QuickLinkType.competition) {
-                    Get.to(() => const CompetitionsScreen());
-                  } else if (link.linkType == QuickLinkType.randomChat) {
-                    if (AppConfigConstants.isDemoApp) {
-                      AppUtil.showDemoAppConfirmationAlert(
-                          title: 'Demo app',
-                          subTitle:
-                              'This is demo app so might not find online user to test it',
-                          okHandler: () {
-                            Get.to(() => const ChooseProfileCategory(
-                                  isCalling: false,
-                                ));
-                          });
-                      return;
-                    } else {
-                      Get.to(() => const ChooseProfileCategory(
-                            isCalling: false,
-                          ));
-                    }
-                  } else if (link.linkType == QuickLinkType.randomCall) {
-                    Get.to(() => const ChooseProfileCategory(
-                          isCalling: true,
-                        ));
-                  } else if (link.linkType == QuickLinkType.clubs) {
-                    Get.to(() => const ExploreClubs());
-                  } else if (link.linkType == QuickLinkType.pages) {
-                  } else if (link.linkType == QuickLinkType.goLive) {
-                    Future.delayed(
-                      Duration.zero,
-                      () => showGeneralDialog(
-                          context: Get.context!,
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  const ContentCreatorView(animateToIndex: 2,)),
-                    );
-                  } else if (link.linkType == QuickLinkType.story) {
-                    openStoryUploader();
-                    //Get.to(() => const ChooseMediaForStory());
-                  } else if (link.linkType == QuickLinkType.highlights) {
-                    Get.to(() => const ChooseStoryForHighlights());
-                  } else if (link.linkType == QuickLinkType.tv) {
-                    Get.to(() => const TvDashboardScreen());
-                  } else if (link.linkType == QuickLinkType.liveUsers) {
-                    Get.to(() => const LiveUserScreen());
-                  } else if (link.linkType == QuickLinkType.event) {
-                    Get.to(() => const EventsDashboardScreen());
-                  } else if (link.linkType == QuickLinkType.podcast) {
-                    Get.to(() => PodcastDashboard());
-                  } else if (link.linkType == QuickLinkType.reel) {
-                    Get.to(() => const CreateReelScreen());
-                  } else if (link.linkType == QuickLinkType.dating) {
-                    if (_userProfileManager.user.value!.canUseDating) {
-                      Get.to(() => const DatingDashboard());
-                    } else {
-                      AppUtil.showNewConfirmationAlert(
-                          title: enableDatingString,
-                          subTitle: enableDatingProfileToUseString,
-                          okHandler: () {
-                            Get.to(() => const UploadProfilePicture(
-                                isSettingProfile: true));
-                          },
-                          cancelHandler: () {});
-                    }
-                  } else if (link.linkType == QuickLinkType.chatGPT) {
-                    Get.to(() => const ChatGPT());
-                  } else if (link.linkType == QuickLinkType.fundRaising) {
-                    _fundRaisingController.initiate();
-                    Get.to(() => FundRaisingDashboard())!.then((value) {
-                      _fundRaisingController.clear();
-                    });
-                  } else if (link.linkType == QuickLinkType.offers) {
-                    _nearByOffersController.initiate();
-                    Get.to(() => OffersDashboard())!.then((value) {
-                      _nearByOffersController.clear();
-                    });
-                  } else if (link.linkType == QuickLinkType.shop) {
-                    final ShopController shopController = Get.find();
-
-                    Get.to(() => ShopDashboard())!.then((value) {
-                      shopController.clear();
-                    });
-                  } else if (link.linkType == QuickLinkType.job) {
-                    final JobController jobController = Get.find();
-                    Get.to(() => JobDashboard())!.then((value) {
-                      jobController.clear();
-                    });
-                  }
-                })
-            ]));
+                  _handleQuickLinkTap(link);
+                },
+              ),
+          ],
+        ));
   }
 
-  Widget quickLinkView1(QuickLink link) {
-    return Container(
-      color: AppColorConstants.cardColor,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Image.asset(
-            link.icon,
-            height: 80,
-            width: 80,
-          ),
-          // const Spacer(),
-          const Spacer(),
-          Heading6Text(
-            link.heading.tr,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    ).round(20);
+  void _handleQuickLinkTap(QuickLink link) {
+    if (link.linkType == QuickLinkType.competition) {
+      Get.to(() => const CompetitionsScreen());
+    } else if (link.linkType == QuickLinkType.randomChat) {
+      if (AppConfigConstants.isDemoApp) {
+        AppUtil.showDemoAppConfirmationAlert(
+          title: 'Demo app',
+          subTitle: 'This is demo app so might not find online user to test it',
+          okHandler: () {
+            Get.to(() => const ChooseProfileCategory(
+                  isCalling: false,
+                ));
+          },
+        );
+        return;
+      } else {
+        Get.to(() => const ChooseProfileCategory(
+              isCalling: false,
+            ));
+      }
+    } else if (link.linkType == QuickLinkType.randomCall) {
+      Get.to(() => const ChooseProfileCategory(
+            isCalling: true,
+          ));
+    } else if (link.linkType == QuickLinkType.clubs) {
+      Get.to(() => const ExploreClubs());
+    } else if (link.linkType == QuickLinkType.pages) {
+      // Handle pages
+    } else if (link.linkType == QuickLinkType.goLive) {
+      Future.delayed(
+        Duration.zero,
+        () => showGeneralDialog(
+          context: Get.context!,
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const ContentCreatorView(animateToIndex: 2),
+        ),
+      );
+    } else if (link.linkType == QuickLinkType.story) {
+      openStoryUploader();
+    } else if (link.linkType == QuickLinkType.highlights) {
+      Get.to(() => const ChooseStoryForHighlights());
+    } else if (link.linkType == QuickLinkType.tv) {
+      Get.to(() => const TvDashboardScreen());
+    } else if (link.linkType == QuickLinkType.liveUsers) {
+      Get.to(() => const LiveUserScreen());
+    } else if (link.linkType == QuickLinkType.event) {
+      Get.to(() => const EventsDashboardScreen());
+    } else if (link.linkType == QuickLinkType.podcast) {
+      Get.to(() => PodcastDashboard());
+    } else if (link.linkType == QuickLinkType.reel) {
+      Get.to(() => const WatchVideos());
+    } else if (link.linkType == QuickLinkType.dating) {
+      if (_userProfileManager.user.value!.canUseDating) {
+        Get.to(() => const DatingDashboard());
+      } else {
+        AppUtil.showNewConfirmationAlert(
+          title: enableDatingString,
+          subTitle: enableDatingProfileToUseString,
+          okHandler: () {
+            Get.to(() => const UploadProfilePicture(isSettingProfile: true));
+          },
+          cancelHandler: () {},
+        );
+      }
+    } else if (link.linkType == QuickLinkType.chatGPT) {
+      Get.to(() => const ChatGPT());
+    } else if (link.linkType == QuickLinkType.fundRaising) {
+      _fundRaisingController.initiate();
+      Get.to(() => FundRaisingDashboard())!.then((value) {
+        _fundRaisingController.clear();
+      });
+    } else if (link.linkType == QuickLinkType.offers) {
+      _nearByOffersController.initiate();
+      Get.to(() => OffersDashboard())!.then((value) {
+        _nearByOffersController.clear();
+      });
+    } else if (link.linkType == QuickLinkType.shop) {
+      final ShopController shopController = Get.find();
+      Get.to(() => ShopDashboard())!.then((value) {
+        shopController.clear();
+      });
+    } else if (link.linkType == QuickLinkType.job) {
+      final JobController jobController = Get.find();
+      Get.to(() => JobDashboard())!.then((value) {
+        jobController.clear();
+      });
+    }
   }
+}
 
-  Widget quickLinkView2(QuickLink link) {
-    return Container(
-      color: AppColorConstants.cardColor,
-      child: Stack(
-        children: [
-          Container(
-            height: 50,
-            width: 50,
-            color: AppColorConstants.themeColor.withValues(alpha: 0.2),
-            child: Center(
-              child: Image.asset(
-                link.icon,
-                height: 30,
-                width: 30,
-              ),
+class _QuickLinkCard extends StatelessWidget {
+  final QuickLink link;
+  final VoidCallback onTap;
+
+  const _QuickLinkCard({
+    required this.link,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColorConstants.themeColor.withOpacity(0.1),
+                AppColorConstants.themeColor.withOpacity(0.05),
+              ],
             ),
-          ).topLeftDiognalRounded(20),
-          const SizedBox(
-            width: 10,
-          ),
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: 60,
-            child: Center(
-              child: BodySmallText(
-                link.heading.tr,
-                weight: TextWeight.semiBold,
-                maxLines: 2,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColorConstants.themeColor.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
+            ],
           ),
-          const SizedBox(
-            width: 10,
+          child: Stack(
+            children: [
+              // Background icon (subtle)
+              Positioned(
+                right: 10,
+                bottom: 10,
+                child: Opacity(
+                  opacity: 0.1,
+                  child: Image.asset(
+                    link.icon,
+                    height: 60,
+                    width: 60,
+                    color: AppColorConstants.themeColor,
+                  ),
+                ),
+              ),
+              // Content
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Icon with background
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColorConstants.themeColor.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image.asset(
+                        fit: BoxFit.cover,
+                        link.icon,
+                        height: 24,
+                        width: 24,
+                        // color: AppColorConstants.themeColor.withOpacity(0.5),
+                      ),
+                    ),
+                    // Text content
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Heading6Text(
+                          link.heading.tr,
+                          weight: TextWeight.bold,
+                          maxLines: 1,
+                          color: AppColorConstants.themeColor,
+                        ),
+                        // const SizedBox(height: 2),
+                        Text(
+                          link.subHeading.tr,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              letterSpacing: -0.17,
+                              fontSize: 12,
+                              color: AppColorConstants.mainTextColor
+                                  .withOpacity(0.3)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ).round(20);
+        ));
   }
 }

@@ -22,7 +22,7 @@ class _WatchVideosState extends State<WatchVideos> {
       backgroundColor: AppColorConstants.backgroundColor,
       body: Column(
         children: [
-          titleNavigationBar(title: videosString),
+          backNavigationBar(title: videosString),
           Expanded(
             child: PostList(
               postSource: TimelineType.videos,

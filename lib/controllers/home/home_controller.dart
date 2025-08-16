@@ -94,7 +94,7 @@ class HomeController extends GetxController {
       quickLinks.add(QuickLink(
           icon: 'assets/explore/story.png',
           heading: storyString.tr,
-          subHeading: storyString.tr,
+          subHeading: sentAStoryString.tr,
           linkType: QuickLinkType.story));
     }
     if (_settingsController.setting.value!.enableHighlights) {
@@ -111,20 +111,20 @@ class HomeController extends GetxController {
           subHeading: liveUsersString.tr,
           linkType: QuickLinkType.liveUsers));
     }
-    if (_settingsController.setting.value!.enableCompetitions) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/competition.png',
-          heading: competitionString.tr,
-          subHeading: joinCompetitionsToEarnString.tr,
-          linkType: QuickLinkType.competition));
-    }
-    if (_settingsController.setting.value!.enableClubs) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/group.png',
-          heading: clubsString.tr,
-          subHeading: placeForPeopleOfCommonInterestString.tr,
-          linkType: QuickLinkType.clubs));
-    }
+    // if (_settingsController.setting.value!.enableCompetitions) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/competition.png',
+    //       heading: competitionString.tr,
+    //       subHeading: joinCompetitionsToEarnString.tr,
+    //       linkType: QuickLinkType.competition));
+    // }
+    // if (_settingsController.setting.value!.enableClubs) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/group.png',
+    //       heading: clubsString.tr,
+    //       subHeading: placeForPeopleOfCommonInterestString.tr,
+    //       linkType: QuickLinkType.clubs));
+    // }
     if (_settingsController.setting.value!.enableStrangerChat) {
       quickLinks.add(QuickLink(
           icon: 'assets/explore/chat_colored.png',
@@ -132,25 +132,25 @@ class HomeController extends GetxController {
           subHeading: haveFunByRandomChattingString.tr,
           linkType: QuickLinkType.randomChat));
     }
-    if (_settingsController.setting.value!.enableWatchTv) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/movie.png',
-          heading: tvsString.tr,
-          subHeading: tvsString.tr,
-          linkType: QuickLinkType.tv));
-    }
-    if (_settingsController.setting.value!.enablePodcasts) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/podcast.png',
-          heading: podcastString.tr,
-          subHeading: podcastString.tr,
-          linkType: QuickLinkType.podcast));
-    }
+    // if (_settingsController.setting.value!.enableWatchTv) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/movie.png',
+    //       heading: tvsString.tr,
+    //       subHeading: tvsString.tr,
+    //       linkType: QuickLinkType.tv));
+    // }
+    // if (_settingsController.setting.value!.enablePodcasts) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/podcast.png',
+    //       heading: podcastString.tr,
+    //       subHeading: podcastString.tr,
+    //       linkType: QuickLinkType.podcast));
+    // }
     if (_settingsController.setting.value!.enableReel) {
       quickLinks.add(QuickLink(
-          icon: 'assets/explore/reel.png',
+          icon: 'assets/explore/kids.png',
           heading: reelString.tr,
-          subHeading: reelString.tr,
+          subHeading: reelsString.tr,
           linkType: QuickLinkType.reel));
     }
     if (_settingsController.setting.value!.enableEvents) {
@@ -160,34 +160,34 @@ class HomeController extends GetxController {
           subHeading: eventString.tr,
           linkType: QuickLinkType.event));
     }
-    if (_settingsController.setting.value!.enableDating) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/dating.png',
-          heading: datingString.tr,
-          subHeading: datingString.tr,
-          linkType: QuickLinkType.dating));
-    }
-    if (!_settingsController.setting.value!.enableChatGPT) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/chatGPT.png',
-          heading: chatGPT.tr,
-          subHeading: eventString.tr,
-          linkType: QuickLinkType.chatGPT));
-    }
-    if (_settingsController.setting.value!.enableFundRaising) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/donation.png',
-          heading: fundRaisingString.tr,
-          subHeading: fundRaisingString.tr,
-          linkType: QuickLinkType.fundRaising));
-    }
-    if (_settingsController.setting.value!.enableOffers) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/offers.png',
-          heading: offers.tr,
-          subHeading: offers.tr,
-          linkType: QuickLinkType.offers));
-    }
+    // if (_settingsController.setting.value!.enableDating) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/dating.png',
+    //       heading: datingString.tr,
+    //       subHeading: datingString.tr,
+    //       linkType: QuickLinkType.dating));
+    // }
+    // if (!_settingsController.setting.value!.enableChatGPT) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/chatGPT.png',
+    //       heading: chatGPT.tr,
+    //       subHeading: eventString.tr,
+    //       linkType: QuickLinkType.chatGPT));
+    // }
+    // if (_settingsController.setting.value!.enableFundRaising) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/donation.png',
+    //       heading: fundRaisingString.tr,
+    //       subHeading: fundRaisingString.tr,
+    //       linkType: QuickLinkType.fundRaising));
+    // }
+    // if (_settingsController.setting.value!.enableOffers) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/offers.png',
+    //       heading: offers.tr,
+    //       subHeading: offers.tr,
+    //       linkType: QuickLinkType.offers));
+    // }
     if (_settingsController.setting.value!.enableShop) {
       quickLinks.add(QuickLink(
           icon: 'assets/explore/shop.png',
@@ -195,13 +195,13 @@ class HomeController extends GetxController {
           subHeading: shopString.tr,
           linkType: QuickLinkType.shop));
     }
-    if (_settingsController.setting.value!.enableJobs) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/job.png',
-          heading: jobsString.tr,
-          subHeading: jobsString.tr,
-          linkType: QuickLinkType.job));
-    }
+    // if (_settingsController.setting.value!.enableJobs) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/job.png',
+    //       heading: jobsString.tr,
+    //       subHeading: jobsString.tr,
+    //       linkType: QuickLinkType.job));
+    // }
   }
 
   removePostFromList(PostModel post) {
@@ -270,8 +270,7 @@ class HomeController extends GetxController {
   }
 
   postEdited(PostModel post) {
-    int oldPostIndex =
-        posts.indexWhere((element) => element.id == post.id);
+    int oldPostIndex = posts.indexWhere((element) => element.id == post.id);
     posts.removeAt(oldPostIndex);
     posts.insert(oldPostIndex, post);
     posts.refresh();
@@ -396,8 +395,8 @@ class HomeController extends GetxController {
     await StoryApi.getStories(resultCallback: (result) {
       for (var story in result) {
         var allMedias = story.media;
-        var notViewedStoryMedias = allMedias.where(
-            (element) => viewedStoryIds.contains(element.id) == false);
+        var notViewedStoryMedias = allMedias
+            .where((element) => viewedStoryIds.contains(element.id) == false);
 
         if (notViewedStoryMedias.isEmpty) {
           story.isViewed = true;

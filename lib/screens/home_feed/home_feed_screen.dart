@@ -4,11 +4,13 @@ import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/story_imports.dart';
 import 'package:foap/model/live_model.dart';
 import 'package:foap/screens/home_feed/story_uploader.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/post_card/post_card.dart';
 import '../../controllers/post/add_post_controller.dart';
 import '../../controllers/live/agora_live_controller.dart';
 import '../../controllers/home/home_controller.dart';
+import '../../helper/imports/setting_imports.dart';
 import '../../model/post_model.dart';
 import '../content_creator_view.dart';
 import '../dashboard/dashboard_screen.dart';
@@ -178,39 +180,12 @@ class HomeFeedState extends State<HomeFeedScreen> {
                   // Action Icons
                   Row(
                     children: [
-                      // Create Button
-                      Container(
-                        height: 36,
-                        width: 36,
-                        decoration: BoxDecoration(
-                          color: AppColorConstants.themeColor.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.add_rounded,
-                          size: 20,
-                          color: AppColorConstants.themeColor,
-                        ),
-                      ).ripple(() {
-                        Future.delayed(
-                          Duration.zero,
-                          () => showGeneralDialog(
-                            context: Get.context!,
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    const ContentCreatorView(),
-                          ),
-                        );
-                      }),
-
-                      const SizedBox(width: 12),
-
                       // Chat Button with Badge
                       Container(
                         height: 36,
                         width: 36,
                         decoration: BoxDecoration(
-                          color: AppColorConstants.themeColor.withOpacity(0.2),
+                          color: AppColorConstants.themeColor.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Stack(
@@ -219,7 +194,7 @@ class HomeFeedState extends State<HomeFeedScreen> {
                             Icon(
                               Icons.chat_bubble_outline_rounded,
                               size: 20,
-                              color: AppColorConstants.themeColor,
+                              color: AppColorConstants.mainTextColor,
                             ),
                             Obx(() =>
                                 _dashboardController.unreadMsgCount.value == 0
@@ -245,6 +220,25 @@ class HomeFeedState extends State<HomeFeedScreen> {
                         ),
                       ).ripple(() {
                         Get.to(() => const ChatHistory());
+                      }),
+
+                      const SizedBox(width: 12),
+
+                      Container(
+                        height: 36,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          color: AppColorConstants.themeColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          AntDesign.bell_outline,
+                          size: 20,
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ).ripple(() {
+                        Future.delayed(Duration.zero,
+                            () => Get.to(() => NotificationsScreen()));
                       }),
                     ],
                   ),

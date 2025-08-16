@@ -80,7 +80,7 @@ Widget backNavigationBarWithTrailingWidget(
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorConstants.themeColor.withOpacity(0.1),
+                // color: AppColorConstants.themeColor.withOpacity(0.1),
               ),
               child: Align(
                 alignment: Alignment.center,
@@ -120,7 +120,7 @@ Widget profileScreensNavigationBar(
     required VoidCallback completion}) {
   return Container(
     decoration: BoxDecoration(
-      color: AppColorConstants.cardColor,
+      // color: AppColorConstants.cardColor,
       borderRadius: const BorderRadius.only(
         bottomLeft: Radius.circular(20),
         bottomRight: Radius.circular(20),
@@ -137,7 +137,7 @@ Widget profileScreensNavigationBar(
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorConstants.themeColor.withOpacity(0.1),
+                // color: AppColorConstants.themeColor.withOpacity(0.1),
               ),
               child: ThemeIconWidget(
                 ThemeIcon.backArrow,
@@ -150,12 +150,15 @@ Widget profileScreensNavigationBar(
             if (rightBtnTitle != null)
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColorConstants.themeColor,
+                  gradient: LinearGradient(colors: [
+                    AppColorConstants.themeColor.darken(),
+                    AppColorConstants.themeColor
+                  ]),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: BodyLargeText(
+                child: BodyMediumText(
                   rightBtnTitle.tr,
                   weight: TextWeight.medium,
                   color: Colors.white,
