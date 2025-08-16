@@ -164,7 +164,7 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
     return Container(
       width: Get.width,
       height: Get.height,
-      color: AppColorConstants.backgroundColor.withOpacity(0.9),
+      color: AppColorConstants.backgroundColor.withOpacity(0.4),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -186,6 +186,7 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Heading4Text(
+                  maxLines: 3,
                   _agoraLiveController.live.value!.battleStatus ==
                           BattleStatus.started
                       ? endLiveBattleConfirmationString.tr

@@ -151,130 +151,393 @@ class AddInterestsState extends State<AddInterests> {
 
   void openDrinkHabitListPopup() {
     showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+      backgroundColor: AppColorConstants.backgroundColor,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
             return FractionallySizedBox(
-                heightFactor: 0.8,
-                child: Container(
-                        color: AppColorConstants.cardColor.darken(0.07),
-                        child: ListView.builder(
-                            itemCount: drinkHabitList.length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (_, int index) {
-                              return ListTile(
-                                  title: BodyLargeText(drinkHabitList[index]),
-                                  onTap: () {
-                                    setState(() {
-                                      drinkHabitController.text =
-                                          drinkHabitList[index];
-                                    });
-                                  },
-                                  trailing: ThemeIconWidget(
-                                      drinkHabitList[index] ==
-                                              drinkHabitController.text
-                                          ? ThemeIcon.selectedCheckbox
-                                          : ThemeIcon.emptyCheckbox,
-                                      color: AppColorConstants.iconColor));
-                            }).p16)
-                    .topRounded(40));
-          });
-        });
+              heightFactor: 0.7,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColorConstants.cardColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Select Drinking Habit',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    // List
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: drinkHabitList.length,
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1, thickness: 0.5),
+                        itemBuilder: (_, int index) {
+                          final isSelected = drinkHabitList[index] ==
+                              drinkHabitController.text;
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                drinkHabitController.text =
+                                    drinkHabitList[index];
+                              });
+                              Navigator.pop(context);
+                            },
+                            splashColor:
+                                AppColorConstants.themeColor.withOpacity(0.1),
+                            highlightColor:
+                                AppColorConstants.themeColor.withOpacity(0.05),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 16),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      drinkHabitList[index],
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        color: AppColorConstants.mainTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Icon(
+                                      isSelected
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      color: isSelected
+                                          ? AppColorConstants.themeColor
+                                          : AppColorConstants.iconColor
+                                              .withOpacity(0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void openInterestsPopup() {
     showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+      backgroundColor: AppColorConstants.backgroundColor,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
             return FractionallySizedBox(
-                heightFactor: 0.8,
-                child: Container(
-                        color: AppColorConstants.cardColor.darken(0.07),
-                        child: ListView.builder(
-                            itemCount: datingController.interests.length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (_, int index) {
-                              InterestModel model =
-                                  datingController.interests[index];
-                              var anySelection = selectedInterests
-                                  .where((element) => element.id == model.id);
-                              bool isAdded = anySelection.isNotEmpty;
+              heightFactor: 0.7,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColorConstants.cardColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Select Interests',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    // Selected chips
+                    if (selectedInterests.isNotEmpty) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        height: 60,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: selectedInterests.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (_, index) {
+                            return Chip(
+                              label: Text(selectedInterests[index].name),
+                              backgroundColor:
+                                  AppColorConstants.themeColor.withOpacity(0.2),
+                              deleteIcon: Icon(Icons.close, size: 16),
+                              onDeleted: () {
+                                setState(() {
+                                  selectedInterests.removeAt(index);
+                                  interestsController.text = selectedInterests
+                                      .map((val) => val.name)
+                                      .join(', ');
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      const Divider(height: 1, thickness: 0.5),
+                    ],
+                    // List
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: datingController.interests.length,
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1, thickness: 0.5),
+                        itemBuilder: (_, int index) {
+                          InterestModel model =
+                              datingController.interests[index];
+                          bool isAdded = selectedInterests
+                              .any((element) => element.id == model.id);
 
-                              return ListTile(
-                                  title: BodyLargeText(model.name),
-                                  onTap: () {
-                                    isAdded
-                                        ? selectedInterests.remove(model)
-                                        : selectedInterests.add(model);
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                isAdded
+                                    ? selectedInterests.remove(model)
+                                    : selectedInterests.add(model);
 
-                                    String result = selectedInterests
-                                        .map((val) => val.name)
-                                        .join(', ');
-                                    interestsController.text = result;
-                                    setState(() {});
-                                  },
-                                  trailing: ThemeIconWidget(
-                                      isAdded
-                                          ? ThemeIcon.selectedCheckbox
-                                          : ThemeIcon.emptyCheckbox,
-                                      color: AppColorConstants.iconColor));
-                            }).p16)
-                    .topRounded(40));
-          });
-        });
+                                interestsController.text = selectedInterests
+                                    .map((val) => val.name)
+                                    .join(', ');
+                              });
+                            },
+                            splashColor:
+                                AppColorConstants.themeColor.withOpacity(0.1),
+                            highlightColor:
+                                AppColorConstants.themeColor.withOpacity(0.05),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 16),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      model.name,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        color: AppColorConstants.mainTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    width: 24,
+                                    height: 24,
+                                    decoration: BoxDecoration(
+                                      color: isAdded
+                                          ? AppColorConstants.themeColor
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: isAdded
+                                            ? AppColorConstants.themeColor
+                                            : AppColorConstants.iconColor
+                                                .withOpacity(0.5),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: isAdded
+                                        ? Icon(Icons.check,
+                                            size: 16, color: Colors.white)
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void openLanguagePopup() {
     showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+      backgroundColor: AppColorConstants.backgroundColor,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
             return FractionallySizedBox(
-                heightFactor: 0.8,
-                child: Container(
-                        color: AppColorConstants.cardColor.darken(),
-                        child: ListView.builder(
-                            itemCount: datingController.languages.length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (_, int index) {
-                              LanguageModel model =
-                                  datingController.languages[index];
-                              var anySelection = selectedLanguages
-                                  .where((element) => element.id == model.id);
-                              bool isAdded = anySelection.isNotEmpty;
+              heightFactor: 0.7,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColorConstants.cardColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Select Languages',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    // Selected chips
+                    if (selectedLanguages.isNotEmpty) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        height: 60,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: selectedLanguages.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (_, index) {
+                            return Chip(
+                              label: Text(selectedLanguages[index].name ?? ''),
+                              backgroundColor:
+                                  AppColorConstants.themeColor.withOpacity(0.2),
+                              deleteIcon: Icon(Icons.close, size: 16),
+                              onDeleted: () {
+                                setState(() {
+                                  selectedLanguages.removeAt(index);
+                                  languageController.text = selectedLanguages
+                                      .map((val) => val.name)
+                                      .join(', ');
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      const Divider(height: 1, thickness: 0.5),
+                    ],
+                    // List
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: datingController.languages.length,
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1, thickness: 0.5),
+                        itemBuilder: (_, int index) {
+                          LanguageModel model =
+                              datingController.languages[index];
+                          bool isAdded = selectedLanguages
+                              .any((element) => element.id == model.id);
 
-                              return ListTile(
-                                  title: BodyLargeText(model.name ?? ''),
-                                  onTap: () {
-                                    isAdded
-                                        ? selectedLanguages.remove(model)
-                                        : selectedLanguages.add(model);
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                isAdded
+                                    ? selectedLanguages.remove(model)
+                                    : selectedLanguages.add(model);
 
-                                    String result = selectedLanguages
-                                        .map((val) => val.name)
-                                        .join(', ');
-                                    languageController.text = result;
-                                    setState(() {});
-                                  },
-                                  trailing: ThemeIconWidget(
-                                      isAdded
-                                          ? ThemeIcon.selectedCheckbox
-                                          : ThemeIcon.emptyCheckbox,
-                                      color: AppColorConstants.iconColor));
-                            }).p16)
-                    .topRounded(40));
-          });
-        });
+                                languageController.text = selectedLanguages
+                                    .map((val) => val.name)
+                                    .join(', ');
+                              });
+                            },
+                            splashColor:
+                                AppColorConstants.themeColor.withOpacity(0.1),
+                            highlightColor:
+                                AppColorConstants.themeColor.withOpacity(0.05),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 16),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      model.name ?? '',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        color: AppColorConstants.mainTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    width: 24,
+                                    height: 24,
+                                    decoration: BoxDecoration(
+                                      color: isAdded
+                                          ? AppColorConstants.themeColor
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: isAdded
+                                            ? AppColorConstants.themeColor
+                                            : AppColorConstants.iconColor
+                                                .withOpacity(0.5),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: isAdded
+                                        ? Icon(Icons.check,
+                                            size: 16, color: Colors.white)
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   submitDetail() {

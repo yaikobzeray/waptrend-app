@@ -149,8 +149,8 @@ class HomeController extends GetxController {
     if (_settingsController.setting.value!.enableReel) {
       quickLinks.add(QuickLink(
           icon: 'assets/explore/kids.png',
-          heading: reelString.tr,
-          subHeading: reelsString.tr,
+          heading: kidString.tr,
+          subHeading: kidsString.tr,
           linkType: QuickLinkType.reel));
     }
     if (_settingsController.setting.value!.enableEvents) {

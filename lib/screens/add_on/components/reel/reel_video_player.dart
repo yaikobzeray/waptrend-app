@@ -6,6 +6,7 @@ import 'package:foap/helper/imports/reel_imports.dart';
 import 'package:foap/helper/number_extension.dart';
 import 'package:foap/screens/home_feed/comments_screen.dart';
 import 'package:foap/screens/live/gifts_list.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../../profile/other_user_profile.dart';
@@ -39,8 +40,7 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
 
   @override
   void didUpdateWidget(covariant ReelVideoPlayer oldWidget) {
-    playVideo =
-        _reelsController.currentViewingReel.value!.id == widget.reel.id;
+    playVideo = _reelsController.currentViewingReel.value!.id == widget.reel.id;
 
     if (playVideo == true) {
       play();
@@ -66,324 +66,410 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
             final size = MediaQuery.of(context).size;
 
             // calculate scale for aspect ratio widget
-            var scale = videoPlayerController!.value.aspectRatio /
-                size.aspectRatio;
+            var scale =
+                videoPlayerController!.value.aspectRatio / size.aspectRatio;
 
             // check if adjustments are needed...
-            if (videoPlayerController!.value.aspectRatio <
-                size.aspectRatio) {
+            if (videoPlayerController!.value.aspectRatio < size.aspectRatio) {
               scale = 1 / scale;
             }
             if (snapshot.connectionState == ConnectionState.done) {
               return GestureDetector(
-                  onLongPress: () {
-                    pause();
+                onLongPress: () => pause(),
+                onLongPressUp: () => play(),
+                child: VisibilityDetector(
+                  key: Key(widget.reel.gallery.first.filePath),
+                  onVisibilityChanged: (VisibilityInfo info) {
+                    if (info.visibleFraction == 1.0) {
+                      play();
+                    } else if (info.visibleFraction < 0.4) {
+                      pause();
+                    }
                   },
-                  onLongPressUp: () {
-                    play();
-                  },
-                  child: VisibilityDetector(
-                    key: Key(widget.reel.gallery.first.filePath),
-                    onVisibilityChanged: (VisibilityInfo info) {
-                      if (info.visibleFraction == 1.0) {
-                        play();
-                      } else if (info.visibleFraction < 0.4) {
-                        pause();
-                      }
-                    },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
                     child: Transform.scale(
-                        scale: scale,
-                        // Adjust the offset to cut from left and right
-                        child: SizedBox(
+                      scale: scale,
+                      child: SizedBox(
+                        key: PageStorageKey(widget.reel.gallery.first.filePath),
+                        child: Chewie(
                           key: PageStorageKey(
                               widget.reel.gallery.first.filePath),
-                          child: Chewie(
-                            key: PageStorageKey(
-                                widget.reel.gallery.first.filePath),
-                            controller: ChewieController(
-                              allowFullScreen: false,
-                              videoPlayerController:
-                                  videoPlayerController!,
-                              aspectRatio:
-                                  videoPlayerController!.value.aspectRatio,
-
-                              showOptions: false,
-                              showControls: false,
-                              autoInitialize: true,
-                              looping: true,
-                              autoPlay: false,
-
-                              // allowMuting: true,
-                              errorBuilder: (context, errorMessage) {
-                                return Center(
-                                  child: Text(
-                                    errorMessage,
-                                    style: const TextStyle(
-                                        color: Colors.white),
-                                  ),
-                                );
-                              },
-                            ),
+                          controller: ChewieController(
+                            allowFullScreen: false,
+                            videoPlayerController: videoPlayerController!,
+                            aspectRatio:
+                                videoPlayerController!.value.aspectRatio,
+                            showOptions: false,
+                            showControls: false,
+                            autoInitialize: true,
+                            looping: true,
+                            autoPlay: false,
+                            errorBuilder: (context, errorMessage) {
+                              return Center(
+                                child: Text(
+                                  errorMessage,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            },
                           ),
-                        )),
-                  ));
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
             } else {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
               );
             }
           },
         ),
+        // Gradient Overlay
         Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              height: 200,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.0001),
-                    // You can add more colors to customize the gradient
-                    Colors.black.withValues(alpha: 0.1),
-                    Colors.black26,
-                  ],
-                ),
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(
+            height: 250,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.1),
+                  Colors.black.withOpacity(0.3),
+                  Colors.black.withOpacity(0.5),
+                ],
+                stops: const [0.0, 0.5, 0.8, 1.0],
               ),
-            )),
-        Positioned(
-            bottom: 25,
-            left: DesignConstants.horizontalPadding,
-            right: 60,
+            ),
+          ),
+        ),
+        // Content Overlay
+        Positioned.fill(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!widget.reel.isMyPost &&
-                    widget.reel.user.role != UserRole.admin)
-                  Column(
-                    children: [
-                      AppThemeButton(
-                          width: 100,
-                          height: 30,
-                          text: sendGiftString.tr,
-                          onPress: () {
-                            showModalBottomSheet<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return FractionallySizedBox(
-                                      heightFactor: 0.8,
-                                      child: GiftsPageView(
-                                          giftSelectedCompletion: (gift) {
-                                        Get.back();
-                                        _reelsController.sendPostGift(
-                                            gift,
-                                            widget.reel.user.id,
-                                            widget.reel.id);
-                                      }));
-                                });
-                          }),
-                      const SizedBox(
-                        height: 10,
-                      )
-                    ],
-                  ),
+                const Spacer(),
+                // User Info Row
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    UserAvatarView(
-                      size: 25,
-                      user: widget.reel.user,
-                      hideOnlineIndicator: true,
+                    // Left Content (User Info + Caption)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (!widget.reel.isMyPost &&
+                              widget.reel.user.role != UserRole.admin)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _buildGiftButton(),
+                            ),
+                          _buildUserInfoRow(),
+                          const SizedBox(height: 12),
+                          if (widget.reel.postTitle.isNotEmpty)
+                            _buildPostTitle(),
+                          const SizedBox(height: 12),
+                          _buildAudioInfo(),
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    BodyLargeText(
-                      widget.reel.user.userName,
-                      weight: TextWeight.medium,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    if (widget.reel.user.followingStatus ==
-                        FollowingStatus.notFollowing)
-                      UserFollowUnfollowButton(
-                        isSmallSized: true,
-                        controller: _userFollowUnfollowBtnController,
-                      )
+                    // Right Action Buttons
+                    _buildActionButtons(),
                   ],
-                ).ripple(() {
-                  Get.to(
-                      () => OtherUserProfile(userId: widget.reel.user.id));
-                }),
-                const SizedBox(
-                  height: 10,
                 ),
-                if (widget.reel.postTitle.isNotEmpty)
-                  Column(
-                    children: [
-                      BodyLargeText(
-                        widget.reel.postTitle,
-                        weight: TextWeight.medium,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                SizedBox(
-                    width: Get.width * 0.5,
-                    height: 25,
-                    child: Row(
-                      children: [
-                        ThemeIconWidget(
-                          ThemeIcon.music,
-                          size: 15,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          // width: Get.width * 0.5,
-                          child: BodySmallText(
-                            widget.reel.audio == null
-                                ? originalAudioString.tr
-                                : widget.reel.audio!.name,
-                            weight: TextWeight.medium,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ).ripple(() {
-                      if (widget.reel.audio != null) {
-                        Get.to(() => ReelAudioDetail(
-                              audio: widget.reel.audio!,
-                            ));
-                      }
-                    }))
               ],
-            )),
-        Positioned(
-            bottom: 25,
-            right: DesignConstants.horizontalPadding,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGiftButton() {
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (BuildContext context) {
+            return FractionallySizedBox(
+              heightFactor: 0.8,
+              child: GiftsPageView(
+                giftSelectedCompletion: (gift) {
+                  Get.back();
+                  _reelsController.sendPostGift(
+                      gift, widget.reel.user.id, widget.reel.id);
+                },
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColorConstants.themeColor.withOpacity(0.8),
+              AppColorConstants.themeColor.darken(0.1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Iconsax.gift_outline,
+              size: 16,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            BodyMediumText(
+              sendGiftString.tr,
+              color: Colors.white,
+              weight: TextWeight.medium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserInfoRow() {
+    return InkWell(
+      onTap: () {
+        Get.to(() => OtherUserProfile(userId: widget.reel.user.id));
+      },
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 1.5,
+              ),
+            ),
+            child: UserAvatarView(
+              size: 40,
+              user: widget.reel.user,
+              hideOnlineIndicator: true,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(() => Column(
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              _reelsController.likeUnlikeReel(
-                                  post: widget.reel);
-                              // widget.likeTapHandler();
-                            },
-                            child: ThemeIconWidget(
-                              _reelsController.likedReels
-                                          .contains(widget.reel) ||
-                                      widget.reel.isLike
-                                  ? ThemeIcon.favFilled
-                                  : ThemeIcon.fav,
-                              color: _reelsController.likedReels
-                                          .contains(widget.reel) ||
-                                      widget.reel.isLike
-                                  ? AppColorConstants.red
-                                  : Colors.white,
-                            )),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        BodyMediumText(
-                            '${_reelsController.currentViewingReel.value?.totalLike}',
-                            color: Colors.white)
-                        // }),
-                      ],
-                    )),
-                const SizedBox(
-                  height: 20,
-                ),
-                if (widget.reel.sharedPost == null)
-                  Column(
-                    children: [
-                      ThemeIconWidget(
-                        ThemeIcon.share,
-                        size: 25,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      BodyMediumText(
-                        '${widget.reel.totalShare}',
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ).ripple(() {
-                    showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => FractionallySizedBox(
-                            heightFactor: 0.95,
-                            child: SharePost(post: widget.reel)));
-                  }),
-                if (widget.reel.commentsEnabled)
-                  Column(
-                    children: [
-                      ThemeIconWidget(
-                        ThemeIcon.message,
-                        size: 25,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      BodyMediumText(
-                        widget.reel.totalComment.formatNumber,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ).ripple(() {
-                    openComments();
-                  }),
-                if (widget.reel.audio != null)
-                  Column(
-                    children: [
-                      CachedNetworkImage(
-                              height: 25,
-                              width: 25,
-                              imageUrl: widget.reel.audio!.thumbnail)
-                          .borderWithRadius(value: 1, radius: 5)
-                          .ripple(() {
-                        if (widget.reel.audio != null) {
-                          Get.to(() =>
-                              ReelAudioDetail(audio: widget.reel.audio!));
-                        }
-                      }),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                ThemeIconWidget(
-                  ThemeIcon.moreVertical,
-                  size: 25,
+                BodyLargeText(
+                  widget.reel.user.userName,
+                  weight: TextWeight.medium,
                   color: Colors.white,
-                ).ripple(() {
-                  openActionPopup();
-                })
+                ),
+                if (widget.reel.user.followingStatus ==
+                    FollowingStatus.notFollowing)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: UserFollowUnfollowButton(
+                      isSmallSized: true,
+                      controller: _userFollowUnfollowBtnController,
+                    ),
+                  ),
               ],
-            ))
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostTitle() {
+    return BodyLargeText(
+      widget.reel.postTitle,
+      weight: TextWeight.semiBold,
+      color: Colors.white,
+    );
+  }
+
+  Widget _buildAudioInfo() {
+    return InkWell(
+      onTap: () {
+        if (widget.reel.audio != null) {
+          Get.to(() => ReelAudioDetail(audio: widget.reel.audio!));
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Iconsax.music_bold,
+              size: 16,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: BodySmallText(
+                widget.reel.audio == null
+                    ? originalAudioString.tr
+                    : widget.reel.audio!.name,
+                color: Colors.white,
+                maxLines: 1,
+                // overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Obx(
+          () => _buildActionButton(
+            icon: _reelsController.likedReels.contains(widget.reel) ||
+                    widget.reel.isLike
+                ? Iconsax.heart_bold
+                : Iconsax.heart_outline,
+            count: widget.reel.totalLike,
+            isActive: _reelsController.likedReels.contains(widget.reel) ||
+                widget.reel.isLike,
+            onTap: () => _reelsController.likeUnlikeReel(post: widget.reel),
+          ),
+        ),
+        const SizedBox(height: 20),
+        if (widget.reel.commentsEnabled)
+          _buildActionButton(
+            icon: Iconsax.message_outline,
+            count: widget.reel.totalComment,
+            onTap: openComments,
+          ),
+        const SizedBox(height: 20),
+        if (widget.reel.sharedPost == null)
+          _buildActionButton(
+            icon: Iconsax.send_2_outline,
+            count: widget.reel.totalShare,
+            onTap: () {
+              showModalBottomSheet(
+                backgroundColor: Colors.transparent,
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => FractionallySizedBox(
+                  heightFactor: 0.95,
+                  child: SharePost(post: widget.reel),
+                ),
+              );
+            },
+          ),
+        const SizedBox(height: 20),
+        if (widget.reel.audio != null) _buildAudioThumbnail(),
+        const SizedBox(height: 20),
+        _buildActionButton(
+          icon: Iconsax.more_outline,
+          onTap: openActionPopup,
+        ),
       ],
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    int? count,
+    VoidCallback? onTap,
+    bool isActive = false,
+  }) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 24,
+              color: isActive ? AppColorConstants.red : Colors.white,
+            ),
+          ),
+        ),
+        if (count != null) ...[
+          const SizedBox(height: 4),
+          BodyMediumText(
+            count.formatNumber,
+            color: Colors.white,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAudioThumbnail() {
+    return InkWell(
+      onTap: () {
+        if (widget.reel.audio != null) {
+          Get.to(() => ReelAudioDetail(audio: widget.reel.audio!));
+        }
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white, width: 1.5),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: CachedNetworkImage(
+                imageUrl: widget.reel.audio!.thumbnail,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -392,11 +478,9 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
       videoPlayerController!.pause();
     }
 
-    videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(url));
+    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url));
 
-    initializeVideoPlayerFuture =
-        videoPlayerController!.initialize().then((_) {
+    initializeVideoPlayerFuture = videoPlayerController!.initialize().then((_) {
       setState(() {});
 
       if (playVideo == true) {
@@ -405,34 +489,33 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
         pause();
       }
     });
-
-    // videoPlayerController!.addListener(checkVideoProgress);
   }
 
   play() {
-    videoPlayerController!.play().then((value) => {
-          // videoPlayerController!.addListener(checkVideoProgress)
-        });
+    videoPlayerController!.play();
   }
 
   openComments() {
-    Get.bottomSheet(CommentsScreen(
-      isPopup: true,
-      model: widget.reel,
-      commentPostedCallback: () {
-        setState(() {
-          widget.reel.totalComment += 1;
-        });
-      },
-    ));
+    Get.bottomSheet(
+      CommentsScreen(
+        isPopup: true,
+        model: widget.reel,
+        commentPostedCallback: () {
+          setState(() {
+            widget.reel.totalComment += 1;
+          });
+        },
+      ),
+      isScrollControlled: true,
+      enterBottomSheetDuration: const Duration(milliseconds: 250),
+      exitBottomSheetDuration: const Duration(milliseconds: 200),
+    );
   }
 
   pause() {
     videoPlayerController!.pause();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        // isFreeTimePlayed = true;
-      });
+      setState(() {});
     });
   }
 
@@ -442,102 +525,132 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
   }
 
   void openActionPopup() {
-    Get.bottomSheet(Container(
-      color: AppColorConstants.cardColor.darken(),
-      child: widget.reel.user.isMe
-          ? Wrap(
-              children: [
-                ListTile(
-                    title: Center(
-                        child: Heading6Text(
-                      deleteString.tr,
-                      weight: TextWeight.semiBold,
-                    )),
-                    onTap: () async {
-                      Get.back();
-                      _reelsController.deletePost(
-                        post: widget.reel,
-                      );
-                    }),
-                divider(),
-                ListTile(
-                    title: Center(
-                        child: BodyLargeText(
-                      cancelString.tr,
-                      weight: TextWeight.semiBold,
-                      color: AppColorConstants.red,
-                    )),
-                    onTap: () => Get.back()),
-              ],
-            )
-          : Wrap(
-              children: [
-                ListTile(
-                    title: Center(
-                        child: Heading6Text(
-                      reportString.tr,
-                      weight: TextWeight.bold,
-                    )),
-                    onTap: () async {
-                      Get.back();
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: AppColorConstants.cardColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.only(top: 20),
+        child: widget.reel.user.isMe
+            ? _buildOwnerActionMenu()
+            : _buildVisitorActionMenu(),
+      ),
+      enterBottomSheetDuration: const Duration(milliseconds: 250),
+      exitBottomSheetDuration: const Duration(milliseconds: 200),
+    );
+  }
 
-                      AppUtil.showNewConfirmationAlert(
-                        title: reportString.tr,
-                        subTitle: areYouSureToReportPostString.tr,
-                        okHandler: () {
-                          _reelsController.reportPost(
-                              post: widget.reel,
-                              callback: () {
-                                AppUtil.showToast(
-                                    message:
-                                        reelReportedSuccessfullyString.tr,
-                                    isSuccess: true);
-                              });
-                        },
-                        cancelHandler: () {
-                          Get.back();
-                        },
-                      );
-                    }),
-                ListTile(
-                    title: Center(
-                        child: Heading6Text(blockUserString.tr,
-                            weight: TextWeight.bold)),
-                    onTap: () async {
-                      Get.back();
-                      AppUtil.showNewConfirmationAlert(
-                        title: blockString.tr,
-                        subTitle: areYouSureToBlockUserString.tr,
-                        okHandler: () {
-                          _reelsController.blockUser(
-                              userId: widget.reel.user.id,
-                              callback: () {
-                                AppUtil.showToast(
-                                    message:
-                                        userBlockedSuccessfullyString.tr,
-                                    isSuccess: true);
-                              });
-                        },
-                        cancelHandler: () {
-                          Get.back();
-                        },
-                      );
-                    }),
-                divider(),
-                ListTile(
-                    title: Center(
-                      child: Heading6Text(
-                        cancelString.tr,
-                        weight: TextWeight.regular,
-                        color: AppColorConstants.red,
-                      ),
-                    ),
-                    onTap: () => Get.back()),
-                const SizedBox(
-                  height: 25,
-                )
-              ],
-            ),
-    ).round(40));
+  Widget _buildOwnerActionMenu() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: Icon(Iconsax.trash_outline,
+              color: AppColorConstants.mainTextColor),
+          title: BodyLargeText(
+            deleteString.tr,
+            color: AppColorConstants.mainTextColor,
+          ),
+          onTap: () async {
+            Get.back();
+            _reelsController.deletePost(post: widget.reel);
+          },
+        ),
+        Divider(
+            height: 1, color: AppColorConstants.borderColor.withOpacity(0.5)),
+        ListTile(
+          leading:
+              Icon(Iconsax.close_circle_outline, color: AppColorConstants.red),
+          title: BodyLargeText(
+            cancelString.tr,
+            color: AppColorConstants.red,
+          ),
+          onTap: () => Get.back(),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildVisitorActionMenu() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: Icon(Iconsax.flag_2_outline,
+              color: AppColorConstants.mainTextColor),
+          title: BodyLargeText(
+            reportString.tr,
+            color: AppColorConstants.mainTextColor,
+          ),
+          onTap: () {
+            Get.back();
+            _showReportConfirmation();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.block, color: AppColorConstants.mainTextColor),
+          title: BodyLargeText(
+            blockUserString.tr,
+            color: AppColorConstants.mainTextColor,
+          ),
+          onTap: () {
+            Get.back();
+            _showBlockConfirmation();
+          },
+        ),
+        Divider(
+            height: 1, color: AppColorConstants.dividerColor.withOpacity(0.5)),
+        ListTile(
+          leading:
+              Icon(Iconsax.close_circle_outline, color: AppColorConstants.red),
+          title: BodyLargeText(
+            cancelString.tr,
+            color: AppColorConstants.red,
+          ),
+          onTap: () => Get.back(),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  void _showReportConfirmation() {
+    AppUtil.showNewConfirmationAlert(
+      title: reportString.tr,
+      subTitle: areYouSureToReportPostString.tr,
+      okHandler: () {
+        _reelsController.reportPost(
+          post: widget.reel,
+          callback: () {
+            AppUtil.showToast(
+              message: reelReportedSuccessfullyString.tr,
+              isSuccess: true,
+            );
+          },
+        );
+      },
+      cancelHandler: () => Get.back(),
+    );
+  }
+
+  void _showBlockConfirmation() {
+    AppUtil.showNewConfirmationAlert(
+      title: blockString.tr,
+      subTitle: areYouSureToBlockUserString.tr,
+      okHandler: () {
+        _reelsController.blockUser(
+          userId: widget.reel.user.id,
+          callback: () {
+            AppUtil.showToast(
+              message: userBlockedSuccessfullyString.tr,
+              isSuccess: true,
+            );
+          },
+        );
+      },
+      cancelHandler: () => Get.back(),
+    );
   }
 }

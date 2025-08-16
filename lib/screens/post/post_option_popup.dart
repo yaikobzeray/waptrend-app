@@ -1,3 +1,4 @@
+import 'package:icons_plus/icons_plus.dart';
 import '../../helper/imports/common_import.dart';
 import '../settings_menu/settings_controller.dart';
 
@@ -46,8 +47,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget cameraButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.camera,
+      icon: Iconsax.camera_outline,
       name: cameraString.tr,
       onPress: () async {
         callbackHandler(PostOptionType.camera);
@@ -57,9 +57,8 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget galleryButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.gallery,
-      name: galleryString,
+      icon: Iconsax.gallery_outline,
+      name: galleryString.tr,
       onPress: () async {
         callbackHandler(PostOptionType.gallery);
       },
@@ -68,8 +67,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget videoButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.videoCamera,
+      icon: Iconsax.video_outline,
       name: videoString.tr,
       onPress: () async {
         callbackHandler(PostOptionType.video);
@@ -79,10 +77,8 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget drawButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.drawing,
+      icon: Iconsax.pen_tool_outline,
       name: drawingString.tr,
-      imageUrl: 'assets/images/dashboard/draw_icon.svg',
       onPress: () {
         callbackHandler(PostOptionType.drawing);
       },
@@ -91,8 +87,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget audioButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.mic,
+      icon: Iconsax.microphone_2_outline,
       name: audioString.tr,
       onPress: () {
         callbackHandler(PostOptionType.audio);
@@ -102,8 +97,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget gifButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.gif,
+      icon: Iconsax.gallery_import_outline,
       name: gifString.tr,
       onPress: () {
         callbackHandler(PostOptionType.gif);
@@ -113,8 +107,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   Widget pollButton() {
     return ModalComponents(
-      check: true,
-      icon: ThemeIcon.poll,
+      icon: Iconsax.chart_outline,
       name: pollString.tr,
       onPress: () {
         callbackHandler(PostOptionType.poll);
@@ -124,35 +117,47 @@ class PostOptionsPopup extends StatelessWidget {
 }
 
 class ModalComponents extends StatelessWidget {
-  final bool check;
   final String? imageUrl;
-  final ThemeIcon icon;
+  final IconData icon;
   final String name;
   final VoidCallback? onPress;
 
-  const ModalComponents(
-      {super.key,
-      required this.check,
-      this.imageUrl,
-      required this.icon,
-      required this.name,
-      this.onPress});
+  const ModalComponents({
+    super.key,
+    this.imageUrl,
+    required this.icon,
+    required this.name,
+    this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ThemeIconWidget(icon),
-        const SizedBox(
-          width: 10,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppColorConstants.themeColor.darken(),
+          width: 0.5,
         ),
-        BodySmallText(
-          name,
-        ),
-      ],
-    ).hP8.borderWithRadius(value: 0.5, radius: 5).ripple(() {
-      onPress!();
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: AppColorConstants.iconColor,
+          ),
+          const SizedBox(width: 8),
+          BodySmallText(
+            name,
+            color: AppColorConstants.mainTextColor,
+          ),
+        ],
+      ),
+    ).ripple(() {
+      onPress?.call();
     });
   }
 }
