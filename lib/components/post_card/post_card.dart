@@ -15,6 +15,7 @@ import 'package:foap/components/post_card/video_widget.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/post_imports.dart';
 import 'package:foap/screens/shop_feature/home/ad_detail_screen.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -477,52 +478,70 @@ class PostCardState extends State<PostCard> {
   }
 
   Widget _buildCommentAndLikeWidget() {
-    return Row(
-      spacing: 59,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildLikeButton(),
-        if (widget.model.commentsEnabled) _buildCommentButton(),
-        _buildViewCount(),
-        if (widget.model.sharedPost == null) _buildShareButton(),
-        if (!widget.model.isMyPost && widget.model.user.role != UserRole.admin)
-          _buildGiftButton(),
-        if (widget.model.contentType == PostContentType.event)
-          _buildEventActionButton(),
-        if (widget.model.contentType == PostContentType.competitionAdded ||
-            widget.model.contentType ==
-                PostContentType.competitionResultDeclared)
-          _buildCompetitionActionButton(),
-        if (widget.model.contentType == PostContentType.fundRaising)
-          _buildFundRaisingButton(),
-        if (widget.model.contentType == PostContentType.job)
-          _buildJobActionButton(),
-        if (widget.model.contentType == PostContentType.offer)
-          _buildOfferActionButton(),
-        if (widget.model.contentType == PostContentType.classified)
-          _buildClassifiedActionButton(),
-        if (widget.model.contentType == PostContentType.donation)
-          _buildDonationButton(),
-        if (widget.model.contentType == PostContentType.club)
-          _buildClubActionButton(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        // spacing: 44,
+
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildLikeButton(),
+          if (widget.model.commentsEnabled) _buildCommentButton(),
+          _buildViewCount(),
+          if (widget.model.sharedPost == null) _buildShareButton(),
+          if (!widget.model.isMyPost &&
+              widget.model.user.role != UserRole.admin)
+            _buildGiftButton(),
+          if (widget.model.contentType == PostContentType.event)
+            _buildEventActionButton(),
+          if (widget.model.contentType == PostContentType.competitionAdded ||
+              widget.model.contentType ==
+                  PostContentType.competitionResultDeclared)
+            _buildCompetitionActionButton(),
+          if (widget.model.contentType == PostContentType.fundRaising)
+            _buildFundRaisingButton(),
+          if (widget.model.contentType == PostContentType.job)
+            _buildJobActionButton(),
+          if (widget.model.contentType == PostContentType.offer)
+            _buildOfferActionButton(),
+          if (widget.model.contentType == PostContentType.classified)
+            _buildClassifiedActionButton(),
+          if (widget.model.contentType == PostContentType.donation)
+            _buildDonationButton(),
+          if (widget.model.contentType == PostContentType.club)
+            _buildClubActionButton(),
+        ],
+      ),
     );
   }
 
   Widget _buildLikeButton() {
-    return Column(
+    return Row(
       children: [
-        Obx(() => ThemeIconWidget(
-              postCardController.likedPosts.contains(widget.model) ||
+        Obx(() => Icon(
+              (postCardController.likedPosts.contains(widget.model) ||
                       widget.model.isLike
-                  ? ThemeIcon.favFilled
-                  : ThemeIcon.fav,
+                  ? Iconsax.heart_bold
+                  : Iconsax.heart_outline) as IconData?,
               color: postCardController.likedPosts.contains(widget.model) ||
                       widget.model.isLike
                   ? AppColorConstants.red
                   : AppColorConstants.iconColor,
-              size: 20,
-            ).ripple(() {
+              size: 22,
+            )
+                //       ThemeIconWidget(
+                //   postCardController.likedPosts.contains(widget.model) ||
+                //           widget.model.isLike
+                //       ? Iconsax.like
+                //       : ThemeIcon.fav,
+                //   color: postCardController.likedPosts.contains(widget.model) ||
+                //           widget.model.isLike
+                //       ? AppColorConstants.red
+                //       : AppColorConstants.iconColor,
+                //   size: 20,
+                // )
+
+                .ripple(() {
               postCardController.likeUnlikePost(post: widget.model);
             })),
         const SizedBox(width: 5),
@@ -546,9 +565,9 @@ class PostCardState extends State<PostCard> {
   }
 
   Widget _buildCommentButton() {
-    return Column(
+    return Row(
       children: [
-        ThemeIconWidget(ThemeIcon.message, size: 20),
+        Icon(Iconsax.message_2_outline, size: 22),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalComment}',
@@ -559,9 +578,9 @@ class PostCardState extends State<PostCard> {
   }
 
   Widget _buildViewCount() {
-    return Column(
+    return Row(
       children: [
-        ThemeIconWidget(ThemeIcon.eye, size: 20),
+        Icon(Iconsax.eye_outline, size: 22),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalView}',
@@ -572,9 +591,9 @@ class PostCardState extends State<PostCard> {
   }
 
   Widget _buildShareButton() {
-    return Column(
+    return Row(
       children: [
-        ThemeIconWidget(ThemeIcon.share, size: 20),
+        Icon(Iconsax.send_2_outline, size: 22),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalShare}',
@@ -585,9 +604,9 @@ class PostCardState extends State<PostCard> {
   }
 
   Widget _buildGiftButton() {
-    return Column(
+    return Row(
       children: [
-        ThemeIconWidget(ThemeIcon.gift, size: 20),
+        Icon(Iconsax.gift_outline, size: 22),
       ],
     ).ripple(_showGiftBottomSheet);
   }

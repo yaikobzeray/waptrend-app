@@ -3,6 +3,7 @@ import 'package:foap/controllers/clubs/clubs_controller.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/models.dart';
 import 'package:foap/model/collaboration_model.dart';
+import 'package:icons_plus/icons_plus.dart';
 import '../../controllers/misc/misc_controller.dart';
 import '../../controllers/post/add_post_controller.dart';
 import '../../controllers/profile/profile_controller.dart';
@@ -278,11 +279,11 @@ class _PostUserInfoState extends State<PostUserInfo> {
     return Obx(() => SizedBox(
           height: 24,
           width: 24,
-          child: ThemeIconWidget(
+          child: Icon(
             postCardController.savedPosts.contains(widget.post) ||
                     widget.post.isSaved
-                ? ThemeIcon.bookMarked
-                : ThemeIcon.bookMark,
+                ? Iconsax.bookmark_bold
+                : Iconsax.bookmark_outline,
             color: widget.post.isSaved ||
                     postCardController.savedPosts.contains(widget.post)
                 ? AppColorConstants.themeColor
