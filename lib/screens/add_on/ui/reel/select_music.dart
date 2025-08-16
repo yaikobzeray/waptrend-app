@@ -75,18 +75,18 @@ class _SelectMusicState extends State<SelectMusic> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          color: AppColorConstants.themeColor,
-                          child: ThemeIconWidget(
-                            ThemeIcon.close,
-                            color: AppColorConstants.backgroundColor,
-                            size: 25,
-                          ),
-                        ).round(20).ripple(() {
-                          _createReelController.closeSearch();
-                        }),
+                        // Container(
+                        //   height: 50,
+                        //   width: 50,
+                        //   color: AppColorConstants.themeColor,
+                        //   child: ThemeIconWidget(
+                        //     ThemeIcon.close,
+                        //     color: AppColorConstants.backgroundColor,
+                        //     size: 25,
+                        //   ),
+                        // ).round(20).ripple(() {
+                        //   _createReelController.closeSearch();
+                        // }),
                       ],
                     )
                   : Container())

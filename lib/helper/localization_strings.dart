@@ -7,6 +7,8 @@ String aboutString = 'About';
 String addSomethingAboutPostString = 'Add something about post';
 String okString = 'Ok';
 String submitString = 'Submit';
+String createPostString = 'Create Post';
+
 String doneString = 'Done';
 String leftString = 'left';
 String endedString = 'Ended';

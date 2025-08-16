@@ -105,43 +105,40 @@ class _SFSearchBarState extends State<SFSearchBar> {
                 : Container(),
             Expanded(
               child: TextField(
-                  autocorrect: false,
-                  controller: controller,
-                  onEditingComplete: () {
-                    onSearchCompleted(controller.text);
-                  },
-                  onChanged: (value) {
-                    searchText = value;
-                    // controller.text = searchText!;
-                    if (onSearchChanged != null) {
-                      onSearchChanged!(value);
-                    }
-                    setState(() {});
-                  },
-                  onTap: () {
-                    if (onSearchStarted != null) {
-                      onSearchStarted!();
-                    }
-                  },
-                  style: textStyle ??
-                      TextStyle(
-                          fontSize: FontSizes.b3,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          color: AppColorConstants.mainTextColor),
-                  cursorColor: AppColorConstants.iconColor,
-                  decoration: InputDecoration(
-                    filled: false,
-                    fillColor: AppColorConstants.backgroundColor,
-                    hintStyle: textStyle ??
-                        TextStyle(
-                            fontSize: FontSizes.b3,
-                            color: AppColorConstants.mainTextColor),
-                    hintText: hintText ?? searchAnythingString.tr,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: AppColorConstants.themeColor)),
-                  )).setPadding(bottom: 0, left: 0),
+                      autocorrect: false,
+                      controller: controller,
+                      onEditingComplete: () {
+                        onSearchCompleted(controller.text);
+                      },
+                      onChanged: (value) {
+                        searchText = value;
+                        // controller.text = searchText!;
+                        if (onSearchChanged != null) {
+                          onSearchChanged!(value);
+                        }
+                        setState(() {});
+                      },
+                      onTap: () {
+                        if (onSearchStarted != null) {
+                          onSearchStarted!();
+                        }
+                      },
+                      style: textStyle ??
+                          TextStyle(
+                              fontSize: FontSizes.b3,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              color: AppColorConstants.mainTextColor),
+                      cursorColor: AppColorConstants.iconColor,
+                      decoration: InputDecoration(
+                          filled: false,
+                          fillColor: AppColorConstants.backgroundColor,
+                          hintStyle: textStyle ??
+                              TextStyle(
+                                  fontSize: FontSizes.b3,
+                                  color: AppColorConstants.mainTextColor),
+                          hintText: hintText ?? searchAnythingString.tr,
+                          border: InputBorder.none))
+                  .setPadding(bottom: 0, left: 0),
             ),
           ],
         ),

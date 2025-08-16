@@ -25,11 +25,11 @@ Widget backNavigationBar({required String title}) {
               width: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorConstants.themeColor.withOpacity(0.1),
+                // color: AppColorConstants.themeColor.withOpacity(0.1),
               ),
               child: Center(
                 child: Icon(
-                  Icons.arrow_back,
+                  Icons.arrow_back_ios,
                   size: 20,
                   color: AppColorConstants.iconColor,
                 ),

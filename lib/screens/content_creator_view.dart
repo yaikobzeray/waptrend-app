@@ -169,6 +169,7 @@ class _ContentCreatorViewState extends State<ContentCreatorView>
                       ]),
                     ),
                     child: SMTabBar(
+                      lableColor: AppColorConstants.backgroundColor,
                       tabs: tabs,
                       canScroll: true,
                       hideDivider: false,

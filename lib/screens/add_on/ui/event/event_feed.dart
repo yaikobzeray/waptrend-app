@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:foap/components/app_scaffold.dart';
+import 'package:foap/components/custom_texts.dart';
 import 'package:foap/helper/imports/common_import.dart';
+import 'package:foap/screens/add_on/ui/event/event_detail.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../components/post_card/post_card.dart';
 import '../../../../controllers/post/add_post_controller.dart';
@@ -15,16 +20,12 @@ class EventFeedScreen extends StatefulWidget {
 class EventFeedScreenState extends State<EventFeedScreen> {
   final EventsController _eventsController = Get.find();
   final AddPostController _addPostController = Get.find();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController();
   final _controller = ScrollController();
-
-  String? selectedValue;
 
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadData();
     });
@@ -46,117 +47,219 @@ class EventFeedScreenState extends State<EventFeedScreen> {
 
   @override
   void dispose() {
+    _refreshController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-        backgroundColor: AppColorConstants.backgroundColor,
-        body: Column(
-          children: [
-            backNavigationBar(
-              title: postsString.tr,
+      backgroundColor: AppColorConstants.backgroundColor,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            floating: true,
+            expandedHeight: 30,
+            backgroundColor: AppColorConstants.backgroundColor,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColorConstants.themeColor.withOpacity(0.1),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
             ),
-            Expanded(child: postsView()),
-          ],
-        ));
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: AppColorConstants.mainTextColor,
+              ),
+              onPressed: () => Get.back(),
+            ),
+            title: Text(
+              postsString.tr,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppColorConstants.mainTextColor,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(child: postingView()),
+          Obx(() {
+            final posts = _eventsController.posts;
+            return posts.isEmpty
+                ? SliverFillRemaining(
+                    child: Center(
+                        child: emptyData(
+                      title: noPostFoundString.tr,
+                      subTitle: '',
+                    )),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final post = posts[index];
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 375),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: PostCard(
+                                  model: post,
+                                  removePostHandler: () {
+                                    _eventsController.removePostFromList(post);
+                                  },
+                                  blockUserHandler: () {
+                                    _eventsController
+                                        .removeUsersAllPostFromList(post);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: posts.length,
+                    ),
+                  );
+          }),
+        ],
+      ),
+    );
   }
 
   Widget postingView() {
-    return Obx(() => _addPostController.isPosting.value
-        ? Container(
-            height: 55,
-            color: AppColorConstants.cardColor,
-            child: Row(
-              children: [
-                _addPostController.postingMedia.isNotEmpty &&
-                        _addPostController.postingMedia.first.mediaType !=
-                            GalleryMediaType.gif
-                    ? _addPostController.postingMedia.first.thumbnail != null
-                        ? Image.memory(
-                            _addPostController.postingMedia.first.thumbnail!,
-                            fit: BoxFit.cover,
-                            width: 40,
-                            height: 40,
-                          ).round(5)
-                        : _addPostController.postingMedia.first.mediaType ==
-                                GalleryMediaType.photo
-                            ? Image.file(
-                                _addPostController.postingMedia.first.file!,
-                                fit: BoxFit.cover,
-                                width: 40,
-                                height: 40,
-                              ).round(5)
-                            // : BodyLargeText(_addPostController.postingTitle)
-                            : Container()
-                    // : BodyLargeText(_addPostController.postingTitle),
-                    : Container(),
-                const SizedBox(
-                  width: 10,
-                ),
-                Heading5Text(
-                  _addPostController.isErrorInPosting.value
-                      ? postFailedString.tr
-                      : postingString.tr,
-                ),
-                const Spacer(),
-                _addPostController.isErrorInPosting.value
-                    ? Row(
-                        children: [
-                          Heading5Text(
-                            discardString.tr,
-                            weight: TextWeight.medium,
-                          ).ripple(() {
-                            _addPostController.discardFailedPost();
-                          }),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Heading5Text(
-                            retryString.tr,
-                            weight: TextWeight.medium,
-                          ).ripple(() {
-                            _addPostController.retryPublish();
-                          }),
-                        ],
-                      )
-                    : Container()
-              ],
-            ).hP8,
-          ).backgroundCard(radius: 10).bp(20)
-        : Container());
-  }
-
-  postsView() {
-    return Obx(() {
-      return ListView.separated(
-              controller: _controller,
-              padding: const EdgeInsets.only(top: 20, bottom: 100),
-              itemCount: _eventsController.posts.length,
-              itemBuilder: (context, index) {
-                PostModel model = _eventsController.posts[index];
-                return PostCard(
-                  model: model,
-                  removePostHandler: () {
-                    _eventsController.removePostFromList(model);
-                  },
-                  blockUserHandler: () {
-                    _eventsController.removeUsersAllPostFromList(model);
-                  },
-                );
-              },
-              separatorBuilder: (context, index) {
-                return divider(
-                  height: 10,
-                ).vP8;
-              })
-          .addPullToRefresh(
-              refreshController: _refreshController,
-              enablePullUp: true,
-              onRefresh: refreshData,
-              onLoading: loadData,
-              enablePullDown: true);
-    });
+    return Obx(() => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _addPostController.isPosting.value
+              ? Container(
+                  key: const ValueKey('posting-view'),
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColorConstants.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColorConstants.shadowColor.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      if (_addPostController.postingMedia.isNotEmpty &&
+                          _addPostController.postingMedia.first.mediaType !=
+                              GalleryMediaType.gif)
+                        _addPostController.postingMedia.first.thumbnail != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.memory(
+                                  _addPostController
+                                      .postingMedia.first.thumbnail!,
+                                  fit: BoxFit.cover,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              )
+                            : _addPostController.postingMedia.first.mediaType ==
+                                    GalleryMediaType.photo
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      _addPostController
+                                          .postingMedia.first.file!,
+                                      fit: BoxFit.cover,
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  )
+                                : Container(),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: BodyMediumText(
+                                    _addPostController.isErrorInPosting.value
+                                        ? postFailedString.tr
+                                        : postingString.tr,
+                                    color: AppColorConstants.mainTextColor,
+                                  ),
+                                ),
+                                if (!_addPostController.isErrorInPosting.value)
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          AppColorConstants.themeColor),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            if (_addPostController.isErrorInPosting.value)
+                              const SizedBox(height: 8),
+                            if (_addPostController.isErrorInPosting.value)
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColorConstants.themeColor
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: BodyMediumText(
+                                      discardString.tr,
+                                      color: AppColorConstants.themeColor,
+                                    ).ripple(() {
+                                      _addPostController.discardFailedPost();
+                                    }),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColorConstants.themeColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: BodyMediumText(
+                                      retryString.tr,
+                                      color: Colors.white,
+                                    ).ripple(() {
+                                      _addPostController.retryPublish();
+                                    }),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(key: const ValueKey('empty-container')),
+        ));
   }
 }

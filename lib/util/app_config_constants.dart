@@ -7,7 +7,7 @@ final SettingsController settingsController = Get.find();
 
 class AppConfigConstants {
   // Name of app
-  static String appName = 'Waptrend';
+  static String appName = 'WapTrend';
 
   static String currentVersion = '1.7';
   static const liveAppLink = 'https://www.google.com/';

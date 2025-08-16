@@ -5,6 +5,8 @@ class SMTabBar extends StatelessWidget {
   final List<String> tabs;
   final bool canScroll;
   final bool hideDivider;
+  final Color? lableColor;
+  final Color? unselectedLabelColor;
 
   const SMTabBar({
     super.key,
@@ -12,6 +14,8 @@ class SMTabBar extends StatelessWidget {
     required this.canScroll,
     this.controller,
     this.hideDivider = true,
+    this.lableColor,
+    this.unselectedLabelColor,
   });
 
   @override
@@ -19,6 +23,8 @@ class SMTabBar extends StatelessWidget {
     return Stack(
       children: [
         getTextTabBar(
+            lableColor: lableColor,
+            unselectedLabelColor: unselectedLabelColor,
             tabs: tabs,
             controller: controller,
             canScroll: canScroll,
@@ -88,6 +94,8 @@ TabBar getTextTabBar(
     {TabController? controller,
     required List<String> tabs,
     bool hideDivider = false,
+    Color? lableColor,
+    Color? unselectedLabelColor,
     required bool canScroll}) {
   return TabBar(
     padding: EdgeInsets.zero,
@@ -105,10 +113,11 @@ TabBar getTextTabBar(
     },
     labelStyle: TextStyle(
         fontSize: FontSizes.b2,
-        // color: AppColorConstants.backgroundColor,
+        color: AppColorConstants.backgroundColor,
         fontWeight: TextWeight.medium),
-    labelColor: AppColorConstants.backgroundColor,
-    unselectedLabelColor: AppColorConstants.subHeadingTextColor,
+    labelColor: lableColor ?? AppColorConstants.themeColor,
+    unselectedLabelColor:
+        unselectedLabelColor ?? AppColorConstants.mainTextColor,
     tabs: List.generate(tabs.length, (int index) {
       return Tab(
         text: tabs[index],

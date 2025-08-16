@@ -90,96 +90,167 @@ class HomeFeedState extends State<HomeFeedScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 55,
+              height: 35,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Heading4Text(
-                  AppConfigConstants.appName,
-                  weight: TextWeight.semiBold,
-                  color: AppColorConstants.themeColor,
-                ),
-                const Spacer(),
-                Obx(() => CupertinoSegmentedControl(
-                    groupValue: _homeController.selectedSegment.value,
-                    children: <int, Widget>{
-                      0: BodySmallText(
-                        allString.tr,
-                        color: _homeController.selectedSegment.value == 0
-                            ? Colors.white
-                            : null,
-                      ).hP4,
-                      1: BodySmallText(followingString.tr,
-                              color: _homeController.selectedSegment.value == 1
-                                  ? Colors.white
-                                  : null)
-                          .hP4,
-                    },
-                    unselectedColor: AppColorConstants.backgroundColor,
-                    selectedColor: AppColorConstants.themeColor,
-                    onValueChanged: (value) {
-                      _homeController.selectSegment(value! as int);
-                    })),
-                const Spacer(),
-                SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: ThemeIconWidget(
-                      ThemeIcon.plus,
-                      size: 25,
-                    )).ripple(() {
-                  Future.delayed(
-                    Duration.zero,
-                    () => showGeneralDialog(
-                        context: Get.context!,
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const ContentCreatorView()),
-                  );
-                }),
-                const SizedBox(
-                  width: 5,
-                ),
-                // SizedBox(
-                //     height: 30,
-                //     width: 30,
-                //     child: ThemeIconWidget(
-                //       ThemeIcon.map,
-                //       size: 25,
-                //     )).ripple(() {
-                //   Get.to(() => MapsUsersScreen());
-                // }),
-                // const SizedBox(
-                //   width: 5,
-                // ),
-                SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: Stack(
-                    alignment: Alignment.center,
+            Container(
+              decoration: BoxDecoration(
+                  border: BorderDirectional(
+                      bottom: BorderSide(
+                          color:
+                              AppColorConstants.borderColor.withOpacity(0.2)))),
+              child: Row(
+                children: [
+                  // App Logo/Name
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      "assets/waptrend-logo.jpg",
+                      height: Get.height * 0.04,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    AppConfigConstants.appName,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: TextWeight.semiBold,
+                      color: AppColorConstants.mainTextColor,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  // Segmented Control
+                  // Container(
+                  //   padding: const EdgeInsets.all(4),
+                  //   decoration: BoxDecoration(
+                  //     color: AppColorConstants.cardColor,
+                  //     borderRadius: BorderRadius.circular(12),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.black.withOpacity(0.05),
+                  //         blurRadius: 6,
+                  //         offset: const Offset(0, 2),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Obx(() => CupertinoSegmentedControl<int>(
+                  //         groupValue: _homeController.selectedSegment.value,
+                  //         padding: const EdgeInsets.all(4),
+                  //         children: {
+                  //           0: Container(
+                  //             padding: const EdgeInsets.symmetric(
+                  //                 horizontal: 16, vertical: 8),
+                  //             child: BodyMediumText(
+                  //               allString.tr,
+                  //               weight: _homeController.selectedSegment.value == 0
+                  //                   ? TextWeight.semiBold
+                  //                   : TextWeight.regular,
+                  //             ),
+                  //           ),
+                  //           1: Container(
+                  //             padding: const EdgeInsets.symmetric(
+                  //                 horizontal: 16, vertical: 8),
+                  //             child: BodyMediumText(
+                  //               followingString.tr,
+                  //               weight: _homeController.selectedSegment.value == 1
+                  //                   ? TextWeight.semiBold
+                  //                   : TextWeight.regular,
+                  //             ),
+                  //           ),
+                  //         },
+                  //         unselectedColor: Colors.transparent,
+                  //         selectedColor: AppColorConstants.themeColor,
+                  //         borderColor: Colors.transparent,
+                  //         pressedColor:
+                  //             AppColorConstants.themeColor.withOpacity(0.2),
+                  //         onValueChanged: (value) {
+                  //           _homeController.selectSegment(value);
+                  //         },
+                  //       )),
+                  // ),
+
+                  // const Spacer(),
+
+                  // Action Icons
+                  Row(
                     children: [
-                      ThemeIconWidget(
-                        ThemeIcon.chat,
-                        size: 25,
+                      // Create Button
+                      Container(
+                        height: 36,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          color: AppColorConstants.themeColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.add_rounded,
+                          size: 20,
+                          color: AppColorConstants.themeColor,
+                        ),
+                      ).ripple(() {
+                        Future.delayed(
+                          Duration.zero,
+                          () => showGeneralDialog(
+                            context: Get.context!,
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const ContentCreatorView(),
+                          ),
+                        );
+                      }),
+
+                      const SizedBox(width: 12),
+
+                      // Chat Button with Badge
+                      Container(
+                        height: 36,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          color: AppColorConstants.themeColor.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 20,
+                              color: AppColorConstants.themeColor,
+                            ),
+                            Obx(() =>
+                                _dashboardController.unreadMsgCount.value == 0
+                                    ? Container()
+                                    : Positioned(
+                                        top: 6,
+                                        right: 6,
+                                        child: Container(
+                                          width: 10,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            color: AppColorConstants.red,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: AppColorConstants
+                                                  .backgroundColor,
+                                              width: 2,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                          ],
+                        ),
                       ).ripple(() {
                         Get.to(() => const ChatHistory());
                       }),
-                      Obx(() => _dashboardController.unreadMsgCount.value == 0
-                          ? Container()
-                          : Positioned(
-                              top: 0,
-                              right: 5,
-                              child: Container(
-                                color: AppColorConstants.red,
-                                height: 10,
-                                width: 10,
-                              ).circular,
-                            ))
                     ],
                   ),
-                ),
-              ],
-            ).hp(10),
+                ],
+              ).hp(16).vP8,
+            ),
             const SizedBox(
               height: 20,
             ),

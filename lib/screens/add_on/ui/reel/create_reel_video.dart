@@ -54,247 +54,292 @@ class _CreateReelScreenState extends State<CreateReelScreen>
   Widget build(BuildContext context) {
     return AppScaffold(
       backgroundColor: AppColorConstants.backgroundColor,
-      body: Column(
+      body: Stack(
         children: [
-          const SizedBox(
-              // height: 40,
-              ),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              const CameraView(),
-              Positioned(
-                left: 15,
-                right: 15,
-                top: 45,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                                color: AppColorConstants.themeColor,
-                                child: Icon(
-                                  AntDesign.close_outline,
-                                  color: AppColorConstants.backgroundColor,
-                                  size: 20,
-                                ).p4)
-                            .circular
-                            .ripple(() {
-                          Get.back();
-                        }),
-                        Obx(() => Container(
-                                // color: AppColorConstants.themeColor,
+          // Camera Preview
+          const CameraView(),
 
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(colors: [
-                                    AppColorConstants.themeColor,
-                                    AppColorConstants.themeColor.darken()
-                                  ]),
-                                ),
-                                child: Row(
-                                  children: [
-                                    if (_createReelController
-                                            .selectedAudio.value !=
-                                        null)
-                                      ThemeIconWidget(
-                                        ThemeIcon.music,
-                                        color: AppColorConstants.mainTextColor,
-                                      ),
-                                    BodyMediumText(
-                                      _createReelController
-                                                  .selectedAudio.value !=
-                                              null
-                                          ? _createReelController
-                                              .selectedAudio.value!.name
-                                          : selectMusicString.tr,
-                                      color: AppColorConstants.backgroundColor,
-                                      weight: TextWeight.medium,
-                                    ),
-                                  ],
-                                ).setPadding(
-                                    left: DesignConstants.horizontalPadding,
-                                    right: DesignConstants.horizontalPadding,
-                                    top: 8,
-                                    bottom: 8))
-                            .circular).ripple(() {
-                          final cameraService =
-                              Get.find<CameraControllerService>();
-
-                          Get.bottomSheet(
-                            SelectMusic(
-                                selectedAudioCallback: (croppedAudio, music) {
-                              _createReelController
-                                  .setCroppedAudio(croppedAudio);
-                              cameraService
-                                  .initializeCamera(CameraLensDirection.front);
-                            }),
-                            isScrollControlled: true,
-                            ignoreSafeArea: true,
-                          );
-                        }),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
-                  ],
+          // Top Controls
+          Positioned(
+            top: 50,
+            left: 16,
+            right: 16,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Close Button
+                _buildControlButton(
+                  icon: const Icon(AntDesign.close_outline, size: 20),
+                  onTap: () => Get.back(),
                 ),
-              ),
-              Positioned(
-                right: 15,
-                top: 200,
-                child: Container(
-                  // width: Get.width * 0.6,
-                  color: AppColorConstants.cardColor.withValues(alpha: 0.4),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          final cameraService =
-                              Get.find<CameraControllerService>();
 
-                          if (cameraService
-                                  .controller.description.lensDirection ==
-                              CameraLensDirection.back) {
-                            cameraService
-                                .initializeCamera(CameraLensDirection.front);
-                          } else {
-                            cameraService
-                                .initializeCamera(CameraLensDirection.back);
-                          }
-                        },
-                        child: Icon(
-                          ZondIcons.camera,
-                          size: 30,
-                          color: AppColorConstants.themeColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      Obx(() => GestureDetector(
-                            onTap: () {
-                              final cameraService =
-                                  Get.find<CameraControllerService>();
-                              if (_createReelController.flashSetting.value) {
-                                cameraService.controller
-                                    .setFlashMode(FlashMode.off);
-                                _createReelController.turnOffFlash();
-                              } else {
-                                cameraService.controller
-                                    .setFlashMode(FlashMode.torch);
-                                _createReelController.turnOnFlash();
-                              }
-                            },
-                            child: Icon(
-                              _createReelController.flashSetting.value
-                                  ? IonIcons.flash_off
-                                  : IonIcons.flash,
-                              size: 30,
-                              color: AppColorConstants.themeColor,
-                            ),
-                          )),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      Obx(() => GestureDetector(
-                            onTap: () {
-                              _createReelController.updateRecordingLength(15);
-                              _initAnimation();
-                            },
-                            child: Container(
-                              height: 30,
-                              width: 30,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _createReelController
-                                              .recordingLength.value ==
-                                          15
-                                      ? AppColorConstants.themeColor.darken()
-                                      : AppColorConstants.backgroundColor),
-                              child: Center(
-                                  child: BodySmallText(
-                                '15s',
-                                color: _createReelController
-                                            .recordingLength.value ==
-                                        15
-                                    ? AppColorConstants.backgroundColor
-                                    : AppColorConstants.themeColor.darken(),
-                              )),
-                            ),
-                          )),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      Obx(() => GestureDetector(
-                            onTap: () {
-                              _createReelController.updateRecordingLength(30);
-                              _initAnimation();
-                            },
-                            child: Container(
-                              height: 30,
-                              width: 30,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _createReelController
-                                              .recordingLength.value ==
-                                          30
-                                      ? AppColorConstants.themeColor.darken()
-                                      : AppColorConstants.backgroundColor),
-                              child: Center(
-                                  child: BodySmallText(
-                                '30s',
-                                color: _createReelController
-                                            .recordingLength.value ==
-                                        30
-                                    ? AppColorConstants.backgroundColor
-                                    : AppColorConstants.themeColor.darken(),
-                              )),
-                            ),
-                          ))
-                    ],
-                  ).setPadding(left: 8, right: 8, top: 12, bottom: 12),
-                ).round(20),
-              ),
-              Positioned(
-                  bottom: 20,
-                  child: GestureDetector(
-                    onTap: () {
-                      animationController!.forward();
-                      _recordVideo();
-                      // _recordVideo();
-                    },
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: CircularProgressIndicator(
-                            value: animationController!.value,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColorConstants.themeColor),
-                          ),
-                        ),
-                        Obx(() => Icon(
-                              color: AppColorConstants.themeColor,
-                              _createReelController.isRecording.value
-                                  ? AntDesign.pause_circle_fill
-                                  : AntDesign.play_circle_fill,
-                              size: 50,
-                            ).circular)
-                      ],
-                    ),
-                  ))
-            ],
+                // Music Selection
+                Obx(() => _buildMusicSelector()),
+              ],
+            ),
+          ),
+
+          // Right Side Controls
+          Positioned(
+            right: 16,
+            top: 120,
+            child: _buildSideControls(),
+          ),
+
+          // Bottom Record Button
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: _buildRecordButton(),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildControlButton(
+      {required Widget icon, required VoidCallback onTap}) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: AppColorConstants.themeColor.withOpacity(0.9),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(child: icon),
+    ).ripple(onTap);
+  }
+
+  Widget _buildMusicSelector() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColorConstants.themeColor,
+            AppColorConstants.themeColor.darken(),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_createReelController.selectedAudio.value != null)
+            ThemeIconWidget(
+              ThemeIcon.music,
+              color: AppColorConstants.mainTextColor,
+            ).p8,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: BodyMediumText(
+              _createReelController.selectedAudio.value != null
+                  ? _createReelController.selectedAudio.value!.name
+                  : selectMusicString.tr,
+              color: AppColorConstants.backgroundColor,
+              weight: TextWeight.medium,
+            ),
+          ),
+        ],
+      ),
+    ).ripple(() {
+      final cameraService = Get.find<CameraControllerService>();
+      Get.bottomSheet(
+        SelectMusic(
+          selectedAudioCallback: (croppedAudio, music) {
+            _createReelController.setCroppedAudio(croppedAudio);
+            cameraService.initializeCamera(CameraLensDirection.front);
+          },
+        ),
+        isScrollControlled: true,
+        ignoreSafeArea: true,
+      );
+    });
+  }
+
+  Widget _buildSideControls() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppColorConstants.cardColor.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Camera Flip
+          _buildSideControlButton(
+            icon: const Icon(ZondIcons.camera, size: 24),
+            onTap: () {
+              final cameraService = Get.find<CameraControllerService>();
+              if (cameraService.controller.description.lensDirection ==
+                  CameraLensDirection.back) {
+                cameraService.initializeCamera(CameraLensDirection.front);
+              } else {
+                cameraService.initializeCamera(CameraLensDirection.back);
+              }
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          // Flash Toggle
+          Obx(() => _buildSideControlButton(
+                icon: Icon(
+                  _createReelController.flashSetting.value
+                      ? IonIcons.flash_off
+                      : IonIcons.flash,
+                  size: 24,
+                ),
+                onTap: () {
+                  final cameraService = Get.find<CameraControllerService>();
+                  if (_createReelController.flashSetting.value) {
+                    cameraService.controller.setFlashMode(FlashMode.off);
+                    _createReelController.turnOffFlash();
+                  } else {
+                    cameraService.controller.setFlashMode(FlashMode.torch);
+                    _createReelController.turnOnFlash();
+                  }
+                },
+              )),
+
+          const SizedBox(height: 16),
+
+          // Duration Selector - 15s
+          Obx(() => _buildDurationButton(
+                duration: 15,
+                isActive: _createReelController.recordingLength.value == 15,
+              )),
+
+          const SizedBox(height: 16),
+
+          // Duration Selector - 30s
+          Obx(() => _buildDurationButton(
+                duration: 30,
+                isActive: _createReelController.recordingLength.value == 30,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSideControlButton({
+    required Widget icon,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: AppColorConstants.backgroundColor.withOpacity(0.7),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: icon,
+      ),
+    ).ripple(onTap);
+  }
+
+  Widget _buildDurationButton({required int duration, required bool isActive}) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: isActive
+            ? AppColorConstants.themeColor.darken()
+            : AppColorConstants.backgroundColor.withOpacity(0.7),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: BodySmallText(
+          '${duration}s',
+          color: isActive
+              ? AppColorConstants.backgroundColor
+              : AppColorConstants.themeColor.darken(),
+        ),
+      ),
+    ).ripple(() {
+      _createReelController.updateRecordingLength(duration);
+      _initAnimation();
+    });
+  }
+
+  Widget _buildRecordButton() {
+    return GestureDetector(
+      onTap: () {
+        animationController!.forward();
+        _recordVideo();
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Progress Circle
+          SizedBox(
+            width: 80,
+            height: 80,
+            child: CircularProgressIndicator(
+              value: animationController!.value,
+              strokeWidth: 3,
+              backgroundColor: AppColorConstants.themeColor.withOpacity(0.2),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(AppColorConstants.themeColor),
+            ),
+          ),
+
+          // Record Button
+          Obx(() => Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _createReelController.isRecording.value
+                      ? Colors.red
+                      : AppColorConstants.themeColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Icon(
+                    _createReelController.isRecording.value
+                        ? Icons.pause
+                        : Icons.fiber_manual_record,
+                    size: 30,
+                    color: AppColorConstants.backgroundColor,
+                  ),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  // Existing methods remain unchanged below this point
   _recordVideo() async {
     if (_createReelController.isRecording.value) {
       stopRecording();
@@ -327,6 +372,5 @@ class _CreateReelScreenState extends State<CreateReelScreen>
       _createReelController
           .playAudioFile(_createReelController.croppedAudioFile!);
     }
-    // startRecordingTimer();
   }
 }

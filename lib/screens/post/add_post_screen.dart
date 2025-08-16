@@ -123,7 +123,7 @@ class AddPostState extends State<AddPostScreen> {
                                   ThemeIcon.close,
                                   size: 30,
                                 )),
-                            BodyMediumText(
+                            BodyLargeText(
                               "Create Post",
                               color: Colors.black,
                             ),

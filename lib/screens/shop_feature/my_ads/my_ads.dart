@@ -55,17 +55,19 @@ class _MyAdsState extends State<MyAds> {
               pinned: true,
               elevation: 0,
               leading: IconButton(
-                icon:
-                    Icon(Icons.arrow_back, color: AppColorConstants.themeColor),
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 20,
+                ),
                 onPressed: () => Get.back(),
               ),
               centerTitle: true,
               title: Text(
                 myProductString.tr,
                 style: GoogleFonts.poppins(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColorConstants.mainTextColor,
+                  color: AppColorConstants.themeColor,
                 ),
               ),
               bottom: PreferredSize(
