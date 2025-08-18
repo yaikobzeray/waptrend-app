@@ -376,18 +376,25 @@ class HomeFeedState extends State<HomeFeedScreen> {
                           ? const StoryAndHighlightsShimmer()
                           : storiesView());
                 } else if (index == offset - 1) {
-                  return postingView().hP16;
+                  return Obx(() =>
+                      _homeController.isRefreshingPosts.value == true
+                          ? PostBoxShimmer()
+                          : postingView().hP16);
                 } else {
                   PostModel model = _homeController.posts[index - offset];
-                  return PostCard(
-                    model: model,
-                    removePostHandler: () {
-                      _homeController.removePostFromList(model);
-                    },
-                    blockUserHandler: () {
-                      _homeController.removeUsersAllPostFromList(model);
-                    },
-                  );
+                  return Obx(
+                      () => _homeController.isRefreshingPosts.value == true
+                          ? PostBoxShimmer()
+                          : PostCard(
+                              model: model,
+                              removePostHandler: () {
+                                _homeController.removePostFromList(model);
+                              },
+                              blockUserHandler: () {
+                                _homeController
+                                    .removeUsersAllPostFromList(model);
+                              },
+                            ));
                 }
               },
               separatorBuilder: (context, index) {
@@ -396,22 +403,26 @@ class HomeFeedState extends State<HomeFeedScreen> {
                     _homeController.sponsoredPosts.length >= index / 5) {
                   PostModel post =
                       _homeController.sponsoredPosts[(index ~/ 5) - 1];
-                  return Column(
-                    children: [
-                      PostCard(
-                        model: post,
-                        removePostHandler: () {
-                          _homeController.removePostFromList(post);
-                        },
-                        blockUserHandler: () {
-                          _homeController.removeUsersAllPostFromList(post);
-                        },
-                      ),
-                      divider(
-                        height: index > (offset - 1) ? 10 : 0,
-                      ).tP16
-                    ],
-                  ).vp(index > (offset - 1) ? 16 : 8);
+                  return Obx(
+                      () => _homeController.isRefreshingPosts.value == true
+                          ? PostBoxShimmer()
+                          : Column(
+                              children: [
+                                PostCard(
+                                  model: post,
+                                  removePostHandler: () {
+                                    _homeController.removePostFromList(post);
+                                  },
+                                  blockUserHandler: () {
+                                    _homeController
+                                        .removeUsersAllPostFromList(post);
+                                  },
+                                ),
+                                divider(
+                                  height: index > (offset - 1) ? 10 : 0,
+                                ).tP16
+                              ],
+                            ).vp(index > (offset - 1) ? 16 : 8));
                 } else {
                   return divider(
                     height: index > 1 ? 10 : 0,

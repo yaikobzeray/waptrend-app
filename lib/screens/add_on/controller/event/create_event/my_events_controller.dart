@@ -20,11 +20,13 @@ class MyEventsController extends GetxController {
   SearchModel searchModel =
       SearchModel(status: eventStatusToId(EventStatus.active));
 
+  /// ✅ Added observable isLoading flag
+  RxBool isLoading = false.obs;
+
   clear() {
     eventsDataWrapper = DataWrapper();
     events.value = [];
-    searchModel =
-        SearchModel(status: eventStatusToId(EventStatus.active));
+    searchModel = SearchModel(status: eventStatusToId(EventStatus.active));
   }
 
   clearSegment() {
@@ -51,7 +53,6 @@ class MyEventsController extends GetxController {
         case 2:
           setStatus(EventStatus.completed);
           break;
-
       }
       refreshEvents(() {});
     }
@@ -86,7 +87,7 @@ class MyEventsController extends GetxController {
   loadMoreEvents(VoidCallback callback) async {
     if (eventsDataWrapper.haveMoreData.value) {
       eventsDataWrapper.isLoading.value = true;
-
+      isLoading.value = true; // ✅ set loading
       loadEvents(callback);
     } else {
       callback();
@@ -94,23 +95,28 @@ class MyEventsController extends GetxController {
   }
 
   loadEvents(VoidCallback callback) {
+    isLoading.value = true; // ✅ start loading
     EventApi.getMyEvents(
-        name: searchModel.title,
-        status: searchModel.status,
-        categoryId: searchModel.categoryId,
-        subCategoryId: searchModel.subCategoryId,
-        page: eventsDataWrapper.page,
-        resultCallback: (result, metadata) {
-          eventsDataWrapper.processCompletedWithData(metadata);
-          events.addAll(result);
-          events.unique((e) => e.id);
+      name: searchModel.title,
+      status: searchModel.status,
+      categoryId: searchModel.categoryId,
+      subCategoryId: searchModel.subCategoryId,
+      page: eventsDataWrapper.page,
+      resultCallback: (result, metadata) {
+        eventsDataWrapper.processCompletedWithData(metadata);
+        events.addAll(result);
+        events.unique((e) => e.id);
 
-          update();
-        });
+        isLoading.value = false; // ✅ stop loading
+        eventsDataWrapper.isLoading.value = false;
+
+        update();
+        callback();
+      },
+    );
   }
 
-  cancelEvent(
-      {required int eventId, required VoidCallback successHandler}) {
+  cancelEvent({required int eventId, required VoidCallback successHandler}) {
     EasyLoading.show();
     EventApi.updateEventStatus(
         eventId: eventId,

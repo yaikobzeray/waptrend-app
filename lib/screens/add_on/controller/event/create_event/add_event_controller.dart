@@ -10,6 +10,7 @@ import '../../../../../model/category_model.dart';
 import 'my_events_controller.dart';
 
 class AddEventController extends GetxController {
+  RxBool isLoading = false.obs;
   Rx<CreateEventModel> creatingEvent =
       CreateEventModel(gallery: [], galleryImageName: []).obs;
   RxList<EventCategoryModel> categories = <EventCategoryModel>[].obs;
@@ -17,13 +18,14 @@ class AddEventController extends GetxController {
 
   getCategories() {
     EventApi.getEventCategories(resultCallback: (result) {
+      isLoading.value = true;
       categories.value = result;
+      isLoading.value = false;
     });
   }
 
   clear() {
-    creatingEvent.value =
-        CreateEventModel(gallery: [], galleryImageName: []);
+    creatingEvent.value = CreateEventModel(gallery: [], galleryImageName: []);
   }
 
   setEditableEvent(CreateEventModel ad) {
@@ -39,8 +41,7 @@ class AddEventController extends GetxController {
   }
 
   setStartDate(DateTime date) {
-    creatingEvent.value.startDateInMillisecond =
-        date.millisecondsSinceEpoch;
+    creatingEvent.value.startDateInMillisecond = date.millisecondsSinceEpoch;
     if (creatingEvent.value.endDate != null) {
       if (creatingEvent.value.endDate!
           .isEarlierThan(creatingEvent.value.startDate!)) {

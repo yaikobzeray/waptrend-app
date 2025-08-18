@@ -21,6 +21,7 @@ class EventsController extends GetxController {
   int eventsPage = 1;
   bool canLoadMoreEvents = true;
   RxBool isLoadingEvents = false.obs;
+  RxBool isLoadingPost = false.obs;
 
   int membersPage = 1;
   bool canLoadMoreMembers = true;

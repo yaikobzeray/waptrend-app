@@ -75,7 +75,7 @@ class MyProfileState extends State<MyProfile> {
     return Obx(() => AppScaffold(
           backgroundColor: AppColorConstants.backgroundColor,
           body: _profileController.user.value == null
-              ? const Center(child: CircularProgressIndicator())
+              ? ProfileShimmer()
               : DefaultTabController(
                   length: tabs.length,
                   child: NestedScrollView(

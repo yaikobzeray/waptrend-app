@@ -96,45 +96,48 @@ class EventFeedScreenState extends State<EventFeedScreen> {
           SliverToBoxAdapter(child: postingView()),
           Obx(() {
             final posts = _eventsController.posts;
-            return posts.isEmpty
-                ? SliverFillRemaining(
-                    child: Center(
-                        child: emptyData(
-                      title: noPostFoundString.tr,
-                      subTitle: '',
-                    )),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final post = posts[index];
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 375),
-                          child: SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                child: PostCard(
-                                  model: post,
-                                  removePostHandler: () {
-                                    _eventsController.removePostFromList(post);
-                                  },
-                                  blockUserHandler: () {
-                                    _eventsController
-                                        .removeUsersAllPostFromList(post);
-                                  },
+            return _eventsController.isLoadingEvents.value
+                ? SliverFillRemaining(child: PostBoxShimmer())
+                : posts.isEmpty
+                    ? SliverFillRemaining(
+                        child: Center(
+                            child: emptyData(
+                          title: noPostFoundString.tr,
+                          subTitle: '',
+                        )),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final post = posts[index];
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    child: PostCard(
+                                      model: post,
+                                      removePostHandler: () {
+                                        _eventsController
+                                            .removePostFromList(post);
+                                      },
+                                      blockUserHandler: () {
+                                        _eventsController
+                                            .removeUsersAllPostFromList(post);
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: posts.length,
-                    ),
-                  );
+                            );
+                          },
+                          childCount: posts.length,
+                        ),
+                      );
           }),
         ],
       ),

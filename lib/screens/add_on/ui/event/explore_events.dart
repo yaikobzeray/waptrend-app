@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' show RefreshController;
 
+import '../../../../components/shimmer_widgets.dart' show EventsScreenShimmer;
 import '../../../../helper/imports/event_imports.dart';
 import '../../model/event_category_model.dart';
 import 'create_event/choose_category.dart';
@@ -132,32 +133,34 @@ class ExploreEventsState extends State<ExploreEvents> {
             ),
             Obx(() {
               final categories = _eventsController.categories;
-              return categories.isEmpty
-                  ? SliverFillRemaining(
-                      child: emptyData(
-                        title: noEventFoundString.tr,
-                        subTitle: '',
-                      ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, categoryGroupIndex) {
-                          final category = categories[categoryGroupIndex];
-                          return AnimationConfiguration.staggeredList(
-                            position: categoryGroupIndex,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: _buildCategorySection(
-                                    context, category, categoryGroupIndex),
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: categories.length,
-                      ),
-                    );
+              return _eventsController.isLoadingCategories.value
+                  ? SliverFillRemaining(child: EventsScreenShimmer())
+                  : categories.isEmpty
+                      ? SliverFillRemaining(
+                          child: emptyData(
+                            title: noEventFoundString.tr,
+                            subTitle: '',
+                          ),
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, categoryGroupIndex) {
+                              final category = categories[categoryGroupIndex];
+                              return AnimationConfiguration.staggeredList(
+                                position: categoryGroupIndex,
+                                duration: const Duration(milliseconds: 375),
+                                child: SlideAnimation(
+                                  verticalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: _buildCategorySection(
+                                        context, category, categoryGroupIndex),
+                                  ),
+                                ),
+                              );
+                            },
+                            childCount: categories.length,
+                          ),
+                        );
             }),
           ],
         ),

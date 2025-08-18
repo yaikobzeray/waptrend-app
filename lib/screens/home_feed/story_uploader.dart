@@ -4,72 +4,185 @@ import '../../components/vs_story_designer/vs_story_designer.dart';
 import '../../controllers/story/story_controller.dart';
 import '../../helper/imports/common_import.dart';
 import '../chat/media.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 final ImagePicker _picker = ImagePicker();
 
 void openStoryUploader() {
-
   showModalBottomSheet(
-      backgroundColor: Colors.transparent,
       context: Get.context!,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.4),
       builder: (context) => Container(
-            color: AppColorConstants.cardColor.darken(0.15),
-            width: Get.width,
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              spacing: 20,
-              runSpacing: 10,
+            decoration: BoxDecoration(
+              color: AppColorConstants.backgroundColor,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(25)),
+            ),
+            padding: const EdgeInsets.only(top: 20, bottom: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Heading4Text(
-                  cameraString.tr,
-                  weight: TextWeight.regular,
-                ).makeChip().ripple(() {
-                  Get.back();
-                  selectPhoto(source: ImageSource.camera);
-                }),
-                Heading4Text(
-                  photoString.tr,
-                  weight: TextWeight.regular,
-                ).makeChip().ripple(() {
-                  Get.back();
-                  // selectPhoto(source: ImageSource.gallery);
-                  Get.to(() => VSStoryDesigner(
-                    giphyKey: settingsController.setting.value!.giphyApiKey,
+                // Draggable handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColorConstants.dividerColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ).bp(20),
 
-                    /// (String), //disabled feature for now
-                    onDone: (String uri) async {
-                      XFile image = XFile(uri);
+                // Title
+                // Heading5Text(
+                //   shareStoryString.tr,
+                //   weight: TextWeight.semiBold,
+                // ).bottom(25),
 
-                      Media media = await image.toMedia(GalleryMediaType.photo);
-                      postStoryMedia([media]);
+                // Options row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildModernOption(
+                      icon: FontAwesome.camera_solid,
+                      label: cameraString.tr,
+                      onTap: () {
+                        Get.back();
+                        selectPhoto(source: ImageSource.camera);
+                      },
+                    ),
+                    _buildModernOption(
+                      icon: FontAwesome.image_solid,
+                      label: photoString.tr,
+                      onTap: () {
+                        Get.back();
+                        Get.to(() => VSStoryDesigner(
+                              giphyKey:
+                                  settingsController.setting.value!.giphyApiKey,
+                              onDone: (String uri) async {
+                                XFile image = XFile(uri);
+                                Media media =
+                                    await image.toMedia(GalleryMediaType.photo);
+                                postStoryMedia([media]);
+                                Get.back();
+                              },
+                              onDoneButtonStyle: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColorConstants.themeColor,
+                                      AppColorConstants.themeColor.darken(),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                height: 50,
+                                width: 50,
+                                child: Center(
+                                  child: BodyLargeText(
+                                    postString.tr,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ).round(10),
+                              centerText: '',
+                              middleBottomWidget: Container(),
+                            ));
+                      },
+                    ),
+                    _buildModernOption(
+                      icon: FontAwesome.video_solid,
+                      label: videoString.tr,
+                      onTap: () {
+                        Get.back();
+                        selectVideo(source: ImageSource.gallery);
+                      },
+                    ),
+                  ],
+                ).hp(20),
 
-                      Get.back();
-
-                      /// uri is the local path of final render Uint8List
-                      /// here your code
-                    },
-                    // onTextEditingStatusChange: (status) {},
-                    onDoneButtonStyle: Container(
-                        color: Colors.white,
-                        height: 50,
-                        width: 50,
-                        child: Center(child: BodyLargeText(postString.tr)))
-                        .round(10),
-                    centerText: '',
-                    middleBottomWidget: Container(),
-                  ));
-                }),
-                Heading4Text(
-                  videoString.tr,
-                  weight: TextWeight.regular,
-                ).makeChip().ripple(() {
-                  Get.back();
-                  selectVideo(source: ImageSource.gallery);
-                }),
+                // Close button
+                GestureDetector(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    width: Get.width * 0.9,
+                    margin: const EdgeInsets.only(top: 25),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: AppColorConstants.dividerColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: BodyMediumText(
+                      textAlign: TextAlign.center,
+                      cancelString.tr,
+                      color: AppColorConstants.red,
+                    ),
+                  ),
+                ),
               ],
-            ).p(DesignConstants.horizontalPadding),
-          ).topRounded(40));
+            ),
+          ));
+}
+
+Widget _buildModernOption({
+  required dynamic icon,
+  required String label,
+  required Function onTap,
+}) {
+  return Column(
+    children: [
+      Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: AppColorConstants.themeColor.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 24,
+          color: AppColorConstants.themeColor,
+        ),
+      ).bp(8),
+      BodySmallText(
+        label,
+        color: AppColorConstants.mainTextColor,
+      ),
+    ],
+  ).ripple(() {
+    onTap();
+  });
+}
+
+// Keep all other methods (selectPhoto, selectVideo, postStoryMedia) exactly the same
+
+Widget _buildOption(
+    {required dynamic icon, required String label, required Function onTap}) {
+  return Column(
+    children: [
+      Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: AppColorConstants.themeColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Icon(
+          icon,
+          size: 25,
+          color: AppColorConstants.themeColor,
+        ),
+      ),
+      BodyMediumText(
+        label,
+        color: AppColorConstants.themeColor,
+      )
+    ],
+  ).ripple(() {
+    onTap();
+  });
 }
 
 selectPhoto({

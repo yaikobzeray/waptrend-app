@@ -82,8 +82,8 @@ class _ReelsState extends State<Reels> {
                     Container(
                       height: 40,
                       width: 40,
-                      color: AppColorConstants.themeColor
-                          .withValues(alpha: 0.5),
+                      color:
+                          AppColorConstants.themeColor.withValues(alpha: 0.5),
                       child: ThemeIconWidget(
                         ThemeIcon.camera,
                         color: Colors.white,
@@ -93,11 +93,11 @@ class _ReelsState extends State<Reels> {
                           Duration.zero,
                           () => showGeneralDialog(
                               context: Get.context!,
-                              pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                  const ContentCreatorView(
-                                    animateToIndex: 1,
-                                  )),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const ContentCreatorView(
+                                        animateToIndex: 1,
+                                      )),
                         );
                       }),
                     ).circular,

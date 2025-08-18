@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foap/components/app_scaffold.dart';
 import 'package:foap/components/empty_states.dart';
+import 'package:foap/components/shimmer_widgets.dart';
 import 'package:foap/helper/imports/event_imports.dart';
 import 'package:foap/helper/localization_strings.dart';
 import 'package:foap/screens/add_on/controller/event/create_event/add_event_controller.dart';
@@ -131,37 +132,40 @@ class MyEventListingState extends State<MyEventListing> {
           ),
           Obx(() {
             final events = _eventsController.events;
-            return events.isEmpty
-                ? SliverFillRemaining(
-                    child: emptyData(
-                      title: noEventFoundString.tr,
-                      subTitle: '',
-                    ),
-                  )
-                : SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 16),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: _buildEventCard(events[index]),
+            return _eventsController.isLoading.isTrue
+                ? SliverFillRemaining(child: EventBookingShimmerWidget())
+                : _eventsController.events.isEmpty
+                    ? SliverFillRemaining(
+                        child: emptyData(
+                          title: noEventFoundString.tr,
+                          subTitle: '',
+                        ),
+                      )
+                    : SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: 375),
+                                child: SlideAnimation(
+                                  verticalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16),
+                                      child: _buildEventCard(events[index]),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: events.length,
-                      ),
-                    ),
-                  );
+                              );
+                            },
+                            childCount: events.length,
+                          ),
+                        ),
+                      );
           }),
         ],
       ),
