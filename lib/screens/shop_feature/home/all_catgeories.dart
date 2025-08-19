@@ -9,7 +9,7 @@ import '../../../util/app_config_constants.dart';
 import '../components/category_card.dart';
 
 class AllCategoriesScreen extends StatefulWidget {
-  const AllCategoriesScreen({super.key}) ;
+  const AllCategoriesScreen({super.key});
 
   @override
   State<AllCategoriesScreen> createState() => _AllCategoriesScreenState();

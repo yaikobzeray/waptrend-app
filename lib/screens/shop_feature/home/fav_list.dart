@@ -31,41 +31,45 @@ class FavProductsListScreenState extends State<FavProductsListScreen> {
           children: [
             backNavigationBar(title: favouriteString.tr),
             Expanded(
-              child: Obx(() => GridView.builder(
-                  padding: EdgeInsets.only(
-                      top: 20,
-                      left: DesignConstants.horizontalPadding,
-                      right: DesignConstants.horizontalPadding),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.6,
-                      crossAxisSpacing: 10),
-                  itemCount: shopController.favAds.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return AdCard(
-                      ad: shopController.favAds[index],
-                      pressed: () {
-                        Get.to(() => AdDetailScreen(
-                            adModel: shopController.favAds[index]));
+              child: Obx(() => shopController.isLoading.isTrue
+                  ? ProductShimmer()
+                  : GridView.builder(
+                      padding: EdgeInsets.only(
+                          top: 20,
+                          left: DesignConstants.horizontalPadding,
+                          right: DesignConstants.horizontalPadding),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.6,
+                              crossAxisSpacing: 10),
+                      itemCount: shopController.favAds.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AdCard(
+                          ad: shopController.favAds[index],
+                          pressed: () {
+                            Get.to(() => AdDetailScreen(
+                                adModel: shopController.favAds[index]));
+                          },
+                          favPressed: () {
+                            shopController
+                                .favUnfavAd(shopController.favAds[index]);
+                          },
+                        );
+                      }).addPullToRefresh(
+                      refreshController: refreshController,
+                      onRefresh: () {
+                        shopController.refreshFavAds(() {
+                          refreshController.refreshCompleted();
+                        });
                       },
-                      favPressed: () {
-                        shopController.favUnfavAd(shopController.favAds[index]);
+                      onLoading: () {
+                        shopController.loadMoreFavAds(() {
+                          refreshController.loadComplete();
+                        });
                       },
-                    );
-                  }).addPullToRefresh(
-                  refreshController: refreshController,
-                  onRefresh: () {
-                    shopController.refreshFavAds(() {
-                      refreshController.refreshCompleted();
-                    });
-                  },
-                  onLoading: () {
-                    shopController.loadMoreFavAds(() {
-                      refreshController.loadComplete();
-                    });
-                  },
-                  enablePullUp: true,
-                  enablePullDown: true)),
+                      enablePullUp: true,
+                      enablePullDown: true)),
             ),
           ],
         ));

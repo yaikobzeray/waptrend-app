@@ -235,8 +235,6 @@ class MiscApi {
     required GalleryMediaType mediaType,
     required Function(String, String) resultCallback,
   }) async {
-    print('uploaded thumbnail $filePath');
-
     await ApiWrapper()
         .uploadFile(
             url: NetworkConstantsUtil.uploadFileImage,
@@ -244,12 +242,8 @@ class MiscApi {
             mediaType: mediaType,
             type: type)
         .then((result) {
-      print('uploaded thumbnail result ${result!.data}');
-
       if (result?.success == true) {
         var items = result!.data['files'] as List<dynamic>;
-
-        print('uploaded thumbnail result $items');
         bool isProhabited = items.first['isProhabited'];
         if (isProhabited == false) {
           resultCallback(items.first['file'], items.first['fileUrl']);

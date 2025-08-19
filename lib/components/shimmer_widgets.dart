@@ -1023,17 +1023,17 @@ class CardsStackShimmerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height - 270,
+      height: Get.height - 670,
       width: Get.width - 40,
       decoration: BoxDecoration(
-        color: AppColorConstants.cardColor,
+        // color: AppColorConstants.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(
-            color: AppColorConstants.themeColor.withOpacity(0.2),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
+          // BoxShadow(
+          //   // color: AppColorConstants.mainTextColor.withOpacity(0.2),
+          //   blurRadius: 16,
+          //   offset: const Offset(0, 8),
+          // ),
         ],
       ),
       child: Stack(
@@ -1633,5 +1633,180 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
+  }
+}
+
+class MarketplaceShimmer extends StatelessWidget {
+  const MarketplaceShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScaffold(
+      backgroundColor: AppColorConstants.backgroundColor,
+      body: Column(
+        children: [
+          backNavigationBar(title: shopString.tr),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Search bar placeholder
+                  ShimmerComponent(
+                    child: Container(
+                      height: 50,
+                      margin: EdgeInsets.all(DesignConstants.horizontalPadding),
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(238, 238, 238, 1.0),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  // Category view shimmer
+                  const CategoryShimmer(),
+                  // Ads grid shimmer
+                  const ProductShimmer(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CategoryShimmer extends StatelessWidget {
+  const CategoryShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: EdgeInsets.all(DesignConstants.horizontalPadding),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4, // Number of items per row
+        mainAxisSpacing: 15,
+        crossAxisSpacing: 15,
+        childAspectRatio: 0.8, // Adjust this to control item height
+      ),
+      itemCount: 8, // Total number of shimmer items
+      itemBuilder: (context, index) {
+        return ShimmerComponent(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(238, 238, 238, 1.0),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(238, 238, 238, 1.0),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ).hp(DesignConstants.horizontalPadding);
+  }
+}
+
+class ProductShimmer extends StatelessWidget {
+  const ProductShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.6,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+      ),
+      padding: EdgeInsets.all(DesignConstants.horizontalPadding),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return ShimmerComponent(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(238, 238, 238, 1.0),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 60,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(15),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 100,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 120,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ShimmerComponent extends StatelessWidget {
+  final Widget child;
+
+  const ShimmerComponent({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return child.addShimmer();
   }
 }

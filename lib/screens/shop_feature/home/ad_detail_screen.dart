@@ -69,9 +69,10 @@ class AdDetailState extends State<AdDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CircleAvatar(
-            backgroundColor: AppColorConstants.cardColor,
+            backgroundColor: AppColorConstants.backgroundColor,
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: AppColorConstants.themeColor),
+              icon: Icon(Icons.arrow_back_ios,
+                  color: AppColorConstants.themeColor),
               onPressed: () => Get.back(),
             ),
           ),

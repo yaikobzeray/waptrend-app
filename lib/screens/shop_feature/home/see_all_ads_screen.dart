@@ -46,7 +46,9 @@ class SeeAllPropertyState extends State<SeeAllAdListing> {
                           child: Icon(Icons.arrow_back_ios,
                               color: AppColorConstants.themeColor))
                       .rP4,
-                  Expanded(child: SFSearchBar(
+                  Expanded(
+                      child: SFSearchBar(
+                    showSearchIcon: true,
                     onSearchCompleted: (value) {
                       if (value.length > 2) {
                         shopController.setSearchText(value);

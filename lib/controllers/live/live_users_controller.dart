@@ -6,12 +6,14 @@ import 'package:foap/model/live_model.dart';
 
 class LiveUserController extends GetxController {
   RxList<UserLiveCallDetail> liveStreamUser = <UserLiveCallDetail>[].obs;
+  RxBool isLoading = false.obs; // Added for UI loading state
 
   DataWrapper liveUserDataWrapper = DataWrapper();
 
   clear() {
     liveStreamUser.clear();
     liveUserDataWrapper = DataWrapper();
+    isLoading.value = false;
   }
 
   loadMore(VoidCallback callback) {
@@ -24,6 +26,7 @@ class LiveUserController extends GetxController {
 
   // fetch live users
   void getLiveUsers(VoidCallback callback) async {
+    isLoading.value = true; // Set loading state
     liveUserDataWrapper.isLoading.value = true;
 
     LiveStreamingApi.getAllLiveUsers(
@@ -33,6 +36,11 @@ class LiveUserController extends GetxController {
           liveStreamUser.unique((e) => e.id);
           liveUserDataWrapper.processCompletedWithData(metadata);
 
+          isLoading.value = false; // Clear loading state
+          callback();
+        },
+        errorCallback: () {
+          isLoading.value = false; // Clear loading state on error
           callback();
         });
   }

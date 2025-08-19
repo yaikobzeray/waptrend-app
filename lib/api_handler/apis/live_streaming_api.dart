@@ -4,28 +4,53 @@ import '../../model/live_model.dart';
 import '../api_wrapper.dart';
 
 class LiveStreamingApi {
-  static getAllLiveUsers(
-      {required int page,
-      String? name,
-      String? profileCategoryType,
-      bool? isFollowing,
-      required Function(List<UserLiveCallDetail>, APIMetaData)
-          resultCallback}) async {
-    var url =
-        '${NetworkConstantsUtil.liveUsers}?expand=userdetails&name=&profile_category_type=&is_following=&page=$page';
+  static getAllLiveUsers({
+    required int page,
+    String? name,
+    String? profileCategoryType,
+    bool? isFollowing,
+    required Function(List<UserLiveCallDetail>, APIMetaData) resultCallback,
+    required Null Function() errorCallback,
+  }) async {
+    // Build query params dynamically
+    final queryParams = {
+      "expand": "userdetails",
+      if (name != null && name.isNotEmpty) "name": name,
+      if (profileCategoryType != null && profileCategoryType.isNotEmpty)
+        "profile_category_type": profileCategoryType,
+      if (isFollowing != null) "is_following": isFollowing ? "1" : "0",
+      "page": page.toString(),
+    };
 
-    Loader.show(status: loadingString.tr);
-    await ApiWrapper().getApi(url: url).then((result) {
-      Loader.dismiss();
+    final queryString =
+        queryParams.entries.map((e) => "${e.key}=${e.value}").join("&");
+
+    final url = "${NetworkConstantsUtil.liveUsers}?$queryString";
+
+    // Loader.show(status: loadingString.tr);
+
+    try {
+      final result = await ApiWrapper().getApi(url: url);
+      // Loader.dismiss();
+
       if (result?.success == true) {
-        final liverStreamUser = result!.data['liveStreamUser']['items'];
-        resultCallback(
-            List<UserLiveCallDetail>.from(liverStreamUser.map((user) {
-          final item = UserLiveCallDetail.fromJson(user);
-          return item;
-        })), APIMetaData.fromJson(result.data['liveStreamUser']['_meta']));
+        final liveStreamUser = result!.data['liveStreamUser']?['items'] ?? [];
+
+        final users = List<UserLiveCallDetail>.from(
+          liveStreamUser.map((user) => UserLiveCallDetail.fromJson(user)),
+        );
+
+        final meta =
+            APIMetaData.fromJson(result.data['liveStreamUser']?['_meta'] ?? {});
+
+        resultCallback(users, meta);
+      } else {
+        // print("API failed: ${result?.message}");
       }
-    });
+    } catch (e) {
+      Loader.dismiss();
+      // print("Error fetching live users: $e");
+    }
   }
 
   static getLiveDetail(

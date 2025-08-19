@@ -28,6 +28,8 @@ class ShopController extends GetxController {
   DataWrapper categoryDataWrapper = DataWrapper();
 
   RxInt selectSegment = 0.obs;
+  RxBool isLoading = false.obs; // ✅ Added isLoading
+  RxBool isProductLoading = false.obs; // ✅ Added isLoading
 
   clear() {
     ads.value = [];
@@ -57,15 +59,13 @@ class ShopController extends GetxController {
   }
 
   postAd({required AdModel ad}) {
+    isLoading.value = true;
     ShopApi.submitAdPost(
         ad: ad,
         successCallback: (id) {
           refreshMyAds(() {});
-
-          Get.to(() => ProductCreatedSuccess(
-                productId: id,
-              ));
-          // Get.close(5);
+          isLoading.value = false;
+          Get.to(() => ProductCreatedSuccess(productId: id));
         });
   }
 
@@ -107,6 +107,7 @@ class ShopController extends GetxController {
   }
 
   loadAds(VoidCallback callback) async {
+    isLoading.value = true;
     ShopApi.searchShopAds(
         page: adsDataWrapper.page,
         model: model,
@@ -114,7 +115,7 @@ class ShopController extends GetxController {
           ads.addAll(result);
           ads.unique((e) => e.id);
           adsDataWrapper.processCompletedWithData(metadata);
-
+          isLoading.value = false;
           callback();
         });
   }
@@ -132,15 +133,15 @@ class ShopController extends GetxController {
   }
 
   loadMyAds(VoidCallback callback) async {
+    isLoading.value = true;
     ShopApi.searchShopMyAds(
         status: myAdsSearchModel.status,
         page: myAdsDataWrapper.page,
         resultCallback: (result, metadata) {
           myAds.addAll(result);
           myAds.unique((e) => e.id);
-
           myAdsDataWrapper.processCompletedWithData(metadata);
-
+          isLoading.value = false;
           callback();
         });
   }
@@ -158,12 +159,14 @@ class ShopController extends GetxController {
   }
 
   loadFavAds(VoidCallback callback) async {
+    isLoading.value = true;
     ShopApi.getShopFavAds(
         page: favAdsDataWrapper.page,
         resultCallback: (result, metadata) {
           favAds.addAll(result);
           favAds.unique((e) => e.id);
           favAdsDataWrapper.processCompletedWithData(metadata);
+          isLoading.value = false;
         });
   }
 
@@ -176,12 +179,14 @@ class ShopController extends GetxController {
   }
 
   getCategories(VoidCallback callback) async {
+    isProductLoading.value = true;
     ShopApi.getShopCategories(
         page: categoryDataWrapper.page,
         resultCallback: (result, metadata) {
           categories.addAll(result);
           categories.unique((e) => e.id);
           categoryDataWrapper.processCompletedWithData(metadata);
+          isProductLoading.value = false;
         });
   }
 
@@ -198,6 +203,7 @@ class ShopController extends GetxController {
   }
 
   loadAdverstisements(VoidCallback callback) async {
+    isLoading.value = true;
     ShopApi.getAdvertisements(
         page: thirdPartyAdsDataWrapper.page,
         resultCallback: (result, metadata) {
@@ -205,6 +211,7 @@ class ShopController extends GetxController {
           thirdPartyAdvertisement.unique((e) => e.id);
           thirdPartyAdvertisement.shuffle();
           thirdPartyAdsDataWrapper.processCompletedWithData(metadata);
+          isLoading.value = false;
         });
   }
 
@@ -217,6 +224,7 @@ class ShopController extends GetxController {
   }
 
   updateStatus({required AdModel ad, required int status}) {
+    isLoading.value = true;
     ShopApi.updateAdStatus(
         adId: ad.id!,
         status: status,
@@ -227,16 +235,19 @@ class ShopController extends GetxController {
             AppUtil.showToast(
                 message: listingUpdatedSuccessfully.tr, isSuccess: true);
           });
+          isLoading.value = false;
         });
   }
 
   Future uploadAdImage(
       {required XFile pickedFile,
       required Function(String) successCallback}) async {
+    isLoading.value = true;
     await MiscApi.uploadFile(pickedFile.path,
         mediaType: GalleryMediaType.photo,
         type: UploadMediaType.shop, resultCallback: (fileName, filePath) {
       successCallback(filePath);
+      isLoading.value = false;
     });
   }
 

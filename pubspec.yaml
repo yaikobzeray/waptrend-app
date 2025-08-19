@@ -171,6 +171,7 @@ dependencies:
   icons_plus: ^5.0.0
   flutter_feather_icons: ^2.0.0+1
   persistent_bottom_nav_bar: ^6.2.1
+  flutter_spinkit: ^5.2.2
 
 
 dev_dependencies:

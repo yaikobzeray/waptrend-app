@@ -26,42 +26,44 @@ class ShopCategories extends StatelessWidget {
               child: GetBuilder<ShopController>(
                   init: shopController,
                   builder: (ctx) {
-                    return GridView.builder(
-                        itemCount: shopController.categories.length,
-                        padding: EdgeInsets.only(
-                            top: 20,
-                            left: DesignConstants.horizontalPadding,
-                            right: DesignConstants.horizontalPadding,
-                            bottom: 50),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                childAspectRatio: 1),
-                        itemBuilder: (ctx, index) {
-                          ShopCategoryModel category =
-                              shopController.categories[index];
-                          return CategoryCard(
-                            category: category,
-                            callback: () {
-                              shopController.setCategoryId(category.id);
-                              Get.to(() => const SeeAllAdListing())!
-                                  .then((value) {
-                                shopController.setCategoryId(null);
+                    return shopController.isLoading.isTrue
+                        ? ProductShimmer()
+                        : GridView.builder(
+                            itemCount: shopController.categories.length,
+                            padding: EdgeInsets.only(
+                                top: 20,
+                                left: DesignConstants.horizontalPadding,
+                                right: DesignConstants.horizontalPadding,
+                                bottom: 50),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
+                                    childAspectRatio: 1),
+                            itemBuilder: (ctx, index) {
+                              ShopCategoryModel category =
+                                  shopController.categories[index];
+                              return CategoryCard(
+                                category: category,
+                                callback: () {
+                                  shopController.setCategoryId(category.id);
+                                  Get.to(() => const SeeAllAdListing())!
+                                      .then((value) {
+                                    shopController.setCategoryId(null);
+                                  });
+                                },
+                              );
+                            }).addPullToRefresh(
+                            refreshController: refreshController,
+                            onRefresh: () {},
+                            onLoading: () {
+                              shopController.loadMoreCategories(() {
+                                refreshController.loadComplete();
                               });
                             },
-                          );
-                        }).addPullToRefresh(
-                        refreshController: refreshController,
-                        onRefresh: () {},
-                        onLoading: () {
-                          shopController.loadMoreCategories(() {
-                            refreshController.loadComplete();
-                          });
-                        },
-                        enablePullUp: true,
-                        enablePullDown: false);
+                            enablePullUp: true,
+                            enablePullDown: false);
                   }))
         ],
       ),

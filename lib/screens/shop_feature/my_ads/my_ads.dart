@@ -44,8 +44,8 @@ class _MyAdsState extends State<MyAds> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColorConstants.themeColor,
         elevation: 4,
-        child: const Icon(Icons.add, size: 28, color: Colors.white),
         onPressed: _navigateToCreateAd,
+        child: Icon(Icons.add, size: 28, color: Colors.white),
       ),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -134,23 +134,33 @@ class _MyAdsState extends State<MyAds> {
         }),
         physics: const BouncingScrollPhysics(),
         child: AnimationLimiter(
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(
-              horizontal: DesignConstants.horizontalPadding,
-              vertical: _itemSpacing,
-            ),
-            itemCount: shopController.myAds.length,
-            itemBuilder: (context, index) =>
-                AnimationConfiguration.staggeredList(
-              position: index,
-              duration: const Duration(milliseconds: 375),
-              child: SlideAnimation(
-                verticalOffset: 50.0,
-                child: FadeInAnimation(
-                  child: _buildAdCard(index),
-                ),
-              ),
-            ),
+          child: Obx(
+            () => shopController.isLoading.isTrue
+                ? ListView.separated(
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 10,
+                    ),
+                    itemCount: 5,
+                    itemBuilder: (context, index) => CardsStackShimmerWidget(),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: DesignConstants.horizontalPadding,
+                      vertical: _itemSpacing,
+                    ),
+                    itemCount: shopController.myAds.length,
+                    itemBuilder: (context, index) =>
+                        AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: _buildAdCard(index),
+                        ),
+                      ),
+                    ),
+                  ),
           ),
         ),
       );

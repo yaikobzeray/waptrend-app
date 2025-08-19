@@ -40,6 +40,7 @@ class _MarketplaceState extends State<Marketplace> {
             child: SingleChildScrollView(
                 child: Column(children: [
               SFSearchBar(
+                  showSearchIcon: true,
                   onSearchCompleted: (value) {},
                   onSearchChanged: (value) {
                     if (value.length > 2) {
@@ -48,28 +49,33 @@ class _MarketplaceState extends State<Marketplace> {
                       shopController.setSearchText(null);
                     }
                   }).round(10).p(DesignConstants.horizontalPadding),
-              Obx(() => shopController.categories.isNotEmpty
-                  ? categoryView()
-                  : Container()),
-              Obx(() => shopController.ads.isNotEmpty
-                  ? adsSegment(shopController.ads)
-                  : emptyData(
-                      title: noProductFoundString.tr,
-                      subTitle: pleaseModifyYourSearch.tr)),
+              Obx(() => shopController.isProductLoading.isTrue
+                  ? CategoryShimmer()
+                  : shopController.categories.isNotEmpty
+                      ? categoryView()
+                      : Container()),
+              Obx(() => shopController.isLoading.isTrue
+                  ? ProductShimmer()
+                  : shopController.ads.isNotEmpty
+                      ? adsSegment(shopController.ads)
+                      : emptyData(
+                          title: noProductFoundString.tr,
+                          subTitle: pleaseModifyYourSearch.tr)),
             ])).addPullToRefresh(
-                refreshController: refreshController,
-                onRefresh: () {
-                  shopController.refreshAds(() {
-                    refreshController.refreshCompleted();
-                  });
-                },
-                onLoading: () {
-                  shopController.loadMoreAds(() {
-                    refreshController.loadComplete();
-                  });
-                },
-                enablePullUp: true,
-                enablePullDown: true),
+              refreshController: refreshController,
+              onRefresh: () {
+                shopController.refreshAds(() {
+                  refreshController.refreshCompleted();
+                });
+              },
+              onLoading: () {
+                shopController.loadMoreAds(() {
+                  refreshController.loadComplete();
+                });
+              },
+              enablePullUp: true,
+              enablePullDown: true,
+            ),
           ),
         ],
       ),
