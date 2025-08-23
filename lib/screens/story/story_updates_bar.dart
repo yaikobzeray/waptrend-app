@@ -75,9 +75,10 @@ class StoryUpdatesBar extends StatelessWidget {
                                         width: 20,
                                         child: Icon(Icons.error)),
                               )
-                            : SizedBox(
+                            : Container(
                                 height: storyCircleSize + 10,
                                 width: storyCircleSize + 10,
+                                padding: EdgeInsets.all(15),
                                 child: Center(
                                   child: BodyMediumText(
                                       stories[index - 1].userName.getInitials),
@@ -90,22 +91,26 @@ class StoryUpdatesBar extends StatelessWidget {
                         gradient: stories[index - 1].isViewed
                             ? null // no gradient for viewed (disabled)
                             : stories[index - 1].isLive
-                                ? LinearGradient(
+                                ? SweepGradient(
+                                    startAngle: 0.0,
+                                    endAngle: 3.14 * 2,
                                     colors: [
                                       Colors.red,
-                                      const Color.fromARGB(255, 227, 67, 67),
-                                      const Color.fromARGB(255, 228, 141, 141)
+                                      Color.fromARGB(255, 227, 67, 67),
+                                      Color.fromARGB(255, 228, 141, 141),
+                                      Colors
+                                          .red, // loop back for smooth transition
                                     ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
                                   ) // red gradient for live
-                                : LinearGradient(
-                                    colors: [
-                                      Colors.green,
-                                      Colors.lightGreenAccent
+                                : SweepGradient(
+                                    startAngle: 0.0,
+                                    endAngle: 3.14 * 2,
+                                    colors: const [
+                                      Color(0xFFB0FB47),
+                                      Color(0xFF005D36),
+                                      Color(0xFF02BA01),
+                                      Color(0xFFB0FB47),
                                     ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
                                   ), // green gradient for normal story
                         color: stories[index - 1].isViewed
                             ? AppColorConstants.disabledColor

@@ -181,6 +181,25 @@ class HomeFeedState extends State<HomeFeedScreen> {
                   Row(
                     children: [
                       // Chat Button with Badge
+
+                      Container(
+                        height: 36,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          color: AppColorConstants.themeColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          AntDesign.bell_outline,
+                          size: 20,
+                          color: AppColorConstants.mainTextColor,
+                        ),
+                      ).ripple(() {
+                        Future.delayed(Duration.zero,
+                            () => Get.to(() => NotificationsScreen()));
+                      }),
+                      const SizedBox(width: 12),
+
                       Container(
                         height: 36,
                         width: 36,
@@ -220,25 +239,6 @@ class HomeFeedState extends State<HomeFeedScreen> {
                         ),
                       ).ripple(() {
                         Get.to(() => const ChatHistory());
-                      }),
-
-                      const SizedBox(width: 12),
-
-                      Container(
-                        height: 36,
-                        width: 36,
-                        decoration: BoxDecoration(
-                          color: AppColorConstants.themeColor.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          AntDesign.bell_outline,
-                          size: 20,
-                          color: AppColorConstants.mainTextColor,
-                        ),
-                      ).ripple(() {
-                        Future.delayed(Duration.zero,
-                            () => Get.to(() => NotificationsScreen()));
                       }),
                     ],
                   ),

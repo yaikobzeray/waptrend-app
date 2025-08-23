@@ -33,42 +33,78 @@ class UserFollowUnfollowBtnController extends GetxController {
 
 class UserFollowUnfollowButton extends StatelessWidget {
   final UserFollowUnfollowBtnController controller;
-
   final bool? isSmallSized;
 
-  const UserFollowUnfollowButton(
-      {super.key, required this.controller, this.isSmallSized});
+  const UserFollowUnfollowButton({
+    super.key,
+    required this.controller,
+    this.isSmallSized,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => SizedBox(
-          height: isSmallSized == true ? 25 : 35,
-          width: isSmallSized == true ? 100 : 120,
-          child: controller.user.value!.followingStatus ==
-                  FollowingStatus.notFollowing
-              ? AppThemeBorderButton(
-                  text: controller.user.value!.isFollower == true
-                      ? followBackString.tr
-                      : followString.tr,
-                  backgroundColor: AppColorConstants.backgroundColor,
-                  onPress: () {
-                    controller.followUser();
-                  })
-              : controller.user.value!.followingStatus ==
-                      FollowingStatus.requested
-                  ? AppThemeBorderButton(
-                      text: requestedString.tr,
-                      backgroundColor:
-                          AppColorConstants.themeColor.withValues(alpha: 0.2),
-                      onPress: () {
-                        controller.unFollowUser();
-                      })
-                  : AppThemeButton(
-                      text: unFollowString.tr,
-                      onPress: () {
-                        controller.unFollowUser();
-                      }),
-        ));
+    return Obx(() {
+      final user = controller.user.value!;
+      final status = user.followingStatus;
+
+      if (status == FollowingStatus.notFollowing) {
+        return _buildActionTile(
+          icon: Icons.person_add_alt,
+          title: user.isFollower == true ? "Follow Back" : "Follow",
+          onTap: controller.followUser,
+        );
+      } else if (status == FollowingStatus.requested) {
+        return _buildActionTile(
+          icon: Icons.hourglass_top,
+          title: "Requested",
+          textColor: AppColorConstants.themeColor,
+          onTap: controller.unFollowUser,
+        );
+      } else {
+        return _buildActionTile(
+          icon: Icons.person_remove,
+          title: "Unfollow",
+          textColor: Colors.red,
+          onTap: controller.unFollowUser,
+        );
+      }
+    });
+  }
+
+  Widget _buildActionTile({
+    required IconData icon,
+    required String title,
+    VoidCallback? onTap,
+    Color? textColor,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          onTap?.call();
+        },
+        splashColor: AppColorConstants.themeColor.withOpacity(0.1),
+        highlightColor: AppColorConstants.themeColor.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          child: Row(
+            children: [
+              Icon(icon,
+                  size: 24, color: textColor ?? AppColorConstants.iconColor),
+              const SizedBox(width: 20),
+              Expanded(
+                child: BodyLargeText(
+                  title,
+                  weight: TextWeight.medium,
+                  color: textColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

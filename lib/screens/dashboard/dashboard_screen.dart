@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foap/controllers/profile/profile_controller.dart';
 import 'package:foap/screens/content_creator_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -39,6 +41,8 @@ class DashboardState extends State<DashboardScreen>
   final DashboardController _dashboardController = Get.find();
   final SettingsController _settingsController = Get.find();
   final LocationManager _locationManager = Get.find();
+  final ProfileController _profileController = Get.find();
+  final UserProfileManager userProfileManager = Get.find();
 
   late PersistentTabController _navController;
 
@@ -69,7 +73,7 @@ class DashboardState extends State<DashboardScreen>
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Bootstrap.at),
+        icon: Icon(Icons.explore_outlined, size: 30),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
@@ -82,12 +86,25 @@ class DashboardState extends State<DashboardScreen>
         },
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Bootstrap.camera_video_fill),
+        icon: Center(child: FaIcon(Iconsax.video_play_outline, size: 30)),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Bootstrap.person_circle),
+        icon: Obx(() {
+          final pictureUrl = userProfileManager.user.value?.picture;
+
+          return CircleAvatar(
+            radius: 13, // Half of your desired width/height
+            backgroundColor: Colors.grey,
+            backgroundImage: pictureUrl != null && pictureUrl.isNotEmpty
+                ? CachedNetworkImageProvider(pictureUrl)
+                : null,
+            child: pictureUrl == null || pictureUrl.isEmpty
+                ? const Icon(Icons.person, color: Colors.white, size: 16)
+                : null,
+          );
+        }),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),

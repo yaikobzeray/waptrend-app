@@ -359,7 +359,7 @@ class PostCardState extends State<PostCard> {
             model: widget.model,
             isSponsored: widget.model.postPromotionData != null,
           ),
-          if (widget.model.isMyPost) _buildPostManagementOptions(),
+          // if (widget.model.isMyPost) _buildPostManagementOptions(),
           if (!widget.model.isMyPost &&
               widget.model.isPendingCollaborationRequest)
             _buildCollaborationRequest(),
@@ -393,33 +393,33 @@ class PostCardState extends State<PostCard> {
     );
   }
 
-  Widget _buildPostManagementOptions() {
-    return Container(
-      color: AppColorConstants.cardColor.darken(),
-      height: 50,
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          BodyLargeText(
-            viewInsightsString.tr,
-            weight: TextWeight.semiBold,
-          ).ripple(() {
-            Get.to(() => ViewPostInsights(post: widget.model));
-          }),
-          AppThemeButton(
-            text: boostPost.tr,
-            cornerRadius: 5,
-            height: 36,
-            onPress: () {
-              _promotionController.setPromotingPost(widget.model);
-              Get.to(() => PostPromotionScreen());
-            },
-          ),
-        ],
-      ).hp(DesignConstants.horizontalPadding),
-    );
-  }
+  // Widget _buildPostManagementOptions() {
+  //   return Container(
+  //     color: AppColorConstants.cardColor.darken(),
+  //     height: 50,
+  //     width: double.infinity,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         BodyLargeText(
+  //           viewInsightsString.tr,
+  //           weight: TextWeight.semiBold,
+  //         ).ripple(() {
+  //           Get.to(() => ViewPostInsights(post: widget.model));
+  //         }),
+  //         AppThemeButton(
+  //           text: boostPost.tr,
+  //           cornerRadius: 5,
+  //           height: 36,
+  //           onPress: () {
+  //             _promotionController.setPromotingPost(widget.model);
+  //             Get.to(() => PostPromotionScreen());
+  //           },
+  //         ),
+  //       ],
+  //     ).hp(DesignConstants.horizontalPadding),
+  //   );
+  // }
 
   Widget _buildCollaborationRequest() {
     return Container(

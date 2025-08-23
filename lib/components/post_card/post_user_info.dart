@@ -210,8 +210,8 @@ class _PostUserInfoState extends State<PostUserInfo> {
         ? BodyExtraSmallText(sponsoredString.tr)
         : Row(
             children: [
-              ThemeIconWidget(ThemeIcon.clock, size: 12),
-              const SizedBox(width: 5),
+              // ThemeIconWidget(ThemeIcon.clock, size: 12),
+              // const SizedBox(width: 5),
               BodyExtraSmallText(widget.post.postTime.tr),
             ],
           );
@@ -221,15 +221,15 @@ class _PostUserInfoState extends State<PostUserInfo> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Follow Button for non-following users
-        if (widget.post.user.followingStatus == FollowingStatus.notFollowing)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: UserFollowUnfollowButton(
-              isSmallSized: true,
-              controller: _userFollowUnfollowBtnController,
-            ),
-          ),
+        // // Follow Button for non-following users
+        // if (widget.post.user.followingStatus == FollowingStatus.notFollowing)
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 8),
+        //     child: UserFollowUnfollowButton(
+        //       isSmallSized: true,
+        //       controller: _userFollowUnfollowBtnController,
+        //     ),
+        //   ),
 
         // Post Actions (only for non-reshared posts)
         if (!widget.isResharedPost) _buildPostActionIcons(),
@@ -244,7 +244,7 @@ class _PostUserInfoState extends State<PostUserInfo> {
         if (widget.post.isPinned) _buildPinIcon(),
 
         // Bookmark Icon
-        _buildBookmarkIcon(),
+        // _buildBookmarkIcon(),
 
         // More Options
         _buildMoreOptionsIcon(),
@@ -275,23 +275,23 @@ class _PostUserInfoState extends State<PostUserInfo> {
     );
   }
 
-  Widget _buildBookmarkIcon() {
-    return Obx(() => SizedBox(
-          height: 24,
-          width: 24,
-          child: Icon(
-            postCardController.savedPosts.contains(widget.post) ||
-                    widget.post.isSaved
-                ? Iconsax.bookmark_bold
-                : Iconsax.bookmark_outline,
-            color: widget.post.isSaved ||
-                    postCardController.savedPosts.contains(widget.post)
-                ? AppColorConstants.themeColor
-                : AppColorConstants.iconColor,
-            size: 20,
-          ),
-        )).ripple(() => postCardController.saveUnSavePost(post: widget.post));
-  }
+  // Widget _buildBookmarkIcon() {
+  //   return Obx(() => SizedBox(
+  //         height: 24,
+  //         width: 24,
+  //         child: Icon(
+  //           postCardController.savedPosts.contains(widget.post) ||
+  //                   widget.post.isSaved
+  //               ? Iconsax.bookmark_bold
+  //               : Iconsax.bookmark_outline,
+  //           color: widget.post.isSaved ||
+  //                   postCardController.savedPosts.contains(widget.post)
+  //               ? AppColorConstants.themeColor
+  //               : AppColorConstants.iconColor,
+  //           size: 20,
+  //         ),
+  //       )).ripple(() => postCardController.saveUnSavePost(post: widget.post));
+  // }
 
   Widget _buildMoreOptionsIcon() {
     return Padding(
@@ -420,6 +420,23 @@ class _PostUserInfoState extends State<PostUserInfo> {
           icon: Icons.block,
           title: blockUserString.tr,
           onTap: () => _handleBlockUser(),
+        ),
+        _buildActionTile(
+          icon: Iconsax.bookmark_outline,
+          title: widget.post.isSaved ||
+                  postCardController.savedPosts.contains(widget.post)
+              ? "Remove post".tr
+              : "Save post".tr,
+          onTap: () => postCardController.saveUnSavePost(post: widget.post),
+        ),
+
+        // if (widget.post.user.followingStatus == FollowingStatus.notFollowing)
+        Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: UserFollowUnfollowButton(
+            isSmallSized: true,
+            controller: _userFollowUnfollowBtnController,
+          ),
         ),
         if (widget.post.amICollaborator) ...[
           _buildActionTile(
