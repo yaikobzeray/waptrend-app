@@ -69,6 +69,7 @@ class DashboardState extends State<DashboardScreen>
     return [
       PersistentBottomNavBarItem(
         icon: Icon(AntDesign.home_fill),
+        inactiveIcon: Icon(AntDesign.home_outline),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
@@ -78,7 +79,7 @@ class DashboardState extends State<DashboardScreen>
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.add_circle, size: 35),
+        icon: Icon(Iconsax.add_square_outline, size: 28),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
         onPressed: (context) {
@@ -86,7 +87,7 @@ class DashboardState extends State<DashboardScreen>
         },
       ),
       PersistentBottomNavBarItem(
-        icon: Center(child: FaIcon(Iconsax.video_play_outline, size: 30)),
+        icon: Center(child: FaIcon(Iconsax.video_play_outline, size: 27)),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),
@@ -95,7 +96,7 @@ class DashboardState extends State<DashboardScreen>
           final pictureUrl = userProfileManager.user.value?.picture;
 
           return CircleAvatar(
-            radius: 13, // Half of your desired width/height
+            radius: 13,
             backgroundColor: Colors.grey,
             backgroundImage: pictureUrl != null && pictureUrl.isNotEmpty
                 ? CachedNetworkImageProvider(pictureUrl)
