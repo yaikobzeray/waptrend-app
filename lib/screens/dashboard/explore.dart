@@ -95,8 +95,8 @@ class _ExploreState extends State<Explore> {
                                       ),
                                       UsersList(),
                                       HashTagsList(),
-                                      EventsList(),
-                                      ClubListing(),
+                                      // EventsList(),
+                                      // ClubListing(),
                                     ]),
                                   )
                                 ],

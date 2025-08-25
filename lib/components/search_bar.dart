@@ -1,5 +1,6 @@
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class SFSearchBar extends StatefulWidget {
   final ValueChanged<String>? onSearchChanged;
@@ -70,13 +71,13 @@ class _SFSearchBarState extends State<SFSearchBar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: AppColorConstants.themeColor,
           width: 0.5,
         ),
       ),
-      height: 50,
+      height: 45,
       child: Center(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,11 +94,11 @@ class _SFSearchBarState extends State<SFSearchBar> {
                     ))
                 : Container(),
             showSearchIcon == true
-                ? ThemeIconWidget(
-                    ThemeIcon.search,
+                ? Icon(
+                    Bootstrap.search,
                     color: iconColor,
                     size: 20,
-                  ).lP16.ripple(() {
+                  ).lP16.rP4.ripple(() {
                     if (searchText != null && searchText!.length > 2) {
                       onSearchChanged!(searchText!);
                     }

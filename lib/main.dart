@@ -26,7 +26,6 @@ import 'package:foap/screens/login_sign_up/ask_to_follow.dart';
 import 'package:foap/screens/popups/ask_location_permission.dart';
 import 'package:foap/screens/settings_menu/help_support_contorller.dart';
 import 'package:giphy_get/l10n.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'components/smart_text_field.dart';
 import 'controllers/notification/notifications_controller.dart';
 import 'controllers/clubs/clubs_controller.dart';

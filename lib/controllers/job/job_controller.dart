@@ -10,25 +10,40 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 
 class JobController extends GetxController {
+  // 🔹 Reactive states
   RxList<CategoryModel> categories = <CategoryModel>[].obs;
   RxList<JobModel> jobs = <JobModel>[].obs;
   RxList<JobModel> appliedJobs = <JobModel>[].obs;
 
+  // 🔹 Search model for filtering
   JobSearchModel searchModel = JobSearchModel();
+
+  // 🔹 Loading states
   RxBool isLoadingCategories = false.obs;
-  Rx<JobModel?> currentJob = Rx<JobModel?>(null);
+  RxBool isLoadingJobs = false.obs;
+  RxBool isLoadingAppliedJobs = false.obs;
+
+  // 🔹 Data wrappers for pagination
   DataWrapper jobsDataWrapper = DataWrapper();
   DataWrapper appliedJobsDataWrapper = DataWrapper();
 
+  // 🔹 Other states
+  Rx<JobModel?> currentJob = Rx<JobModel?>(null);
   RxInt currentIndex = 0.obs;
   RxInt experience = 1.obs;
 
+  // 🔹 Resume file handling
   File? selectedResume;
   RxString selectedResumeFileName = ''.obs;
 
+  // --------------------------------------------------------
+  // 🔹 State clearing
   clear() {
     categories.clear();
     isLoadingCategories.value = false;
+    isLoadingJobs.value = false;
+    isLoadingAppliedJobs.value = false;
+
     appliedJobsDataWrapper = DataWrapper();
     clearJobs();
   }
@@ -38,8 +53,10 @@ class JobController extends GetxController {
     jobsDataWrapper = DataWrapper();
   }
 
-  selectExperience(int experience) {
-    this.experience.value = experience;
+  // --------------------------------------------------------
+  // 🔹 Filters and selections
+  selectExperience(int exp) {
+    experience.value = exp;
   }
 
   setCurrentJob(JobModel job) {
@@ -58,20 +75,19 @@ class JobController extends GetxController {
     getJobs(() {});
   }
 
+  // --------------------------------------------------------
+  // 🔹 Categories
   getCategories() {
     isLoadingCategories.value = true;
     JobApi.getCategories(resultCallback: (result) {
       categories.value = result;
       isLoadingCategories.value = false;
-
       update();
     });
   }
 
-  updateGallerySlider(int index) {
-    currentIndex.value = index;
-  }
-
+  // --------------------------------------------------------
+  // 🔹 Jobs
   refreshJobs(VoidCallback callback) {
     clearJobs();
     getJobs(callback);
@@ -86,21 +102,28 @@ class JobController extends GetxController {
   }
 
   getJobs(VoidCallback callback) {
-    JobApi.getJobs(
-        searchModel: searchModel,
-        page: jobsDataWrapper.page,
-        resultCallback: (result, metadata) {
-          jobs.addAll(result);
-          jobs.unique((e) => e.id);
-          jobsDataWrapper.processCompletedWithData(metadata);
+    isLoadingJobs.value = true;
 
-          update();
-          callback();
-        });
+    JobApi.getJobs(
+      searchModel: searchModel,
+      page: jobsDataWrapper.page,
+      resultCallback: (result, metadata) {
+        jobs.addAll(result);
+        jobs.unique((e) => e.id);
+        jobsDataWrapper.processCompletedWithData(metadata);
+
+        isLoadingJobs.value = false;
+        update();
+        callback();
+      },
+    );
   }
 
+  // --------------------------------------------------------
+  // 🔹 Applied Jobs
   refreshAppliedJobs(VoidCallback callback) {
-    clear();
+    appliedJobs.clear();
+    appliedJobsDataWrapper = DataWrapper();
     getAppliedJobs(callback);
   }
 
@@ -113,31 +136,41 @@ class JobController extends GetxController {
   }
 
   getAppliedJobs(VoidCallback callback) {
+    isLoadingAppliedJobs.value = true;
+
     JobApi.getAppliedJobs(
-        page: appliedJobsDataWrapper.page,
-        resultCallback: (result, metadata) {
-          appliedJobs.addAll(result);
-          appliedJobs.unique((e) => e.id);
+      page: appliedJobsDataWrapper.page,
+      resultCallback: (result, metadata) {
+        appliedJobs.addAll(result);
+        appliedJobs.unique((e) => e.id);
 
-          appliedJobsDataWrapper.processCompletedWithData(metadata);
+        appliedJobsDataWrapper.processCompletedWithData(metadata);
 
-          update();
-          callback();
-        });
+        isLoadingAppliedJobs.value = false;
+        update();
+        callback();
+      },
+    );
   }
 
-  applyJob(
-      {required String jobId,
-      required String experience,
-      required String education,
-      required String coverLetter}) async {
+  // --------------------------------------------------------
+  // 🔹 Apply for Job
+  applyJob({
+    required String jobId,
+    required String experience,
+    required String education,
+    required String coverLetter,
+  }) async {
     String uploadedResumeFileName = '';
-    // Loader.show();
-    await MiscApi.uploadFile(selectedResume!.path,
-        mediaType: GalleryMediaType.photo, type: UploadMediaType.uploadResume,
-        resultCallback: (fileName, filePath) {
-      uploadedResumeFileName = fileName;
-    });
+
+    if (selectedResume != null) {
+      await MiscApi.uploadFile(selectedResume!.path,
+          mediaType: GalleryMediaType.photo, type: UploadMediaType.uploadResume,
+          resultCallback: (fileName, filePath) {
+        uploadedResumeFileName = fileName;
+      });
+    }
+
     JobApi.applyJob(
         jobId: jobId,
         experience: experience,
@@ -151,25 +184,18 @@ class JobController extends GetxController {
         });
   }
 
+  // --------------------------------------------------------
+  // 🔹 File Picker for Resume
   void openFilePicker() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: [
-        'jpg',
-        'jpeg',
-        'png',
-        'pdf',
-        'doc',
-        'docx',
-      ],
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
     );
 
     if (result != null) {
       File file = File(result.files.single.path!);
       selectedResume = file;
       selectedResumeFileName.value = result.files.first.name;
-    } else {
-      // User canceled the picker
     }
   }
 }

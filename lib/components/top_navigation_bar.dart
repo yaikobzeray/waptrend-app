@@ -43,7 +43,7 @@ Widget backNavigationBar({required String title}) {
         BodyLargeText(
           title.tr,
           maxLines: 1,
-          weight: TextWeight.bold,
+          weight: TextWeight.medium,
           color: AppColorConstants.themeColor,
         )
       ],

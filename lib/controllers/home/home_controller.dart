@@ -90,20 +90,20 @@ class HomeController extends GetxController {
 
   loadQuickLinksAccordingToSettings() {
     quickLinks.clear();
-    if (_settingsController.setting.value!.enableStories) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/story.png',
-          heading: storyString.tr,
-          subHeading: sentAStoryString.tr,
-          linkType: QuickLinkType.story));
-    }
-    if (_settingsController.setting.value!.enableHighlights) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/highlight.png',
-          heading: highlightsString.tr,
-          subHeading: highlightsString.tr,
-          linkType: QuickLinkType.highlights));
-    }
+    // if (_settingsController.setting.value!.enableStories) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/story.png',
+    //       heading: storyString.tr,
+    //       subHeading: sentAStoryString.tr,
+    //       linkType: QuickLinkType.story));
+    // }
+    // if (_settingsController.setting.value!.enableHighlights) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/highlight.png',
+    //       heading: highlightsString.tr,
+    //       subHeading: highlightsString.tr,
+    //       linkType: QuickLinkType.highlights));
+    // }
     if (_settingsController.setting.value!.enableLiveUserListing) {
       quickLinks.add(QuickLink(
           icon: 'assets/explore/live_users.png',
@@ -153,13 +153,13 @@ class HomeController extends GetxController {
           subHeading: kidsString.tr,
           linkType: QuickLinkType.reel));
     }
-    if (_settingsController.setting.value!.enableEvents) {
-      quickLinks.add(QuickLink(
-          icon: 'assets/explore/event.png',
-          heading: eventString.tr,
-          subHeading: eventString.tr,
-          linkType: QuickLinkType.event));
-    }
+    // if (_settingsController.setting.value!.enableEvents) {
+    //   quickLinks.add(QuickLink(
+    //       icon: 'assets/explore/event.png',
+    //       heading: eventString.tr,
+    //       subHeading: eventString.tr,
+    //       linkType: QuickLinkType.event));
+    // }
     // if (_settingsController.setting.value!.enableDating) {
     //   quickLinks.add(QuickLink(
     //       icon: 'assets/explore/dating.png',
@@ -195,13 +195,13 @@ class HomeController extends GetxController {
           subHeading: shopString.tr,
           linkType: QuickLinkType.shop));
     }
-    // if (_settingsController.setting.value!.enableJobs) {
-    //   quickLinks.add(QuickLink(
-    //       icon: 'assets/explore/job.png',
-    //       heading: jobsString.tr,
-    //       subHeading: jobsString.tr,
-    //       linkType: QuickLinkType.job));
-    // }
+    if (_settingsController.setting.value!.enableJobs) {
+      quickLinks.add(QuickLink(
+          icon: 'assets/explore/job.png',
+          heading: jobsString.tr,
+          subHeading: jobsString.tr,
+          linkType: QuickLinkType.job));
+    }
   }
 
   removePostFromList(PostModel post) {
