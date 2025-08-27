@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:foap/helper/file_extension.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../components/vs_story_designer/vs_story_designer.dart';
@@ -61,10 +63,21 @@ void openStoryUploader() {
                               giphyKey:
                                   settingsController.setting.value!.giphyApiKey,
                               onDone: (String uri) async {
-                                XFile image = XFile(uri);
+                                print("uri=$uri");
+
+                                File file = File(uri); // <-- use dart:io File
+                                if (!await file.exists()) {
+                                  print("File not found!");
+                                  return;
+                                }
+
+                                // If your toMedia requires XFile, convert from File.bytes
+                                XFile image = XFile(file.path);
+
                                 Media media =
                                     await image.toMedia(GalleryMediaType.photo);
                                 postStoryMedia([media]);
+
                                 Get.back();
                               },
                               onDoneButtonStyle: Container(
@@ -190,9 +203,12 @@ selectPhoto({
 }) async {
   if (source == ImageSource.camera) {
     XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    print("Media=$image");
 
     if (image != null) {
       Media media = await image.toMedia(GalleryMediaType.photo);
+      print("Media=$media");
+
       postStoryMedia([media]);
     }
   } else {
@@ -201,6 +217,8 @@ selectPhoto({
 
     for (XFile file in images) {
       Media media = await file.toMedia(GalleryMediaType.photo);
+      print("Media=$media");
+
       mediaList.add(media);
     }
     postStoryMedia(mediaList);
@@ -214,11 +232,14 @@ selectVideo({
 
   if (file != null) {
     Media media = await file.toMedia(GalleryMediaType.video);
+    print("Media=$media");
+
     postStoryMedia([media]);
   }
 }
 
 postStoryMedia(List<Media> medias) {
   final AppStoryController storyController = Get.find();
+
   storyController.uploadAllMedia(items: medias);
 }

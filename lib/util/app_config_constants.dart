@@ -59,7 +59,7 @@ class DesignConstants {
 }
 
 class AppColorConstants {
-  static Color themeColor = settingsController.setting.value == null
+  static Color get themeColor => settingsController.setting.value == null
       ? Colors.blue
       : HexColor.fromHex(settingsController.setting.value!.themeColor!);
 

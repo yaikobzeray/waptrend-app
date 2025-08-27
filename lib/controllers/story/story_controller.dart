@@ -93,62 +93,55 @@ class AppStoryController extends GetxController {
   }
 
   Future<Map<String, String>> uploadMedia(Media media) async {
-    Map<String, String> gallery = {};
-    final completer = Completer<Map<String, String>>();
+    try {
+      final tempDir = await getTemporaryDirectory();
+      File mainFile;
+      String? videoThumbnailPath;
+      int videoDuration = 0;
 
-    final tempDir = await getTemporaryDirectory();
-    File mainFile;
-    String? videoThumbnailPath;
-    int videoDuration = 0;
+      if (media.mediaType == GalleryMediaType.photo) {
+        // Image handling
+        Uint8List mainFileData = await media.file!.compress();
+        mainFile = File(
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        await mainFile.writeAsBytes(mainFileData);
+      } else {
+        // Video handling
+        MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+          media.file!.path,
+          quality: VideoQuality.DefaultQuality,
+          deleteOrigin: false,
+        );
 
-    if (media.mediaType == GalleryMediaType.photo) {
-      Uint8List mainFileData = await media.file!.compress();
-      //image media
-      mainFile =
-          await File('${tempDir.path}/${media.id!.replaceAll('/', '')}.${media.file!.extension}')
-              .create();
-      mainFile.writeAsBytesSync(mainFileData);
-    } else {
-      Loader.show(status: loadingString.tr);
+        if (mediaInfo == null || mediaInfo.file == null) {
+          throw Exception("Video compression failed");
+        }
 
-      MediaInfo? mediaInfo = await VideoCompress.compressVideo(
-        media.file!.path,
-        quality: VideoQuality.DefaultQuality,
-        deleteOrigin: false, // It's false by default
-      );
-      mainFile = mediaInfo!.file!;
+        mainFile = mediaInfo.file!;
 
-      // final videoInfo = FlutterVideoInfo();
-      var info = await VideoCompress.getMediaInfo(media.file!.path);
-      videoDuration = info.duration!.toInt();
+        var info = await VideoCompress.getMediaInfo(media.file!.path);
+        videoDuration = info.duration?.toInt() ?? 0;
 
-      File videoThumbnail = await File(
-              '${tempDir.path}/${media.id!.replaceAll('/', '')}_thumbnail.${media.file!.extension}')
-          .create();
+        // Create thumbnail file
+        File videoThumbnail = File(
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_thumbnail.jpg');
+        await videoThumbnail.writeAsBytes(media.thumbnail!);
 
-      videoThumbnail.writeAsBytesSync(media.thumbnail!);
-
-      await MiscApi.uploadFile(videoThumbnail.path,
-          mediaType: GalleryMediaType.photo,
-          type: UploadMediaType.storyOrHighlights,
-          resultCallback: (fileName, filePath) async {
-        videoThumbnailPath = fileName;
+        // Upload thumbnail
+        videoThumbnailPath =
+            await _uploadFile(videoThumbnail, GalleryMediaType.photo);
         await videoThumbnail.delete();
-      });
-    }
+      }
 
-    Loader.show(status: loadingString.tr);
-
-    await MiscApi.uploadFile(mainFile.path,
-        mediaType: media.mediaType!, type: UploadMediaType.storyOrHighlights,
-        resultCallback: (fileName, filePath) async {
-      String mainFileUploadedPath = fileName;
+      // Upload main file
+      String mainFileUploadedPath =
+          await _uploadFile(mainFile, media.mediaType!);
       await mainFile.delete();
-      gallery = {
-        // 'image': media.mediaType == 1 ? mainFileUploadedPath : '',
+
+      return {
         'image': media.mediaType == GalleryMediaType.photo
             ? mainFileUploadedPath
-            : videoThumbnailPath!,
+            : videoThumbnailPath ?? '',
         'video': media.mediaType == GalleryMediaType.photo
             ? ''
             : mainFileUploadedPath,
@@ -157,10 +150,36 @@ class AppStoryController extends GetxController {
         'description': '',
         'background_color': '',
       };
-      completer.complete(gallery);
-    });
+    } catch (e) {
+      print("Upload media error: $e");
+      rethrow;
+    }
+  }
 
-    return completer.future;
+  Future<String> _uploadFile(File file, GalleryMediaType mediaType) async {
+    final completer = Completer<String>();
+
+    // Start upload
+    MiscApi.uploadFile(
+      file.path,
+      mediaType: mediaType,
+      type: UploadMediaType.storyOrHighlights,
+      resultCallback: (fileName, filePath) {
+        print("Upload success: $fileName");
+        if (!completer.isCompleted) {
+          completer.complete(fileName);
+        }
+      },
+    );
+
+    // Wait for completion with timeout
+    return completer.future.timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        print("Upload timeout for file: ${file.path}");
+        throw Exception("Upload timeout");
+      },
+    );
   }
 
   void publishAction({

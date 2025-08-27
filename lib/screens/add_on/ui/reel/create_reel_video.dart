@@ -3,6 +3,7 @@ import 'package:foap/screens/add_on/controller/reel/create_reel_controller.dart'
 import 'package:foap/screens/add_on/ui/reel/select_music.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:image_picker/image_picker.dart'; // Add this import
 import '../../../content_creator_view.dart';
 
 class CreateReelScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class CreateReelScreen extends StatefulWidget {
 class _CreateReelScreenState extends State<CreateReelScreen>
     with TickerProviderStateMixin {
   final CreateReelController _createReelController = Get.find();
+  final ImagePicker _imagePicker = ImagePicker(); // Add image picker instance
   AnimationController? animationController;
 
   @override
@@ -50,53 +52,131 @@ class _CreateReelScreenState extends State<CreateReelScreen>
     });
   }
 
+  // Add this method to pick video from gallery
+  _pickVideoFromGallery() async {
+    try {
+      final XFile? video = await _imagePicker.pickVideo(
+        source: ImageSource.gallery,
+        maxDuration:
+            Duration(seconds: _createReelController.recordingLength.value),
+      );
+
+      if (video != null) {
+        // Handle the selected video
+        _createReelController.handleGalleryVideo(video);
+
+        // Navigate to next screen or process the video
+        // For example:
+        // Get.to(() => VideoPreviewScreen(videoFile: File(video.path)));
+      }
+    } catch (e) {
+      debugPrint('Error picking video: $e');
+      // Show error message to user
+      Get.snackbar(
+        errorString.tr,
+        "failedToPickVideoString"
+            .tr, // Make sure to add these strings to your localization
+        backgroundColor: AppColorConstants.red,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       backgroundColor: AppColorConstants.backgroundColor,
-      body: Stack(
+      body: Column(
         children: [
-          // Camera Preview
-          const CameraView(),
+          Stack(
+            children: [
+              // Camera Preview
+              const CameraView(),
 
-          // Top Controls
-          Positioned(
-            top: 50,
-            left: 16,
-            right: 16,
+              // Top Controls
+              Positioned(
+                top: 50,
+                left: 16,
+                right: 16,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Close Button
+                    _buildControlButton(
+                      icon: const Icon(AntDesign.close_outline, size: 20),
+                      onTap: () => Get.back(),
+                    ),
+
+                    // Music Selection
+                    Obx(() => _buildMusicSelector()),
+                  ],
+                ),
+              ),
+
+              // Right Side Controls
+              Positioned(
+                right: 16,
+                top: 120,
+                child: _buildSideControls(),
+              ),
+
+              // Gallery Import Button - ADDED THIS
+              // Positioned(
+              //   left: 16,
+              //   top: 120,
+              //   child: _buildGalleryButton(),
+              // ),
+
+              // Bottom Record Button
+              Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: _buildRecordButton(),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Close Button
                 _buildControlButton(
-                  icon: const Icon(AntDesign.close_outline, size: 20),
-                  onTap: () => Get.back(),
+                  icon: Icon(
+                    Icons.image,
+                    size: 20,
+                    color: AppColorConstants.backgroundColor,
+                  ),
+                  onTap: () => _pickVideoFromGallery(),
                 ),
-
-                // Music Selection
-                Obx(() => _buildMusicSelector()),
               ],
             ),
-          ),
-
-          // Right Side Controls
-          Positioned(
-            right: 16,
-            top: 120,
-            child: _buildSideControls(),
-          ),
-
-          // Bottom Record Button
-          Positioned(
-            bottom: 40,
-            left: 0,
-            right: 0,
-            child: _buildRecordButton(),
           ),
         ],
       ),
     );
   }
+
+  // Add this method to build the gallery button
+  // Widget _buildGalleryButton() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+  //     decoration: BoxDecoration(
+  //       color: AppColorConstants.cardColor.withOpacity(0.7),
+  //       borderRadius: BorderRadius.circular(24),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.2),
+  //           blurRadius: 12,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: _buildSideControlButton(
+  //       icon: const Icon(Icons.photo_library, size: 24),
+  //       onTap: _pickVideoFromGallery,
+  //     ),
+  //   );
+  // }
 
   Widget _buildControlButton(
       {required Widget icon, required VoidCallback onTap}) {
@@ -105,7 +185,7 @@ class _CreateReelScreenState extends State<CreateReelScreen>
       height: 40,
       decoration: BoxDecoration(
         color: AppColorConstants.themeColor.withOpacity(0.9),
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(9),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),

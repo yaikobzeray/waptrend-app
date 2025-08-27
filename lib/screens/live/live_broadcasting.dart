@@ -1101,7 +1101,9 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Textfield row
           Row(
             children: [
               Expanded(
@@ -1127,7 +1129,6 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
                             color: AppColorConstants.subHeadingTextColor,
                           ),
                         ),
-                        onChanged: (text) {},
                       )),
                 ),
               ),
@@ -1136,13 +1137,21 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
                 if (_agoraLiveController.messageTextFocus.value) {
                   return _sendButton();
                 }
-                if (_agoraLiveController.live.value?.amIHostInLive == true) {
-                  return _hostControls();
-                }
-                return _viewerControls();
+                return _sendButton();
               }),
             ],
           ),
+
+          const SizedBox(height: 10),
+
+          // Host controls appear only below textfield if host
+          Obx(() {
+            if (_agoraLiveController.live.value?.amIHostInLive == true &&
+                !_agoraLiveController.messageTextFocus.value) {
+              return _hostControls();
+            }
+            return const SizedBox.shrink();
+          }),
         ],
       ),
     );
@@ -1175,7 +1184,10 @@ class _LiveBroadcastScreenState extends State<LiveBroadcastScreen>
 
   Widget _hostControls() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        _sendButton(),
+        const SizedBox(width: 8),
         _controlButton(
           icon: ThemeIcon.cameraSwitch,
           onTap: () => _agoraLiveController.onToggleCamera(),

@@ -10,7 +10,7 @@ class PostOptionsPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> options = [];
+    List<ModalComponents> options = [];
 
     options.add(cameraButton());
 
@@ -26,26 +26,28 @@ class PostOptionsPopup extends StatelessWidget {
     options.add(pollButton());
 
     return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        padding: EdgeInsets.only(
-            left: DesignConstants.horizontalPadding,
-            right: DesignConstants.horizontalPadding),
-        scrollDirection: Axis.horizontal,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.symmetric(
+          horizontal: DesignConstants.horizontalPadding,
+          vertical: 8,
+        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4, // 4 items per row
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.3, // Adjust for button proportions
+        ),
         itemCount: options.length,
         itemBuilder: (ctx, index) {
           return options[index];
-        },
-        separatorBuilder: (ctx, index) {
-          return const SizedBox(
-            width: 8,
-          );
         },
       ),
     );
   }
 
-  Widget cameraButton() {
+  ModalComponents cameraButton() {
     return ModalComponents(
       icon: Iconsax.camera_outline,
       name: cameraString.tr,
@@ -55,7 +57,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget galleryButton() {
+  ModalComponents galleryButton() {
     return ModalComponents(
       icon: Iconsax.gallery_outline,
       name: galleryString.tr,
@@ -65,7 +67,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget videoButton() {
+  ModalComponents videoButton() {
     return ModalComponents(
       icon: Iconsax.video_outline,
       name: videoString.tr,
@@ -75,7 +77,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget drawButton() {
+  ModalComponents drawButton() {
     return ModalComponents(
       icon: Iconsax.pen_tool_outline,
       name: drawingString.tr,
@@ -85,7 +87,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget audioButton() {
+  ModalComponents audioButton() {
     return ModalComponents(
       icon: Iconsax.microphone_2_outline,
       name: audioString.tr,
@@ -95,7 +97,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget gifButton() {
+  ModalComponents gifButton() {
     return ModalComponents(
       icon: Iconsax.gallery_import_outline,
       name: gifString.tr,
@@ -105,7 +107,7 @@ class PostOptionsPopup extends StatelessWidget {
     );
   }
 
-  Widget pollButton() {
+  ModalComponents pollButton() {
     return ModalComponents(
       icon: Iconsax.chart_outline,
       name: pollString.tr,
@@ -132,32 +134,46 @@ class ModalComponents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppColorConstants.themeColor.darken(),
-          width: 0.5,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 80, // Minimum height to prevent overflow
+        maxHeight: 100, // Maximum height constraint
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: 4, vertical: 8), // Reduced padding
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColorConstants.themeColor.darken(),
+            width: 0.5,
+          ),
+          borderRadius: BorderRadius.circular(8),
         ),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 16,
-            color: AppColorConstants.iconColor,
-          ),
-          const SizedBox(width: 8),
-          BodySmallText(
-            name,
-            color: AppColorConstants.mainTextColor,
-          ),
-        ],
-      ),
-    ).ripple(() {
-      onPress?.call();
-    });
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize:
+              MainAxisSize.min, // Important: prevents column from expanding
+          children: [
+            Icon(
+              icon,
+              size: 18, // Slightly smaller icon
+              color: AppColorConstants.iconColor,
+            ),
+            const SizedBox(height: 4), // Reduced spacing
+            Expanded(
+              // Use Expanded to contain text
+              child: BodySmallText(
+                name,
+                color: AppColorConstants.mainTextColor,
+                textAlign: TextAlign.center,
+                maxLines: 2, // Allow 2 lines for longer text
+              ),
+            ),
+          ],
+        ),
+      ).ripple(() {
+        onPress?.call();
+      }),
+    );
   }
 }

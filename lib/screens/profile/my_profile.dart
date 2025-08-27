@@ -33,7 +33,7 @@ class MyProfileState extends State<MyProfile> {
   final UserProfileManager _userProfileManager = Get.find();
   final NotificationController _notificationController = Get.find();
 
-  List<String> tabs = ['Posts', 'Reels', 'Tagged'];
+  List<String> tabs = ['Posts', 'Trends', 'Tagged'];
 
   @override
   void initState() {
@@ -177,43 +177,43 @@ class MyProfileState extends State<MyProfile> {
                   : const SizedBox(width: 50),
               Row(
                 children: [
-                  Obx(() => Stack(
-                        children: [
-                          ThemeIconWidget(
-                            ThemeIcon.notification,
-                            size: 25,
-                            color: AppColorConstants.themeColor,
-                          )
-                              .rp(_notificationController
-                                          .unreadNotificationCount.value >
-                                      0
-                                  ? 15
-                                  : 0)
-                              .ripple(() {
-                            Get.to(() => const NotificationsScreen());
-                          }),
-                          if (_notificationController
-                                  .unreadNotificationCount.value >
-                              0)
-                            Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  color: AppColorConstants.themeColor,
-                                  child: Center(
-                                    child: Text(
-                                      _notificationController
-                                          .unreadNotificationCount.value
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontSize: 8, color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                    ).setPadding(
-                                        top: 2, bottom: 2, left: 4, right: 4),
-                                  ),
-                                ).circular)
-                        ],
-                      )),
+                  // Obx(() => Stack(
+                  //       children: [
+                  //         ThemeIconWidget(
+                  //           ThemeIcon.notification,
+                  //           size: 25,
+                  //           color: AppColorConstants.themeColor,
+                  //         )
+                  //             .rp(_notificationController
+                  //                         .unreadNotificationCount.value >
+                  //                     0
+                  //                 ? 15
+                  //                 : 0)
+                  //             .ripple(() {
+                  //           Get.to(() => const NotificationsScreen());
+                  //         }),
+                  //         if (_notificationController
+                  //                 .unreadNotificationCount.value >
+                  //             0)
+                  //           Positioned(
+                  //               right: 0,
+                  //               top: 0,
+                  //               child: Container(
+                  //                 color: AppColorConstants.themeColor,
+                  //                 child: Center(
+                  //                   child: Text(
+                  //                     _notificationController
+                  //                         .unreadNotificationCount.value
+                  //                         .toString(),
+                  //                     style: const TextStyle(
+                  //                         fontSize: 8, color: Colors.white),
+                  //                     textAlign: TextAlign.center,
+                  //                   ).setPadding(
+                  //                       top: 2, bottom: 2, left: 4, right: 4),
+                  //                 ),
+                  //               ).circular)
+                  //       ],
+                  //     )),
                   const SizedBox(
                     width: 20,
                   ),

@@ -350,6 +350,29 @@ class CreateReelController extends GetxController {
     });
   }
 
+  // Add this method to your CreateReelController class
+  void handleGalleryVideo(XFile videoFile) {
+    try {
+      // Stop any current recording if active
+      if (isRecording.value) {
+        stopRecording();
+      }
+
+      // Process the gallery video
+      if (croppedAudioFile != null) {
+        // Combine the gallery video with selected audio
+        createReel(croppedAudioFile, videoFile);
+      } else {
+        // Use gallery video as is
+        createReel(null, videoFile);
+      }
+    } catch (e) {
+      debugPrint('Error handling gallery video: $e');
+      AppUtil.showToast(
+          message: 'Failed to process gallery video', isSuccess: false);
+    }
+  }
+
   void updateProgress() {
     currentProgressValue.value = currentProgressValue.value + 1;
     update();

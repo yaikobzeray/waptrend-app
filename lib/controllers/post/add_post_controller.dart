@@ -149,15 +149,13 @@ class AddPostController extends GetxController {
               '${tempDir.path}/${media.id!.replaceAll('/', '')}.${media.file!.extension}')
           .create();
       file.writeAsBytesSync(mainFileData);
-      uploadMainFile(
-          file, media, videoThumbnailPath, competitionId, completer);
+      uploadMainFile(file, media, videoThumbnailPath, competitionId, completer);
     } else if (media.mediaType == GalleryMediaType.gif) {
       gallery = {
         'filename': media.filePath!,
         'video_thumb': videoThumbnailPath ?? '',
         'type': competitionId == null ? '1' : '2',
-        'media_type':
-            mediaTypeIdFromMediaType(media.mediaType!).toString(),
+        'media_type': mediaTypeIdFromMediaType(media.mediaType!).toString(),
         'is_default': '1',
       };
       completer.complete(gallery);
@@ -185,12 +183,11 @@ class AddPostController extends GetxController {
         await videoThumbnail.delete();
       });
 
-      uploadMainFile(
-          file, media, videoThumbnailPath, competitionId, completer);
+      uploadMainFile(file, media, videoThumbnailPath, competitionId, completer);
     } else {
       // for audio files
-      uploadMainFile(media.file!, media, videoThumbnailPath, competitionId,
-          completer);
+      uploadMainFile(
+          media.file!, media, videoThumbnailPath, competitionId, completer);
     }
 
     return completer.future;
@@ -211,8 +208,7 @@ class AddPostController extends GetxController {
         'filename': imagePath,
         'video_thumb': videoThumbnailPath ?? '',
         'type': competitionId == null ? '1' : '2',
-        'media_type':
-            mediaTypeIdFromMediaType(media.mediaType!).toString(),
+        'media_type': mediaTypeIdFromMediaType(media.mediaType!).toString(),
         'is_default': '1',
         'height': (media.size?.height ?? 0).toString(),
         'width': (media.size?.width ?? 0).toString(),
@@ -243,9 +239,8 @@ class AddPostController extends GetxController {
   }) {
     PostApi.addPost(
         postType: postType,
-        postContentType: galleryItems.isEmpty
-            ? PostContentType.text
-            : PostContentType.media,
+        postContentType:
+            galleryItems.isEmpty ? PostContentType.text : PostContentType.media,
         title: title,
         gallery: galleryItems,
         allowComments: allowComments,
@@ -350,8 +345,7 @@ class AddPostController extends GetxController {
 
   linkCollaboratorsToPost(int postId) async {
     for (UserModel user in collaborators) {
-      await PostApi.linkCollaborator(
-          postId: postId, collaboratorId: user.id);
+      await PostApi.linkCollaborator(postId: postId, collaboratorId: user.id);
     }
 
     collaborators.clear();
@@ -363,6 +357,7 @@ class AddPostController extends GetxController {
   }
 
   createPoll(Map<String, dynamic> data) {
+    Loader.show(status: loadingString);
     PostApi.createPoll(
         question: data["question"],
         options: data["options"],

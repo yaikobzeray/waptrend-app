@@ -8,11 +8,11 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
     id("com.google.devtools.ksp") version "2.1.0-1.0.29" // Use the latest version
 }
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
+// def keystoreProperties = new Properties()
+// def keystorePropertiesFile = rootProject.file("key.properties")
+// if (keystorePropertiesFile.exists()) {
+//     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+// }
 
 
 def localProperties = new Properties()
@@ -69,10 +69,10 @@ android {
     signingConfigs {
         debug {
           
-        keyAlias keystoreProperties['keyAlias']
-        keyPassword keystoreProperties['keyPassword']
-        storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-        storePassword keystoreProperties['storePassword']
+        // keyAlias keystoreProperties['keyAlias']
+        // keyPassword keystoreProperties['keyPassword']
+        // storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+        // storePassword keystoreProperties['storePassword']
 
             // v1SigningEnabled true
             // v2SigningEnabled true
@@ -81,10 +81,10 @@ android {
         }
 
        release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
+        //    keyAlias keystoreProperties['keyAlias']
+        //    keyPassword keystoreProperties['keyPassword']
+        //    storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+        //    storePassword keystoreProperties['storePassword']
            // v1SigningEnabled true
            // v2SigningEnabled true
        }

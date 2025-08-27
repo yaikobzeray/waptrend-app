@@ -308,6 +308,8 @@ class _SettingsState extends State<Settings> {
                   inactiveTrackColor: AppColorConstants.disabledColor,
                   onChanged: (val) {
                     _settingsController.appearanceModeChanged(val);
+                    setState(() {});
+                    Get.forceAppUpdate();
                   },
                 ),
               )),

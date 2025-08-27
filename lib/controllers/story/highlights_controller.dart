@@ -105,12 +105,14 @@ class HighlightsController extends GetxController {
     final tempDir = await getTemporaryDirectory();
     File file = await File('${tempDir.path}/${randomId()}.png').create();
     file.writeAsBytesSync(compressedData);
-    await MiscApi.uploadFile(file.path,
-        mediaType: GalleryMediaType.photo,
-        type: UploadMediaType.storyOrHighlights,
-        resultCallback: (fileName, filePath) {
-      coverImageName = fileName;
-    });
+    await MiscApi.uploadFile(
+      file.path,
+      mediaType: GalleryMediaType.photo,
+      type: UploadMediaType.storyOrHighlights,
+      resultCallback: (fileName, filePath) {
+        coverImageName = fileName;
+      },
+    );
   }
 
   deleteStoryFromHighlight() async {

@@ -72,6 +72,10 @@ class AddPostState extends State<AddPostScreen> {
   @override
   void initState() {
     _smartTextFieldController.clear();
+    // Initialize with passed media if available
+    if (widget.items != null && widget.items!.isNotEmpty) {
+      _selectPostMediaController.mediaSelected(widget.items!);
+    }
     super.initState();
   }
 
@@ -125,7 +129,7 @@ class AddPostState extends State<AddPostScreen> {
                                 )),
                             BodyLargeText(
                               "Create Post",
-                              color: Colors.black,
+                              color: AppColorConstants.mainTextColor,
                             ),
                             Container(
                                     // color: AppColorConstants.themeColor,

@@ -130,7 +130,12 @@ String userNameString = 'Username';
 String changeUserNameString = 'Change user name';
 String emailString = 'Email';
 String emailOrUsernameString = 'Email or username';
+// In your strings.dart or localization file
 
+String processingVideoString = "Processing video...";
+String uploadFailedString = "Upload failed. Please try again.";
+String storyPostedSuccessfullyString = "Story post ed successfully!";
+String storyPostFailedString = "Failed to post story.";
 String loginAnotherAccountString = 'Login another account';
 String yourEmailString = 'Your Email';
 String forgotPwdString = 'Forgot Password?';
@@ -424,7 +429,6 @@ String reelReportedSuccessfullyString = 'Reel is reported successfully';
 
 String userReportedSuccessfullyString = 'User is reported successfully';
 String storyReportedSuccessfullyString = 'Story is reported successfully';
-String storyPostedSuccessfullyString = 'Story is posted successfully';
 
 String userBlockedSuccessfullyString = 'User is blocked successfully';
 
