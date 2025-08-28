@@ -773,7 +773,7 @@ class PostBoxShimmer extends StatelessWidget {
           margin: const EdgeInsets.only(
               bottom: 8), // Vertical spacing between items
           decoration: BoxDecoration(
-            color: Color.fromRGBO(238, 238, 238, 1.0),
+            color: AppColorConstants.cardColor,
             borderRadius: BorderRadius.circular(12),
           ),
 
@@ -783,9 +783,9 @@ class PostBoxShimmer extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 20,
-                      backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
+                      backgroundColor: AppColorConstants.cardColor,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -799,7 +799,7 @@ class PostBoxShimmer extends StatelessWidget {
                             width: 120,
                             height: 14,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColorConstants.cardColor,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -808,7 +808,7 @@ class PostBoxShimmer extends StatelessWidget {
                             width: 80,
                             height: 12,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColorConstants.cardColor,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -819,7 +819,7 @@ class PostBoxShimmer extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(238, 238, 238, 1.0),
+                        color: AppColorConstants.cardColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                     )

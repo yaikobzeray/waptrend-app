@@ -30,13 +30,14 @@ class StoryUpdatesBar extends StatelessWidget {
             width: storyCircleSize + 24,
             child: Column(
               children: [
-                SizedBox(
+                Container(
+                  color: AppColorConstants.cardColor.darken(),
                   height: storyCircleSize + 10,
                   width: storyCircleSize + 10,
                   child: ThemeIconWidget(
                     ThemeIcon.plusSymbol,
                     size: 28,
-                    color: AppColorConstants.disabledColor.darken(),
+                    color: AppColorConstants.mainTextColor,
                   ),
                 )
                     .borderWithRadius(value: 2, color: Colors.green, radius: 50)

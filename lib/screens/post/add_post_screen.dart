@@ -221,7 +221,10 @@ class AddPostState extends State<AddPostScreen> {
                         height: 50,
                         child: Row(
                           children: [
-                            Icon(AntDesign.message_outline),
+                            Icon(
+                              AntDesign.message_outline,
+                              color: AppColorConstants.iconColor,
+                            ),
                             const SizedBox(
                               width: 10,
                             ),
@@ -244,7 +247,9 @@ class AddPostState extends State<AddPostScreen> {
                           height: 50,
                           child: Row(
                             children: [
-                              ThemeIconWidget(ThemeIcon.diamond),
+                              ThemeIconWidget(
+                                ThemeIcon.diamond,
+                              ),
                               const SizedBox(
                                 width: 10,
                               ),
@@ -268,7 +273,10 @@ class AddPostState extends State<AddPostScreen> {
                         height: 50,
                         child: Row(
                           children: [
-                            Icon(Bootstrap.geo_fill),
+                            Icon(
+                              Bootstrap.geo_fill,
+                              color: AppColorConstants.iconColor,
+                            ),
                             const SizedBox(
                               width: 10,
                             ),
@@ -305,7 +313,10 @@ class AddPostState extends State<AddPostScreen> {
                         height: 50,
                         child: Row(
                           children: [
-                            Icon(AntDesign.user_outline),
+                            Icon(
+                              AntDesign.user_outline,
+                              color: AppColorConstants.iconColor,
+                            ),
                             const SizedBox(
                               width: 10,
                             ),
