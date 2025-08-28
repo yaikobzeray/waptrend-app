@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:foap/helper/imports/chat_imports.dart';
 import 'package:foap/helper/imports/common_import.dart';
 import 'package:foap/helper/imports/story_imports.dart';
@@ -192,9 +193,10 @@ class HomeFeedState extends State<HomeFeedScreen> {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            AntDesign.bell_outline,
+                            Iconsax.notification_outline,
                             size: 20,
-                            color: AppColorConstants.mainTextColor,
+                            color: AppColorConstants.mainTextColor
+                                .withOpacity(0.7),
                           ),
                         ).ripple(() {
                           Future.delayed(Duration.zero,
@@ -213,10 +215,10 @@ class HomeFeedState extends State<HomeFeedScreen> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              Icon(
-                                Icons.chat_bubble_outline_rounded,
-                                size: 20,
-                                color: AppColorConstants.mainTextColor,
+                              SvgPicture.asset(
+                                height: 25,
+                                "assets/Chat.svg",
+                                color: AppColorConstants.iconColor,
                               ),
                               Obx(() =>
                                   _dashboardController.unreadMsgCount.value == 0

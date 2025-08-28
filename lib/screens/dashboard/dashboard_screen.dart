@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:foap/controllers/profile/profile_controller.dart';
 import 'package:foap/screens/content_creator_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -68,10 +69,16 @@ class DashboardState extends State<DashboardScreen>
   List<PersistentBottomNavBarItem> _navBarItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(AntDesign.home_fill),
-        inactiveIcon: Icon(AntDesign.home_outline),
-        activeColorPrimary: AppColorConstants.themeColor.darken(),
-        inactiveColorPrimary: AppColorConstants.themeColor.darken(),
+        icon: SvgPicture.asset(
+          height: 25,
+          "assets/Home-fill.svg",
+          color: AppColorConstants.themeColor.darken(),
+        ),
+        inactiveIcon: SvgPicture.asset(
+          height: 25,
+          "assets/Home.svg",
+          color: AppColorConstants.themeColor.darken(),
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.explore_outlined, size: 30),
@@ -130,7 +137,7 @@ class DashboardState extends State<DashboardScreen>
         controller: _navController,
         screens: _buildScreens(),
         items: _navBarItems(),
-        backgroundColor: AppColorConstants.themeColor.withOpacity(0.1),
+        backgroundColor: AppColorConstants.backgroundColor,
         animationSettings: NavBarAnimationSettings(),
         hideNavigationBarWhenKeyboardAppears: true,
         resizeToAvoidBottomInset: true,

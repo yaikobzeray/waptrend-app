@@ -1,5 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controls.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:foap/components/post_card/poll_post_tile.dart';
 import 'package:foap/components/post_card/post_user_info.dart';
 import 'package:foap/components/post_card/reshared_post_card.dart';
@@ -481,17 +482,16 @@ class PostCardState extends State<PostCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        // spacing: 44,
-
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 18,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           _buildLikeButton(),
           if (widget.model.commentsEnabled) _buildCommentButton(),
           _buildViewCount(),
           if (widget.model.sharedPost == null) _buildShareButton(),
-          if (!widget.model.isMyPost &&
-              widget.model.user.role != UserRole.admin)
-            _buildGiftButton(),
+          // if (!widget.model.isMyPost &&
+          //     widget.model.user.role != UserRole.admin)
+          //   _buildGiftButton(),
           if (widget.model.contentType == PostContentType.event)
             _buildEventActionButton(),
           if (widget.model.contentType == PostContentType.competitionAdded ||
@@ -518,17 +518,32 @@ class PostCardState extends State<PostCard> {
   Widget _buildLikeButton() {
     return Row(
       children: [
-        Obx(() => Icon(
-              (postCardController.likedPosts.contains(widget.model) ||
+        Obx(() => SvgPicture.asset(
+              height: postCardController.likedPosts.contains(widget.model) ||
                       widget.model.isLike
-                  ? Iconsax.heart_bold
-                  : Iconsax.heart_outline) as IconData?,
+                  ? 22 // red filled heart
+                  : 22,
+              postCardController.likedPosts.contains(widget.model) ||
+                      widget.model.isLike
+                  ? "assets/Like_filled.svg" // red filled heart
+                  : "assets/Like.svg",
               color: postCardController.likedPosts.contains(widget.model) ||
                       widget.model.isLike
                   ? AppColorConstants.red
                   : AppColorConstants.iconColor,
-              size: 22,
             )
+
+                // Icon(
+                // (postCardController.likedPosts.contains(widget.model) ||
+                //         widget.model.isLike
+                //           ? Iconsax.heart_
+                //           : Iconsax.heart_outline) as IconData?,
+                //       color: postCardController.likedPosts.contains(widget.model) ||
+                //               widget.model.isLike
+                //           ? AppColorConstants.red
+                //           : AppColorConstants.iconColor,
+                //       size: 22,
+                //     )
                 //       ThemeIconWidget(
                 //   postCardController.likedPosts.contains(widget.model) ||
                 //           widget.model.isLike
@@ -567,7 +582,11 @@ class PostCardState extends State<PostCard> {
   Widget _buildCommentButton() {
     return Row(
       children: [
-        Icon(Iconsax.message_2_outline, size: 22),
+        SvgPicture.asset(
+          height: 29,
+          "assets/Chat.svg",
+          color: AppColorConstants.iconColor,
+        ),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalComment}',
@@ -580,7 +599,11 @@ class PostCardState extends State<PostCard> {
   Widget _buildViewCount() {
     return Row(
       children: [
-        Icon(Iconsax.eye_outline, size: 22),
+        Icon(
+          Iconsax.eye_outline,
+          size: 24,
+          color: AppColorConstants.iconColor,
+        ),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalView}',
@@ -593,7 +616,11 @@ class PostCardState extends State<PostCard> {
   Widget _buildShareButton() {
     return Row(
       children: [
-        Icon(Iconsax.send_2_outline, size: 22),
+        SvgPicture.asset(
+          height: 20,
+          "assets/Messanger.svg",
+          color: AppColorConstants.iconColor,
+        ),
         const SizedBox(width: 5),
         BodyMediumText(
           '${widget.model.totalShare}',
