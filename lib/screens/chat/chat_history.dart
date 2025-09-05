@@ -127,10 +127,10 @@ class _ChatHistoryState extends State<ChatHistory> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        BodyMediumText(
-                          key,
-                          weight: TextWeight.regular,
-                        ),
+                        // BodyMediumText(
+                        //   key,
+                        //   weight: TextWeight.regular,
+                        // ),
                         const SizedBox(
                           height: 15,
                         ),
@@ -176,7 +176,7 @@ class _ChatHistoryState extends State<ChatHistory> {
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(
-                      height: 16,
+                      height: 4,
                     );
                   })
               : emptyData(

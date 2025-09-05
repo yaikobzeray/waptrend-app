@@ -103,14 +103,12 @@ class StoryUpdatesBar extends StatelessWidget {
                                           .red, // loop back for smooth transition
                                     ],
                                   ) // red gradient for live
-                                : SweepGradient(
-                                    startAngle: 0.0,
-                                    endAngle: 3.14 * 2,
-                                    colors: const [
-                                      Color(0xFFB0FB47),
-                                      Color(0xFF005D36),
-                                      Color(0xFF02BA01),
-                                      Color(0xFFB0FB47),
+                                : LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF02ba01), // green #02ba01
+                                      Color(0xFF005d36), // dark green #005d36
                                     ],
                                   ), // green gradient for normal story
                         color: stories[index - 1].isViewed

@@ -785,7 +785,7 @@ class PostBoxShimmer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: AppColorConstants.cardColor,
+                      backgroundColor : AppColorConstants.cardColor,
                     ),
                     const SizedBox(width: 12),
                     Expanded(

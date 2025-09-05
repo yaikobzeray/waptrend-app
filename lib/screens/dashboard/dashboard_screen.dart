@@ -75,13 +75,17 @@ class DashboardState extends State<DashboardScreen>
           color: AppColorConstants.themeColor.darken(),
         ),
         inactiveIcon: SvgPicture.asset(
-          height: 25,
-          "assets/Home.svg",
+          height: 27,
+          "assets/home.svg",
           color: AppColorConstants.themeColor.darken(),
         ),
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.explore_outlined, size: 30),
+        icon: SvgPicture.asset(
+          height: 25,
+          "assets/explore.svg",
+          color: AppColorConstants.themeColor.darken(),
+        ),
         activeColorPrimary: AppColorConstants.themeColor.darken(),
         inactiveColorPrimary: AppColorConstants.themeColor.darken(),
       ),

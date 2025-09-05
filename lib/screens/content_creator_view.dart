@@ -68,7 +68,7 @@ class CameraView extends StatelessWidget {
           // transform: Matrix4.identity(),
           // above code of scale was not working for iphone as it was flipping camera on iphone
           child: SizedBox(
-              height: Get.height * 0.85,
+              height: Get.height * 0.8,
               child: CameraPreview(controllerService.controller)),
         );
       },

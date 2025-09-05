@@ -89,12 +89,27 @@ late List<CameraDescription> cameras;
 bool isLaunchedFromCallNotification = false;
 bool isAnyPageInStack = false;
 bool isPermissionsAsked = false;
+
+void configLoading() {
+  EasyLoading.instance
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.green
+    ..backgroundColor = Colors.white
+    ..indicatorColor = Colors.green
+    ..textColor = Colors.green
+    ..maskColor = Colors.black.withOpacity(0.3)
+    ..userInteractions = false;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Permission.camera.request();
   cameras = await availableCameras();
   HttpOverrides.global = MyHttpOverrides();
-
+  configLoading();
   await Firebase.initializeApp(
     name: AppConfigConstants.appName,
     options: DefaultFirebaseOptions.currentPlatform,
