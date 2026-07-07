@@ -45,3 +45,28 @@ app.*.map.json
 /android/app/release
 /android/key.properties
 
+
+# Firebase / Google secrets — NEVER commit these
+google-services.json
+GoogleService-Info.plist
+ios/firebase_app_id_file.json
+lib/firebase_options.dart
+
+# Android C++ build cache
+android/app/.cxx/
+
+# iOS build artifacts
+ios/build/
+ios/Pods/
+
+# Debug dumps
+logcat*.txt
+logcat.txt
+
+# macOS
+.DS_Store
+
+# Key files
+*.keystore
+*.jks
+key.properties
